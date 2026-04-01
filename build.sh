@@ -26,7 +26,7 @@ cat >> "$OUT" << 'HTMLMID'
 HTMLMID
 
 # Extract body from index.html (between <body> and </body>, minus script tags)
-sed -n '/<body>/,/<\/body>/p' index.html | grep -v '<script' | grep -v '</body>' >> "$OUT"
+sed -n '/<body>/,/<\/body>/p' shell.html | grep -v '<script' | grep -v '</body>' >> "$OUT"
 
 # Inject all JS in order
 echo '<script>' >> "$OUT"
