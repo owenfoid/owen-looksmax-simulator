@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Owen Looksmax Simulator</title>
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=IBM+Plex+Mono:wght@400;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<div id="flash"></div>
+<div id="scanlines"></div>
+
+<div id="chroma-wrap">
+<header>
+  <h1>Owen Looksmax Simulator</h1>
+  <div class="sub">The Grind Never Stops</div>
+</header>
+
+<div class="game" id="game">
+  <div class="p stats full">
+    <div class="st"><div class="v" id="s-pts">0</div><div class="l">Mew Points</div></div>
+    <div class="st"><div class="v" id="s-pc">1</div><div class="l">Per Click</div></div>
+    <div class="st"><div class="v" id="s-ps">0</div><div class="l">Per Sec</div></div>
+    <div class="st"><div class="v" id="s-total">0</div><div class="l">Lifetime</div></div>
+  </div>
+
+  <div class="p full">
+    <div class="psl-row"><span>PSL Rating</span><span id="psl-num">0.0 / 10.0</span></div>
+    <div class="psl-bar"><div class="psl-fill" id="psl-fill"><span class="psl-inner" id="psl-in"></span></div></div>
+    <div class="rank" id="rank" style="color:var(--accent)">Subhuman</div>
+    <div class="stim-wrap">
+      <div class="stim-label"><span>Stimming</span><span id="stim-pct">0%</span></div>
+      <div class="stim-bar"><div class="stim-fill" id="stim-fill"></div></div>
+    </div>
+  </div>
+
+  <div class="p click-area" id="click-area">
+    <canvas id="face" width="200" height="280"></canvas>
+    <div class="click-hint">tap to mew</div>
+  </div>
+
+  <div class="p">
+    <div class="pt">Upgrades</div>
+    <div class="ul" id="ul"></div>
+  </div>
+
+  <div class="p full">
+    <div class="pt">Achievements</div>
+    <div class="ag" id="ag"></div>
+  </div>
+
+  <div class="p log full" id="log"></div>
+</div>
+</div>
+
+<div class="toast" id="toast"></div>
+<footer>auto-saves every 10s &middot; owen looksmax simulator v0.3</footer>
+
+<!-- LOAD ORDER MATTERS -->
+<script src="js/config.js"></script>
+<script src="js/engine.js"></script>
+<script src="js/effects.js"></script>
+<script src="js/face.js"></script>
+<script src="js/mic.js"></script>
+<script src="js/game.js"></script>
+</body>
+</html>
