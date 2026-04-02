@@ -1,24 +1,22 @@
 <!DOCTYPE html>
 <html>
-<head><meta charset="UTF-8"><meta http-equiv="Cache-Control" content="no-cache, no-store"><title>Reset</title></head>
+<head><meta charset="UTF-8"><title>Reset</title></head>
 <body style="background:#000;color:#0f0;font-family:monospace;padding:40px;text-align:center">
-<h1>RESETTING...</h1>
-<p id="status">Clearing all data...</p>
+<h1>NUKING SAVE DATA...</h1>
+<p id="status">Working...</p>
 <script>
-var cleared = 0;
-for(var i = localStorage.length - 1; i >= 0; i--) {
-  var key = localStorage.key(i);
-  if(key) { localStorage.removeItem(key); cleared++; }
+// Don't delete - CORRUPT. Write invalid data to ALL possible save keys.
+// Any version of the game code will try JSON.parse, fail, and start fresh.
+var keys = ["owen_lm_v3","owen_lm_v4","owen_lm_v6","owen_lm_v8","owen_lm_v9","owen_lm_v10"];
+for(var i = 0; i < keys.length; i++) {
+  localStorage.setItem(keys[i], "RESET");
 }
-sessionStorage.clear();
-// Set poison flag - game will see this and force-reset
-localStorage.setItem("OWEN_NUKE", "1");
-document.getElementById("status").textContent = "Cleared " + cleared + " items.";
-if(navigator.serviceWorker){navigator.serviceWorker.getRegistrations().then(function(r){for(var i=0;i<r.length;i++)r[i].unregister()})}
-if(window.caches){caches.keys().then(function(n){for(var i=0;i<n.length;i++)caches.delete(n[i])})}
-setTimeout(function(){
-  document.getElementById("status").innerHTML = "Done!<br><br><a href='/owen-looksmax-simulator/' style='color:#0f0;font-size:2rem'>👆 TAP HERE TO OPEN GAME 👆</a><br><br><span style='color:#888;font-size:0.8rem'>Do NOT use back button. Open this link fresh.</span>";
-}, 1500);
+// Also corrupt any key containing "owen"
+for(var i = localStorage.length - 1; i >= 0; i--) {
+  var k = localStorage.key(i);
+  if(k && k.indexOf("owen") >= 0) localStorage.setItem(k, "RESET");
+}
+document.getElementById("status").innerHTML = "All saves corrupted.<br><br><a href='/owen-looksmax-simulator/' style='color:#0f0;font-size:2rem;display:inline-block;padding:20px;border:2px solid #0f0'>👆 TAP HERE FOR FRESH GAME 👆</a><br><br><span style='color:#888'>Do NOT press back.</span>";
 </script>
 </body>
 </html>
