@@ -319,3 +319,4 @@ recalc=function(){
   S.pc=Math.floor(S.pc*(1+craftBonuses.pc+craftBonuses.everything));
   S.ps=Math.floor(S.ps*(1+craftBonuses.ps+craftBonuses.everything));
 };
+initCasino();
