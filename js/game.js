@@ -501,3 +501,187 @@ setInterval(function(){
   var ev=document.getElementById("enigma-val");
   if(ev)ev.textContent=_enigmaVal;
 },1000);
+
+// ============ THE FISH ============
+// a fish occasionally appears. clicking it does something completely unrelated.
+setInterval(function(){
+  if(Math.random()>0.002||psl()<1)return;
+  var fish=document.createElement("div");
+  fish.style.cssText="position:fixed;z-index:250;font-size:2.5rem;cursor:pointer;left:"+(10+Math.random()*70)+"%;top:"+(20+Math.random()*50)+"%;touch-action:manipulation;padding:10px;animation:zIn .5s";
+  fish.textContent="🐟";
+  var handler=function(e){e.stopPropagation();e.preventDefault();fish.remove();
+    var outcomes=[
+      function(){document.body.style.fontFamily="'Times New Roman',serif";toast("All fonts changed.");setTimeout(function(){document.body.style.fontFamily=""},15000)},
+      function(){S.pts+=Math.floor(S.pts*0.05);S.total+=Math.floor(S.pts*0.05);toast("The fish gave you 5% of your points.")},
+      function(){for(var i=0;i<CURRENCIES.length;i++)if(psl()>=CURRENCIES[i].unlockPSL&&Math.random()<0.3)CURRENCIES[i].val*=-1;toast("Some currencies went negative.")},
+      function(){S.teeth+=3;toast("You gained 3 teeth from the fish.")},
+      function(){var el=document.querySelector("header h1");if(el)el.textContent="Fish Looksmax Simulator";setTimeout(function(){if(el)el.innerHTML='Owen <span>Looksmax</span> Simulator'},10000);toast("🐟")},
+      function(){S.zorgos+=Math.floor(Math.random()*10)+1;render();toast("The fish had zorgos inside it.")},
+      function(){addSuspicion(-20);toast("Suspicion decreased. The fish vouched for you.")},
+      function(){document.body.style.transform="scaleX(-1)";setTimeout(function(){document.body.style.transform=""},8000);toast("Everything is mirrored now.")},
+    ];
+    outcomes[Math.floor(Math.random()*outcomes.length)]();
+    sndZorgo();screenShake(2);render();
+  };
+  fish.addEventListener("click",handler);fish.addEventListener("touchend",handler,{passive:false});
+  document.body.appendChild(fish);
+  setTimeout(function(){if(fish.parentNode)fish.remove()},4000);
+},3000);
+
+// ============ WEATHER SYSTEM ============
+var WEATHERS=["☀️ Clear","🌧️ Rain","⛈️ Storm","🌫️ Fog","🔥 Heatwave","❄️ Blizzard","🌈 Rainbow","🌑 Eclipse","🐟 Fish Weather"];
+var currentWeather=WEATHERS[0];var weatherEffects={ps:1,pc:1,zorgoRate:1,susRate:1};
+setInterval(function(){
+  if(Math.random()<0.005){
+    currentWeather=WEATHERS[Math.floor(Math.random()*WEATHERS.length)];
+    toast("Weather changed: "+currentWeather);
+    weatherEffects={ps:1,pc:1,zorgoRate:1,susRate:1};
+    if(currentWeather.indexOf("Rain")>=0){weatherEffects.ps=1.5;weatherEffects.susRate=0.5}
+    if(currentWeather.indexOf("Storm")>=0){weatherEffects.pc=2;weatherEffects.susRate=2;for(var i=0;i<CURRENCIES.length;i++)if(Math.random()<0.1&&psl()>=CURRENCIES[i].unlockPSL)CURRENCIES[i].val+=(Math.random()-0.5)*20}
+    if(currentWeather.indexOf("Fog")>=0){weatherEffects.zorgoRate=0.3}
+    if(currentWeather.indexOf("Heatwave")>=0){weatherEffects.ps=2;weatherEffects.pc=0.5}
+    if(currentWeather.indexOf("Blizzard")>=0){weatherEffects.pc=0.3;weatherEffects.zorgoRate=2}
+    if(currentWeather.indexOf("Rainbow")>=0){weatherEffects.ps=1.5;weatherEffects.pc=1.5;weatherEffects.zorgoRate=1.5}
+    if(currentWeather.indexOf("Eclipse")>=0){weatherEffects.ps=0.1;weatherEffects.pc=3;weatherEffects.susRate=3}
+    if(currentWeather.indexOf("Fish")>=0){weatherEffects.ps=1;weatherEffects.pc=1;S.teeth+=1;toast("It's raining fish. +1 tooth.")}
+  }
+},5000);
+
+// ============ THE COUNTDOWN ============
+// a timer counting down to... something
+var _countdownVal=Math.floor(86400+Math.random()*172800);// 1-3 days
+setInterval(function(){
+  _countdownVal--;
+  if(_countdownVal<=0){
+    // what happens when it reaches 0? NOTHING. or... 
+    toast("⏰ THE COUNTDOWN REACHED ZERO.");
+    screenShake(3);chromatic();
+    S.pts*=2;S.total+=S.pts;
+    _countdownVal=Math.floor(86400+Math.random()*172800);
+    toast("All points doubled. Timer reset.");
+    for(var i=0;i<20;i++)setTimeout(dropEmoji,i*50);
+  }
+},1000);
+
+// ============ IDENTITY CRISIS ============
+// the game occasionally pretends to be a different game
+setInterval(function(){
+  if(psl()<5||Math.random()>0.0003)return;
+  var games=["Owen's Farm Simulator","Owen's Fishing Adventure","Owen's Tax Software","Owen's Dental Practice","Owen's Weather App","Owen's Empty Void","Microsoft Excel","Loading...","404 Not Found"];
+  var game=games[Math.floor(Math.random()*games.length)];
+  var h1=document.querySelector("header h1");
+  if(h1){
+    h1.textContent=game;
+    document.title=game;
+    if(game==="Microsoft Excel"){document.body.style.background="#217346";document.body.style.color="#fff"}
+    if(game==="404 Not Found"){document.body.style.background="#fff";document.querySelectorAll(".p").forEach(function(p){p.style.display="none"})}
+    setTimeout(function(){
+      h1.innerHTML='Owen <span>Looksmax</span> Simulator';
+      document.title='Owen Looksmax Simulator';
+      document.body.style.background="";document.body.style.color="";
+      document.querySelectorAll(".p").forEach(function(p){p.style.display=""});
+    },5000);
+  }
+},3000);
+
+// ============ PET ROCK ============
+var _rockName="";var _rockXP=0;var _rockLevel=0;
+function initRock(){
+  if(_rockName)return;
+  if(psl()<2)return;
+  if(!document.getElementById("rock-panel")){
+    var p=document.createElement("div");p.className="p full";p.id="rock-panel";
+    p.innerHTML='<div class="pt">🪨 PET ROCK</div><div id="rock-area"></div>';
+    var game=document.getElementById("game");if(game)game.appendChild(p);
+  }
+  if(!_rockName){
+    var names=["Gerald","The Nameless One","Rock #4817","Greg","A Rock","Not A Rock","Definitely A Rock","Owen Jr.","Pebble","Boulder","Geode","Igneous Dave"];
+    _rockName=names[Math.floor(Math.random()*names.length)];
+  }
+  renderRock();
+}
+function renderRock(){
+  var el=document.getElementById("rock-area");if(!el)return;
+  _rockLevel=Math.floor(_rockXP/100);
+  var mood=_rockXP>500?"vibrating":_rockXP>200?"content":_rockXP>50?"aware":"inert";
+  el.innerHTML='<div style="text-align:center;font-size:2rem">🪨</div>'+
+    '<div style="text-align:center;font-size:.55rem"><b>'+_rockName+'</b> — Level '+_rockLevel+'</div>'+
+    '<div style="text-align:center;font-size:.45rem;color:#888">Mood: '+mood+' | XP: '+_rockXP+'</div>'+
+    '<div style="text-align:center;margin-top:4px">'+
+    '<button class="casino-btn" onclick="_rockXP+=1;renderRock();toast(\'You pet the rock.\')">Pet</button>'+
+    '<button class="casino-btn" onclick="feedRock()">Feed (100 pts)</button>'+
+    '<button class="casino-btn" onclick="talkRock()">Talk</button>'+
+    '</div>'+
+    '<div style="font-size:.35rem;color:#aaa;text-align:center;margin-top:2px">Level '+_rockLevel+' bonus: +'+(_rockLevel*100)+'/sec (???)</div>';
+}
+function feedRock(){
+  if(S.pts<100){toast("Not enough points to feed a rock.");return}
+  S.pts-=100;_rockXP+=10;renderRock();render();
+  var msgs=["The rock absorbed the offering.","The rock seems slightly heavier.","Nothing happened. Or did it.","The rock vibrated briefly.","You hear a faint 'thank you' from inside the rock."];
+  toast("🪨 "+msgs[Math.floor(Math.random()*msgs.length)]);
+}
+function talkRock(){
+  _rockXP+=2;renderRock();
+  var msgs=["...","The rock says nothing.","The rock is a rock.","The rock stares back.","The rock knows your PSL.","The rock remembers.","'mew' — the rock","The rock hums at exactly 67hz.","The rock disagrees.","The rock agrees.","You feel understood.","The rock has "+Math.floor(Math.random()*200)+" teeth."];
+  toast("🪨 "+msgs[Math.floor(Math.random()*msgs.length)]);
+}
+// rock gives passive bonus based on level
+setInterval(function(){
+  if(_rockLevel>0){
+    var bonus=_rockLevel*100;S.pts+=bonus/10;S.total+=bonus/10;
+  }
+},1000);
+setInterval(function(){if(psl()>=2)initRock()},5000);
+
+// ============ SHOW WEATHER + COUNTDOWN IN STATS ============
+setInterval(function(){
+  var grid=document.getElementById("stats-grid");if(!grid)return;
+  if(!document.getElementById("stat-weather")){
+    var d=document.createElement("div");d.className="stat-row";d.id="stat-weather";
+    grid.appendChild(d);
+  }
+  if(!document.getElementById("stat-countdown")){
+    var d=document.createElement("div");d.className="stat-row";d.id="stat-countdown";
+    grid.appendChild(d);
+  }
+  if(!document.getElementById("stat-rock")){
+    var d=document.createElement("div");d.className="stat-row";d.id="stat-rock";
+    grid.appendChild(d);
+  }
+  var wEl=document.getElementById("stat-weather");
+  if(wEl)wEl.innerHTML='<span>Weather</span><span class="stat-val">'+currentWeather+'</span>';
+  var cEl=document.getElementById("stat-countdown");
+  var hrs=Math.floor(_countdownVal/3600);var mins=Math.floor((_countdownVal%3600)/60);
+  if(cEl)cEl.innerHTML='<span>Countdown</span><span class="stat-val">'+hrs+'h '+mins+'m</span>';
+  var rEl=document.getElementById("stat-rock");
+  if(rEl&&_rockName)rEl.innerHTML='<span>'+_rockName+'</span><span class="stat-val">Lv.'+_rockLevel+'</span>';
+},2000);
+
+// ============ HOOK NEW UPGRADES ============
+// Fish License - 3x fish spawn rate (handled by checking own("fish1") in fish interval)
+// Rock Polish - handled in rock XP gain
+// Weather Machine - handled in weather interval
+// Bigger Numbers - make stat values slightly larger font
+setInterval(function(){
+  if(own("bigger")>=1){document.querySelectorAll(".st .v").forEach(function(el){el.style.fontSize="1.4rem"})}
+  // Fourth Wall - the game comments on itself
+  if(own("fourth")>=1&&Math.random()<0.003){
+    var msgs=["You're reading generated JavaScript right now.","This toast was written by an AI.","The developer didn't actually test this.","There are "+document.querySelectorAll("*").length+" DOM elements on this page.","This game is "+Math.floor((Date.now()-_gameStart)/60000)+" minutes of your life you won't get back.","The save file is "+localStorage.getItem(SAVE_KEY).length+" characters long.","You have "+Object.keys(S.upg).length+" unique upgrades.","This message has a 0.3% chance of appearing."];
+    toast("🧱 "+msgs[Math.floor(Math.random()*msgs.length)]);
+  }
+  // Gravity - reverse float text direction (handled via CSS class)
+  if(own("gravity")>=1&&!document.getElementById("gravity-style")){
+    var s=document.createElement("style");s.id="gravity-style";
+    s.textContent="@keyframes ftUp{0%{opacity:1;transform:translateY(0)}100%{opacity:0;transform:translateY(60px) scale(0.7)}}";
+    document.head.appendChild(s);
+  }
+  // Countdown accelerator
+  if(own("countdown1")>=1)_countdownVal--;
+  // Weather machine
+  // (handled in weather interval by checking own)
+},1000);
+
+// Override fish spawn rate for Fish License
+// Override rock XP for Rock Polish (in feed/pet/talk)
+var _origFeedRock=feedRock;
+feedRock=function(){if(own("rock1")>=1){_rockXP+=10}_origFeedRock()};

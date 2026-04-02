@@ -111,3 +111,14 @@ ACH.push({id:"buy100",ic:"🛒",nm:"100 Upgrades",ds:"addicted",ck:function(){va
 ACH.push({id:"trap1a",ic:"🎁",nm:"Fool",ds:"bought a trap upgrade",ck:function(){return own("trap1")>=1||own("trap2")>=1||own("trap3")>=1}});
 ACH.push({id:"trap3a",ic:"💀",nm:"Masochist",ds:"bought 3 trap upgrades",ck:function(){return (own("trap1")>0?1:0)+(own("trap2")>0?1:0)+(own("trap3")>0?1:0)+(own("trap4")>0?1:0)+(own("trap5")>0?1:0)>=3}});
 ACH.push({id:"owen1",ic:"🗿",nm:"Became Owen",ds:"no going back",ck:function(){return own("wowen")>=1}});
+
+// NEW OBSCURE UPGRADES
+UPG.push({id:"fish1",ic:"🐟",nm:"Fish License",ds:"Fish appear 3x more often",b:5e6,m:1,pc:0,ps:0,type:"mew",max:1});
+UPG.push({id:"rock1",ic:"🪨",nm:"Rock Polish Kit",ds:"Pet rock XP x2",b:2e6,m:1,pc:0,ps:0,type:"mew",max:1});
+UPG.push({id:"weather1",ic:"🌦️",nm:"Weather Machine",ds:"Weather changes more often",b:10e6,m:1,pc:0,ps:0,type:"mew",max:1});
+UPG.push({id:"countdown1",ic:"⏰",nm:"Time Accelerator",ds:"Countdown goes 2x faster",b:50e6,m:1,pc:0,ps:0,type:"mew",max:1});
+UPG.push({id:"negative",ic:"➖",nm:"Negative Income",ds:"-500/sec. Yes, negative.",b:1,m:1,pc:0,ps:-500,type:"mew",max:1,secret:true});
+UPG.push({id:"nothing",ic:"⬜",nm:"Absolutely Nothing",ds:"Does absolutely nothing. Costs 10M.",b:10e6,m:1,pc:0,ps:0,type:"mew",max:1});
+UPG.push({id:"bigger",ic:"📐",nm:"Bigger Numbers",ds:"Numbers display 10% larger (visual only)",b:500000,m:1,pc:0,ps:0,type:"mew",max:1});
+UPG.push({id:"gravity",ic:"🍎",nm:"Gravity",ds:"Floating text falls instead of rising",b:1e6,m:1,pc:0,ps:0,type:"mew",max:1});
+UPG.push({id:"fourth",ic:"🧱",nm:"The Fourth Wall",ds:"The game becomes aware of itself",b:100e6,m:1,pc:0,ps:0,type:"mew",max:1,secret:true,req:function(){return psl()>=7}});
