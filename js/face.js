@@ -165,7 +165,7 @@ function drawHand(cx, cy, angle, fingerSpread, scale) {
     // first segment
     ctx.fillStyle = finger;
     ctx.beginPath();
-    ctx.roundRect(-f.w/2, -f.len1, f.w, f.len1, 2);
+    ctx.rect(-f.w/2, -f.len1, f.w, f.len1, 2);
     ctx.fill();
 
     // knuckle
@@ -178,13 +178,13 @@ function drawHand(cx, cy, angle, fingerSpread, scale) {
     ctx.translate(0, -f.len1);
     ctx.fillStyle = finger;
     ctx.beginPath();
-    ctx.roundRect(-f.w/2+0.3, -f.len2, f.w-0.6, f.len2, 2);
+    ctx.rect(-f.w/2+0.3, -f.len2, f.w-0.6, f.len2, 2);
     ctx.fill();
 
     // fingernail
     ctx.fillStyle = nail;
     ctx.beginPath();
-    ctx.roundRect(-f.w/2+0.8, -f.len2, f.w-1.6, f.len2*0.4, [2,2,0,0]);
+    ctx.rect(-f.w/2+0.8, -f.len2, f.w-1.6, f.len2*0.4, [2,2,0,0]);
     ctx.fill();
 
     ctx.restore();
