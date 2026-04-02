@@ -127,3 +127,34 @@ footer{text-align:center;font-size:.35rem;color:#ccc;padding:6px 6px 24px;font-f
 .craft-recipe.ready{border-color:green;background:#e0ffe0;cursor:pointer}
 .craft-recipe.done{opacity:.3}
 .craft-recipe .craft-reward{font-weight:700;color:green}
+
+/* UGLIER OVERHAUL */
+body{background:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='20' height='20'%3E%3Crect width='20' height='20' fill='%23f0f0ff'/%3E%3Crect width='1' height='1' x='10' y='10' fill='%23e0e0f0'/%3E%3C/svg%3E")}
+.game .p:nth-child(odd){background:#fff8f0}
+.game .p:nth-child(even){background:#f0fff0}
+.game .p:nth-child(3n){background:#f0f0ff}
+.p{transform:rotate(calc(var(--r,0)*0.3deg))}
+.p:nth-child(1){--r:0.5}.p:nth-child(2){--r:-0.3}.p:nth-child(3){--r:0.7}.p:nth-child(4){--r:-0.5}.p:nth-child(5){--r:0.2}.p:nth-child(6){--r:-0.8}
+.stats .st:nth-child(odd) .l{font-family:'Times New Roman',serif;font-weight:700}
+.stats .st:nth-child(even) .l{font-family:'Comic Neue',cursive;font-style:italic}
+.stats .st:nth-child(3) .v{color:green}.stats .st:nth-child(4) .v{color:blue}
+.ug:nth-child(odd){background:#fff8f8}.ug:nth-child(even){background:#f8fff8}
+.ug:nth-child(3n) .nm{font-style:italic}
+.ug:nth-child(5n) .co{text-decoration:underline}
+.pt{font-size:.65rem!important}
+.game .p:nth-child(4) .pt{color:red;font-family:'Comic Neue',cursive!important}
+.game .p:nth-child(5) .pt{color:purple;text-decoration:underline}
+.game .p:nth-child(6) .pt{color:green;font-style:italic}
+
+/* CHAT */
+.chat-box{max-height:120px;overflow-y:auto;font-size:.45rem;background:#000;color:#0f0;padding:4px;font-family:monospace;border:2px solid #0f0}
+.chat-box::-webkit-scrollbar{width:3px}.chat-box::-webkit-scrollbar-thumb{background:#0f0}
+.chat-msg{line-height:1.4}.chat-msg .chat-name{font-weight:700}
+.chat-input{display:flex;gap:2px;margin-top:2px}
+.chat-input input{flex:1;background:#111;border:1px solid #0f0;color:#0f0;font-size:.45rem;padding:2px 4px;font-family:monospace}
+.chat-input button{background:#0f0;color:#000;border:none;padding:2px 8px;font-size:.45rem;font-weight:700;cursor:pointer}
+
+/* STATS */
+.stats-grid{display:grid;grid-template-columns:1fr 1fr;gap:2px;font-size:.45rem}
+.stat-row{display:flex;justify-content:space-between;padding:2px 4px;border-bottom:1px dotted #ccc}
+.stat-row .stat-val{font-weight:700;font-family:'Times New Roman',serif}

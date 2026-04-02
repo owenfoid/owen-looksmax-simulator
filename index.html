@@ -138,6 +138,37 @@ footer{text-align:center;font-size:.35rem;color:#ccc;padding:6px 6px 24px;font-f
 .craft-recipe.ready{border-color:green;background:#e0ffe0;cursor:pointer}
 .craft-recipe.done{opacity:.3}
 .craft-recipe .craft-reward{font-weight:700;color:green}
+
+/* UGLIER OVERHAUL */
+body{background:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='20' height='20'%3E%3Crect width='20' height='20' fill='%23f0f0ff'/%3E%3Crect width='1' height='1' x='10' y='10' fill='%23e0e0f0'/%3E%3C/svg%3E")}
+.game .p:nth-child(odd){background:#fff8f0}
+.game .p:nth-child(even){background:#f0fff0}
+.game .p:nth-child(3n){background:#f0f0ff}
+.p{transform:rotate(calc(var(--r,0)*0.3deg))}
+.p:nth-child(1){--r:0.5}.p:nth-child(2){--r:-0.3}.p:nth-child(3){--r:0.7}.p:nth-child(4){--r:-0.5}.p:nth-child(5){--r:0.2}.p:nth-child(6){--r:-0.8}
+.stats .st:nth-child(odd) .l{font-family:'Times New Roman',serif;font-weight:700}
+.stats .st:nth-child(even) .l{font-family:'Comic Neue',cursive;font-style:italic}
+.stats .st:nth-child(3) .v{color:green}.stats .st:nth-child(4) .v{color:blue}
+.ug:nth-child(odd){background:#fff8f8}.ug:nth-child(even){background:#f8fff8}
+.ug:nth-child(3n) .nm{font-style:italic}
+.ug:nth-child(5n) .co{text-decoration:underline}
+.pt{font-size:.65rem!important}
+.game .p:nth-child(4) .pt{color:red;font-family:'Comic Neue',cursive!important}
+.game .p:nth-child(5) .pt{color:purple;text-decoration:underline}
+.game .p:nth-child(6) .pt{color:green;font-style:italic}
+
+/* CHAT */
+.chat-box{max-height:120px;overflow-y:auto;font-size:.45rem;background:#000;color:#0f0;padding:4px;font-family:monospace;border:2px solid #0f0}
+.chat-box::-webkit-scrollbar{width:3px}.chat-box::-webkit-scrollbar-thumb{background:#0f0}
+.chat-msg{line-height:1.4}.chat-msg .chat-name{font-weight:700}
+.chat-input{display:flex;gap:2px;margin-top:2px}
+.chat-input input{flex:1;background:#111;border:1px solid #0f0;color:#0f0;font-size:.45rem;padding:2px 4px;font-family:monospace}
+.chat-input button{background:#0f0;color:#000;border:none;padding:2px 8px;font-size:.45rem;font-weight:700;cursor:pointer}
+
+/* STATS */
+.stats-grid{display:grid;grid-template-columns:1fr 1fr;gap:2px;font-size:.45rem}
+.stat-row{display:flex;justify-content:space-between;padding:2px 4px;border-bottom:1px dotted #ccc}
+.stat-row .stat-val{font-weight:700;font-family:'Times New Roman',serif}
 </style>
 </head>
 </head><body>
@@ -181,12 +212,14 @@ footer{text-align:center;font-size:.35rem;color:#ccc;padding:6px 6px 24px;font-f
   <div class="p full" id="agartha-panel" style="display:none"><div class="pt">🕳️ AGARTHA DESCENT</div><div id="agartha-area"></div></div>
   <div class="p"><div class="pt">Upgrades</div><div id="prestige-btn" class="prestige-btn" style="display:none" onclick="doPrestige()"></div><div class="ul" id="ul"></div></div>
   <div class="p full"><div class="pt">Achievements</div><div class="ag" id="ag"></div></div>
+  <div class="p full" id="chat-section"><div class="pt">💬 GLOBAL CHAT (real) (not real)</div><div class="chat-box" id="chat-box"></div><div class="chat-input"><input id="chat-in" placeholder="type here..." maxlength="60"><button onclick="sendChat()">SEND</button></div></div>
+  <div class="p full"><div class="pt">📊 STATISTICS</div><div class="stats-grid" id="stats-grid"></div></div>
   <div class="p log full" id="log"></div>
 </div>
 </div>
 <div class="news-ticker"><div class="news-inner"><span>BREAKING:</span> man achieves PSL 7.2 <span>|</span> <span>ALERT:</span> zorgo sightings <span>|</span> <span>URGENT:</span> 200 currencies detected <span>|</span> <span>WEATHER:</span> cold showers <span>|</span> <span>BREAKING:</span> 35th tooth <span>|</span> <span>AGARTHA:</span> signal at 847km <span>|</span></div></div>
 <div class="toast" id="toast"></div>
-<footer>owen looksmax simulator v1.0 | 200 currencies | <span class="blink" style="color:red">UNDER CONSTRUCTION</span></footer>
+<footer>owen looksmax simulator v1.1 | 200 currencies | <span class="blink" style="color:red">UNDER CONSTRUCTION</span></footer>
 <script>
 var UPG=[{id:"mew",ic:"👅",nm:"Mewing Practice",ds:"+1/click",b:15,m:1.35,pc:1,ps:0,type:"mew"},{id:"jaw",ic:"🦴",nm:"Jawline Exerciser",ds:"+3/click",b:100,m:1.45,pc:3,ps:0,type:"mew"},{id:"gum",ic:"🍖",nm:"Falim Gum Pack",ds:"+8/click",b:500,m:1.5,pc:8,ps:0,type:"mew"},{id:"bone",ic:"💀",nm:"Bonesmashing",ds:"+25/click",b:4000,m:1.55,pc:25,ps:0,type:"mew"},{id:"cant",ic:"👁️",nm:"Canthal Tilt",ds:"+100/click",b:80000,m:1.75,pc:100,ps:0,type:"mew"},{id:"domain",ic:"🟣",nm:"Domain Expansion",ds:"+400/click",b:500000,m:1.8,pc:400,ps:0,type:"mew"},{id:"mirror",ic:"🪞",nm:"Mirror Spoke Back",ds:"+1500/click",b:3e6,m:1.85,pc:1500,ps:0,type:"mew"},{id:"cold",ic:"🥶",nm:"Cold Shower",ds:"+1/sec",b:50,m:1.4,pc:0,ps:1,type:"mew"},{id:"gym",ic:"🏋️",nm:"Gym Membership",ds:"+4/sec",b:250,m:1.5,pc:0,ps:4,type:"mew"},{id:"skin",ic:"🧴",nm:"Skincare",ds:"+12/sec",b:1200,m:1.55,pc:0,ps:12,type:"mew"},{id:"rhino",ic:"🔪",nm:"Rhinoplasty",ds:"+40/sec",b:6000,m:1.6,pc:0,ps:40,type:"mew"},{id:"hgh",ic:"💉",nm:"HGH Protocol",ds:"+120/sec",b:25000,m:1.65,pc:0,ps:120,type:"mew"},{id:"model",ic:"📸",nm:"Model Agency",ds:"+500/sec",b:120000,m:1.7,pc:0,ps:500,type:"mew"},{id:"god",ic:"⚡",nm:"Genetic Recombination",ds:"+2000/sec",b:800000,m:1.8,pc:0,ps:2000,type:"mew"},{id:"agartha",ic:"🕳️",nm:"Agartha Expedition",ds:"+8K/sec",b:4e6,m:1.85,pc:0,ps:8000,type:"mew"},{id:"sukuna",ic:"👹",nm:"Sukuna Blessing",ds:"+25K/sec",b:20e6,m:1.9,pc:0,ps:25000,type:"mew"},{id:"gojo",ic:"♾️",nm:"Six Eyes",ds:"+100K/sec",b:100e6,m:2.0,pc:0,ps:100000,type:"mew"},{id:"teeth",ic:"🦷",nm:"The Third Row",ds:"+400K/sec",b:500e6,m:2.1,pc:0,ps:400000,type:"mew"},{id:"skin2",ic:"🫠",nm:"New Skin",ds:"+2M/sec",b:5e9,m:2.2,pc:0,ps:2e6,type:"mew"},{id:"zorgo1",ic:"🟣",nm:"Zorgo Converter",ds:"+5K/sec",b:3,m:1.5,pc:0,ps:5000,type:"zorgo"},{id:"zorgo2",ic:"🔮",nm:"Zorgo Amplifier",ds:"+50K/sec",b:10,m:1.6,pc:0,ps:50000,type:"zorgo"},{id:"zorgo3",ic:"🌀",nm:"Zorgo Singularity",ds:"+500K/sec",b:25,m:1.8,pc:0,ps:500000,type:"zorgo"},{id:"wet",ic:"⚠️",nm:"Wet Floor Sign",ds:"???",b:1e6,m:1,pc:0,ps:0,type:"mew",max:1,secret:true},{id:"what",ic:"❓",nm:"???",ds:"",b:7,m:1.3,pc:0,ps:7777,type:"zorgo",secret:true}];
 
@@ -1487,5 +1520,189 @@ recalc=function(){
   S.pc=Math.floor(S.pc*(1+craftBonuses.pc+craftBonuses.everything));
   S.ps=Math.floor(S.ps*(1+craftBonuses.ps+craftBonuses.everything));
 };
+
+// ============ SOUND EFFECTS (Web Audio) ============
+var _audioCtx=null;
+function getAudio(){if(!_audioCtx)try{_audioCtx=new(window.AudioContext||window.webkitAudioContext)()}catch(e){}return _audioCtx}
+function playTone(freq,dur,type,vol){
+  var ctx=getAudio();if(!ctx)return;
+  var o=ctx.createOscillator();var g=ctx.createGain();
+  o.type=type||"square";o.frequency.value=freq;
+  g.gain.value=vol||0.08;g.gain.exponentialRampToValueAtTime(0.001,ctx.currentTime+(dur||0.1));
+  o.connect(g);g.connect(ctx.destination);o.start();o.stop(ctx.currentTime+(dur||0.1));
+}
+function sndClick(){playTone(800+Math.random()*400,0.03,"square",0.05)}
+function sndBuy(){playTone(600,0.05,"square",0.06);setTimeout(function(){playTone(900,0.05,"square",0.06)},50)}
+function sndAch(){playTone(523,0.1,"sine",0.08);setTimeout(function(){playTone(659,0.1,"sine",0.08)},100);setTimeout(function(){playTone(784,0.15,"sine",0.08)},200)}
+function sndGolden(){playTone(1047,0.08,"sine",0.1);setTimeout(function(){playTone(1319,0.08,"sine",0.1)},80);setTimeout(function(){playTone(1568,0.15,"sine",0.1)},160)}
+function sndBoss(){playTone(150,0.2,"sawtooth",0.1);setTimeout(function(){playTone(100,0.3,"sawtooth",0.1)},200)}
+function sndCasino(){for(var i=0;i<8;i++)setTimeout(function(){playTone(400+Math.random()*800,0.04,"square",0.04)},i*60)}
+function sndDeath(){playTone(400,0.1,"sawtooth",0.08);setTimeout(function(){playTone(300,0.1,"sawtooth",0.08)},100);setTimeout(function(){playTone(200,0.2,"sawtooth",0.08)},200)}
+function sndZorgo(){playTone(1200,0.05,"sine",0.06);setTimeout(function(){playTone(1600,0.08,"sine",0.06)},50)}
+
+// Hook sounds into existing functions
+var _origToast=toast;
+toast=function(m){
+  _origToast(m);
+  if(m.indexOf("GOLDEN")>=0)sndGolden();
+  else if(m.indexOf("JACKPOT")>=0){sndCasino();sndGolden()}
+  else if(m.indexOf("VICTORY")>=0)sndAch();
+  else if(m.indexOf("DIED")>=0||m.indexOf("NOTICED")>=0||m.indexOf("lost")>=0)sndDeath();
+  else if(m.indexOf("Zorgo")>=0||m.indexOf("zorgo")>=0)sndZorgo();
+  else if(m.indexOf("CHALLENGER")>=0)sndBoss();
+  else if(m.indexOf("🏆")>=0)sndAch();
+};
+// click sound
+document.getElementById("click-area").addEventListener("click",function(){sndClick()});
+
+// ============ FAKE MULTIPLAYER CHAT ============
+var CHAT_NAMES=["xX_MewGod_Xx","jawline_jake","zorgo99","bonesmash_barry","agartha_andy","teeth_guy","owen_fan","coldshower_chris","PSL_enjoyer","sukuna_simp","gigachad42","normie_ned","foid_slayer","gymcel_greg","canthal_carl","mirror_mike","stim_lord","combo_king","prestige_pete","hollow_hank"];
+var CHAT_MSGS=[
+  "just hit PSL {psl}","anyone else's teeth growing?","how do i stop the teeth","ZORGO CASINO IS RIGGED",
+  "casino is rigged but i keep playing","just lost 50 zorgos lol","bro my suspicion is at {sus}",
+  "the mirror spoke to me","this game is weird","why are there 200 currencies",
+  "how do u get to agartha","floor 7 is impossible","BONESMASH BONESMASH BONESMASH",
+  "owen if ur reading this hi","what are zorgos","nobody knows what zorgos are",
+  "my Red Shards keep going down","who designed this game","teeth: {teeth}",
+  "just prestiged for the {pr}th time","combo x{combo} lets go","PSL {psl} gang",
+  "the currencies are watching me","i have {z} zorgos","cold shower streak: 47 days",
+  "dealt with sukuna worst decision","DO NOT buy mystery supplement","wet floor sign does nothing right? RIGHT?",
+  "i forged crimson forge its insane","boss fight just took 30% of my points","has anyone beat agartha",
+  "floor 10 of agartha is just mirrors","help","67","mew","mew mew mew",
+  "lol imagine not having 50 teeth","the void peer upgrade breaks ur screen","Become Owen costs HOW MUCH",
+  "why is everything purple","is owen real","i can hear mewing from inside the walls",
+];
+function genChatMsg(){
+  var msg=CHAT_MSGS[Math.floor(Math.random()*CHAT_MSGS.length)];
+  msg=msg.replace("{psl}",(Math.random()*8+1).toFixed(1));
+  msg=msg.replace("{sus}",Math.floor(Math.random()*80+10));
+  msg=msg.replace("{teeth}",Math.floor(Math.random()*30+32));
+  msg=msg.replace("{pr}",Math.floor(Math.random()*8+1));
+  msg=msg.replace("{combo}",Math.floor(Math.random()*40+5));
+  msg=msg.replace("{z}",Math.floor(Math.random()*50+1));
+  return msg;
+}
+function addChatMsg(name,msg,color){
+  var box=document.getElementById("chat-box");if(!box)return;
+  var d=document.createElement("div");d.className="chat-msg";
+  d.innerHTML='<span class="chat-name" style="color:'+(color||"#0f0")+'">'+name+':</span> '+msg;
+  box.appendChild(d);
+  if(box.children.length>50)box.firstChild.remove();
+  box.scrollTop=box.scrollHeight;
+}
+function sendChat(){
+  var input=document.getElementById("chat-in");if(!input)return;
+  var msg=input.value.trim();if(!msg)return;
+  input.value="";
+  addChatMsg("You",msg,"#ff0");
+  // check for secret codes
+  checkCode(msg.toLowerCase());
+  // fake response sometimes
+  if(Math.random()<0.4){
+    setTimeout(function(){
+      var name=CHAT_NAMES[Math.floor(Math.random()*CHAT_NAMES.length)];
+      var responses=["lol","nice","based","what","mew","bro what","ok","real","67","cope","true"];
+      addChatMsg(name,responses[Math.floor(Math.random()*responses.length)]);
+    },1000+Math.random()*3000);
+  }
+}
+document.getElementById("chat-in").addEventListener("keydown",function(e){if(e.key==="Enter")sendChat()});
+// auto chat messages
+setInterval(function(){
+  if(Math.random()<0.06){
+    addChatMsg(CHAT_NAMES[Math.floor(Math.random()*CHAT_NAMES.length)],genChatMsg());
+  }
+},3000);
+// join/leave messages
+setInterval(function(){
+  if(Math.random()<0.02){
+    var name=CHAT_NAMES[Math.floor(Math.random()*CHAT_NAMES.length)];
+    addChatMsg("SYSTEM",name+(Math.random()<0.5?" joined":" left"),"#888");
+  }
+},8000);
+setTimeout(function(){addChatMsg("SYSTEM","Welcome to Owen Looksmax Simulator Global Chat","#888")},1000);
+setTimeout(function(){addChatMsg("SYSTEM",Math.floor(50+Math.random()*200)+" players online","#888")},2000);
+
+// ============ SECRET CODES ============
+function checkCode(code){
+  if(code==="owen"){S.pts+=10000;S.total+=10000;toast("🗿 OWEN CODE: +10K");sndAch();addChatMsg("SYSTEM","Secret code activated!","#ff0")}
+  else if(code==="zorgo"){for(var i=0;i<5;i++)setTimeout(spawnZorgo,i*300);addChatMsg("SYSTEM","ZORGO SWARM!","purple")}
+  else if(code==="67"){if(typeof emote67Active!=="undefined"){emote67Active=true;emote67Timer=0}toast("6️⃣7️⃣");addChatMsg("SYSTEM","67.","#f00")}
+  else if(code==="agartha"){for(var i=0;i<CURRENCIES.length;i++)if(psl()>=CURRENCIES[i].unlockPSL)CURRENCIES[i].val+=10;toast("🕳️ All currencies +10");addChatMsg("SYSTEM","Agartha signal received","purple")}
+  else if(code==="teeth"){S.teeth+=5;toast("🦷 +5 teeth (why)");addChatMsg("SYSTEM","Teeth granted.","red")}
+  else if(code==="grind"){S.pts+=S.ps*60;S.total+=S.ps*60;toast("1 minute of passive income!");addChatMsg("SYSTEM","The grind.","#0f0")}
+  else if(code==="casino"){S.zorgos+=10;S.totalZorgos+=10;toast("🎰 +10 zorgos for the casino");addChatMsg("SYSTEM","Casino funds deposited","#ff0")}
+  else if(code==="mirror"){toast("🪞 The mirror saw you type that.");screenShake(3);addChatMsg("SYSTEM","...","red")}
+  render();
+}
+// also check typed codes on keyboard (outside chat)
+var _codeBuffer="";
+document.addEventListener("keydown",function(e){
+  if(document.activeElement&&document.activeElement.tagName==="INPUT")return;
+  _codeBuffer+=e.key.toLowerCase();if(_codeBuffer.length>20)_codeBuffer=_codeBuffer.slice(-20);
+  if(_codeBuffer.includes("owen")){_codeBuffer="";checkCode("owen")}
+  else if(_codeBuffer.includes("zorgo")){_codeBuffer="";checkCode("zorgo")}
+  else if(_codeBuffer.includes("67")){_codeBuffer="";checkCode("67")}
+  else if(_codeBuffer.includes("grind")){_codeBuffer="";checkCode("grind")}
+  else if(_codeBuffer.includes("mirror")){_codeBuffer="";checkCode("mirror")}
+});
+
+// ============ STATISTICS ============
+var _gameStart=Date.now();var _bossWins=0;var _bossLosses=0;var _casinoWins=0;var _casinoLosses=0;var _agarthaRuns=0;var _agarthaDeaths=0;var _agarthaBest=0;
+// hook boss/casino/agartha tracking
+var _origBossAtk=bossAttack;
+bossAttack=function(){
+  var wasDead=bossHP<=0;
+  _origBossAtk();
+  if(!wasDead&&bossHP<=0)_bossWins++;
+};
+var _origCasinoSpin=casinoSpin;
+casinoSpin=function(c){
+  _origCasinoSpin(c);
+  // tracked via result text after spin
+};
+var _origAgExit=agarthaExit;
+agarthaExit=function(){
+  _agarthaRuns++;
+  if(agFloor>_agarthaBest)_agarthaBest=agFloor;
+  _origAgExit();
+};
+
+function renderStats(){
+  var grid=document.getElementById("stats-grid");if(!grid)return;
+  var elapsed=Math.floor((Date.now()-_gameStart)/1000);
+  var mins=Math.floor(elapsed/60);var secs=elapsed%60;
+  grid.innerHTML=[
+    sr("Total Clicks",S.clicks),
+    sr("Session Time",mins+"m "+secs+"s"),
+    sr("Highest Combo",S.maxCombo),
+    sr("Prestige Count",S.prestige),
+    sr("Prestige Mult","x"+prestigeMult().toFixed(2)),
+    sr("Currency Mult","x"+currencyMult().toFixed(2)),
+    sr("Teeth",S.teeth),
+    sr("Total Zorgos Collected",S.totalZorgos),
+    sr("Current Zorgos",S.zorgos),
+    sr("Suspicion",Math.floor(S.suspicion)+"%"),
+    sr("Golden Clicks",S.goldenClicks||0),
+    sr("Boss Wins",_bossWins),
+    sr("Agartha Runs",_agarthaRuns),
+    sr("Agartha Best Floor",_agarthaBest),
+    sr("Currencies Unlocked",_lastUnlocked+"/"+CURRENCIES.length),
+    sr("Crafts Completed",function(){var n=0;for(var i=0;i<RECIPES.length;i++)if(RECIPES[i].done)n++;return n}()+"/"+RECIPES.length),
+    sr("Upgrades Bought",function(){var n=0;for(var k in S.upg)n+=S.upg[k];return n}()),
+    sr("Achievements",function(){var n=0;for(var k in S.ach)if(S.ach[k])n++;return n}()+"/"+ACH.length),
+  ].join("");
+}
+function sr(label,val){return'<div class="stat-row"><span>'+label+'</span><span class="stat-val">'+val+'</span></div>'}
+setInterval(renderStats,1000);
+
+// ============ POLISH: buy sound hook ============
+var _origBuy=buy;
+buy=function(id){var before=own(id);_origBuy(id);if(own(id)>before)sndBuy()};
+
+// ============ POLISH: achievement sound already hooked via toast ============
+// ============ POLISH: zorgo spawn sound ============
+var _origSpawnZorgo=spawnZorgo;
+spawnZorgo=function(){_origSpawnZorgo();sndZorgo()};
 </script>
 </body></html>
