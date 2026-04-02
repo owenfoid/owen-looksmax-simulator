@@ -52,6 +52,8 @@ echo '' >> "$OUT"
 cat js/extras.js >> "$OUT"
 echo '' >> "$OUT"
 cat js/systems.js >> "$OUT"
+echo '' >> "$OUT"
+cat js/endgame.js >> "$OUT"
 echo '</script>' >> "$OUT"
 echo '</body></html>' >> "$OUT"
 
