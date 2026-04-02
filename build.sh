@@ -55,11 +55,7 @@ cat js/systems.js >> "$OUT"
 echo '</script>' >> "$OUT"
 echo '</body></html>' >> "$OUT"
 
-# Inject cache-bust auto-reload script
-BUILD_TS=$(date +%s)
-sed -i "s|<body>|<body><script>!function(){var B=\"$BUILD_TS\",K=\"owen_bts\",s=localStorage.getItem(K);localStorage.setItem(K,B);if(s\&\&s!==B\&\&location.search.indexOf(B)<0){location.replace(location.pathname+\"?_=\"+B)}}()</script>|" "$OUT"
-
-echo "✅ Built → $OUT ($(wc -c < "$OUT") bytes) [build $BUILD_TS]"
+echo "✅ Built → $OUT ($(wc -c < "$OUT") bytes)"
 
 # Syntax check (before cache-bust injection)
 JSONLY=$(mktemp /tmp/check_XXXXX.js)
