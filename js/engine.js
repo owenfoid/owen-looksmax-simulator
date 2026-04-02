@@ -44,9 +44,9 @@ function doPrestige() {
   recalc();
   render();
   // big effects
-  screenShake(3); flash("rgba(255,255,255,0.5)"); chromatic();
-  setTimeout(()=>{ flash("rgba(200,160,255,0.3)"); screenShake(3); }, 200);
-  setTimeout(()=>{ flash("rgba(255,214,0,0.3)"); chromatic(); }, 400);
+  screenShake(3); flash("rgba(57,255,20,0.5)"); chromatic();
+  setTimeout(()=>{ flash("rgba(192,160,255,0.3)"); screenShake(3); }, 200);
+  setTimeout(()=>{ flash("rgba(255,159,28,0.3)"); chromatic(); }, 400);
   const rect = document.getElementById("face").getBoundingClientRect();
   particles(rect.left+rect.width/2, rect.top+rect.height/2, 60);
   toast("🔄 PRESTIGE " + S.prestige + "! x" + prestigeMult().toFixed(2) + " multiplier!");
@@ -76,7 +76,7 @@ function spawnGolden() {
   goldenActive = true;
   toast("✨ GOLDEN MEW! Click fast!");
   log("GOLDEN MEW appeared!", true);
-  flash("rgba(255,214,0,0.2)");
+  flash("rgba(57,255,20,0.2)");
   goldenTimeout = setTimeout(()=>{
     goldenActive = false;
     toast("💨 Golden mew expired...");
@@ -92,7 +92,7 @@ function claimGolden() {
   S.goldenClicks = (S.goldenClicks||0) + 1;
   toast("✨ GOLDEN! +" + fmt(bonus) + "!");
   log("Golden mew claimed: +" + fmt(bonus), true);
-  screenShake(3); flash("rgba(255,214,0,0.4)"); chromatic();
+  screenShake(3); flash("rgba(255,159,28,0.4)"); chromatic();
   const rect = document.getElementById("face").getBoundingClientRect();
   particles(rect.left+rect.width/2, rect.top+rect.height/2, 30);
   checkAch();

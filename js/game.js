@@ -13,10 +13,10 @@ document.getElementById("click-area").addEventListener("click", (e) => {
   wobble(); screenShake(intensity);
   if(p >= 2) flash("rgba(255,255,255,0.08)");
   if(p >= 4) chromatic();
-  if(p >= 6) flash(`rgba(${Math.random()>0.5?'255,46,80':'0,255,200'},0.12)`);
+  if(p >= 6) flash(`rgba(${Math.random()>0.5?'57,255,20':'255,42,109'},0.12)`);
 
   particles(e.clientX, e.clientY, Math.min(15, 2 + Math.floor(p * 1.2)));
-  const colors = ["#ffd600","#ff2e50","#00ffc8","#ff00ff","#00aaff"];
+  const colors = ["#39ff14","#ff2a6d","#ff9f1c","#c0a0ff","#fff"];
   const ftColor = S.combo >= 50 ? "#ff00ff" : S.combo >= 20 ? "#00ffc8" : S.combo >= 10 ? "#ffd600" : colors[Math.floor(Math.random()*colors.length)];
   floatText(e.clientX, e.clientY, "+"+fmt(clickVal) + (S.combo>=5 ? " x"+S.combo : ""), ftColor);
 
@@ -33,7 +33,7 @@ function buy(id) {
   S.upg[id] = (S.upg[id]||0)+1;
   recalc();
   log("Purchased "+u.nm+" (x"+own(u.id)+")");
-  screenShake(1); flash("rgba(255,214,0,0.1)");
+  screenShake(1); flash("rgba(57,255,20,0.1)");
   checkAch(); render();
 }
 
@@ -44,7 +44,7 @@ function checkAch() {
       S.ach[a.id] = true;
       toast("🏆 "+a.nm+" — "+a.ds);
       log("Achievement: "+a.nm, true);
-      screenShake(2); flash("rgba(255,214,0,0.2)"); chromatic();
+      screenShake(2); flash("rgba(57,255,20,0.2)"); chromatic();
     }
   }
 }
@@ -75,7 +75,7 @@ function render() {
     if(S.combo >= 3) {
       comboEl.style.display = "block";
       comboEl.textContent = S.combo + "x COMBO (x" + comboMult().toFixed(1) + ")";
-      comboEl.style.color = S.combo>=50?"#ff00ff":S.combo>=20?"#00ffc8":S.combo>=10?"#ffd600":"var(--accent)";
+      comboEl.style.color = S.combo>=50?"#c0a0ff":S.combo>=20?"#39ff14":S.combo>=10?"#ff9f1c":"var(--accent)";
     } else {
       comboEl.style.display = "none";
     }

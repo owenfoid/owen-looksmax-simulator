@@ -247,7 +247,7 @@ function drawFace(t, time) {
       const gy = Math.random() * H;
       const gw = 20 + Math.random() * 60;
       const gx = W/2 - gw/2 + (Math.random()-0.5)*40;
-      ctx.fillStyle = `rgba(${Math.random()>0.5?'255,0,100':'0,255,200'},${0.1+Math.random()*0.15})`;
+      ctx.fillStyle = `rgba(${Math.random()>0.5?'57,255,20':'255,42,109'},${0.1+Math.random()*0.15})`;
       ctx.fillRect(gx, gy, gw, 1 + Math.random()*2);
     }
   }
@@ -256,8 +256,8 @@ function drawFace(t, time) {
   if(t > 0.7) {
     const glowAlpha = lerp(0, 0.15, (t-0.7)/0.3);
     const grad = ctx.createRadialGradient(W/2, H/2, 30, W/2, H/2, 110);
-    grad.addColorStop(0, `rgba(255,214,0,${glowAlpha})`);
-    grad.addColorStop(1, "rgba(255,214,0,0)");
+    grad.addColorStop(0, `rgba(57,255,20,${glowAlpha})`);
+    grad.addColorStop(1, "rgba(57,255,20,0)");
     ctx.fillStyle = grad;
     ctx.fillRect(0,0,W,H);
   }
@@ -322,7 +322,7 @@ function drawStimHands(time) {
     // 67 text flash
     if(ep > 0.3 && ep < 0.85) {
       ctx.save();
-      ctx.font = "bold 16px 'Bebas Neue', sans-serif";
+      ctx.font = "bold 16px 'VT323', sans-serif";
       ctx.textAlign = "center";
       ctx.fillStyle = `rgba(255,0,255,${Math.sin(time*15)*0.3+0.7})`;
       ctx.fillText("67", W/2, H * 0.55);
