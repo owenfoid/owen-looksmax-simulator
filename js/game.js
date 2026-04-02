@@ -127,6 +127,7 @@ function render(){
 
 // ============ ANIMATION ============
 function animate(ts){
+  try{
   const time=ts/1000;
   tickCombo();
   if(typeof micActive!=='undefined'&&micActive){
@@ -138,6 +139,7 @@ function animate(ts){
     if(emote67Active){emote67Timer+=0.012;if(emote67Timer>=1){emote67Active=false;emote67Timer=0;}}
     drawStimHands(time);
   }
+  }catch(e){}
   requestAnimationFrame(animate);
 }
 requestAnimationFrame(animate);

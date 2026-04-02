@@ -5,15 +5,19 @@ const ctx = canvas.getContext("2d");
 // Preload face images
 const faceImgs = [];
 let facesLoaded = 0;
+let facesErrored = 0;
 for(let i = 0; i < FACE_IMAGES.length; i++) {
   const img = new Image();
-  img.onload = () => facesLoaded++;
+  img.onload = () => { facesLoaded++; };
+  img.onerror = () => { facesErrored++; };
   img.src = FACE_IMAGES[i];
   faceImgs.push(img);
 }
 
+// Emoji fallback faces
+const EMOJI_FACES = ["🤓","😐","😤","😏","😎","🗿","👑","🗿"];
+
 function getFaceIndex(pslVal) {
-  // map 0-10 PSL to 0-7 face index
   const idx = Math.floor(pslVal / 10 * (faceImgs.length - 0.01));
   return Math.min(faceImgs.length - 1, Math.max(0, idx));
 }
@@ -25,8 +29,7 @@ let emote67Active = false;
 function drawFace(t, time) {
   const W = 200, H = 280;
   ctx.clearRect(0, 0, W, H);
-  if(facesLoaded < 1) return;
-
+  try {
   const si = stimIntensity;
   const pslVal = t * 10;
   const idx = getFaceIndex(pslVal);
@@ -37,26 +40,35 @@ function drawFace(t, time) {
   const rot = si > 0.2 ? Math.sin(time * 20) * si * 0.08 : Math.sin(time * 0.8) * 0.01;
   const throb = 1 + (si > 0.3 ? Math.sin(time * 16) * si * 0.04 : 0);
 
-  // draw face image centered
   ctx.save();
   ctx.translate(W/2 + shakeX, 120 + shakeY);
   ctx.rotate(rot);
   ctx.scale(throb, throb);
 
+  // try drawing face image, fallback to emoji
   const img = faceImgs[idx];
-  if(img && img.complete) {
+  let drewImage = false;
+  if(img && img.complete && img.naturalWidth > 0) {
     ctx.drawImage(img, -100, -120, 200, 240);
-  }
-
-  // blend to next stage
-  const blend = (pslVal / 10 * (faceImgs.length - 1)) % 1;
-  if(blend > 0.1 && idx < faceImgs.length - 1) {
-    const next = faceImgs[idx + 1];
-    if(next && next.complete) {
-      ctx.globalAlpha = blend;
-      ctx.drawImage(next, -100, -120, 200, 240);
-      ctx.globalAlpha = 1;
+    drewImage = true;
+    // blend to next
+    const blend = (pslVal / 10 * (faceImgs.length - 1)) % 1;
+    if(blend > 0.1 && idx < faceImgs.length - 1) {
+      const next = faceImgs[idx + 1];
+      if(next && next.complete && next.naturalWidth > 0) {
+        ctx.globalAlpha = blend;
+        ctx.drawImage(next, -100, -120, 200, 240);
+        ctx.globalAlpha = 1;
+      }
     }
+  }
+  if(!drewImage) {
+    // emoji fallback
+    const emoji = EMOJI_FACES[idx] || "🗿";
+    ctx.font = "80px serif";
+    ctx.textAlign = "center";
+    ctx.textBaseline = "middle";
+    ctx.fillText(emoji, 0, 0);
   }
 
   ctx.restore();
@@ -106,10 +118,17 @@ function drawFace(t, time) {
   if(emote67Active) {
     drawEmote67Hands(time, emote67Timer, W, H);
   }
+  } catch(e) {
+    // fallback on any canvas error
+    ctx.clearRect(0,0,W,H);
+    ctx.font = "80px serif";
+    ctx.textAlign = "center";
+    ctx.textBaseline = "middle";
+    ctx.fillText("🗿", W/2, H/2 - 20);
+  }
 }
-
-// ============ REALISTIC HAND DRAWING ============
 function drawHand(cx, cy, angle, fingerSpread, scale) {
+  try {
   // skin colors
   const palm = "rgb(220,190,165)";
   const palmShadow = "rgb(195,165,140)";
@@ -165,7 +184,7 @@ function drawHand(cx, cy, angle, fingerSpread, scale) {
     // first segment
     ctx.fillStyle = finger;
     ctx.beginPath();
-    ctx.rect(-f.w/2, -f.len1, f.w, f.len1, 2);
+    ctx.rect(-f.w/2, -f.len1, f.w, f.len1);
     ctx.fill();
 
     // knuckle
@@ -178,13 +197,13 @@ function drawHand(cx, cy, angle, fingerSpread, scale) {
     ctx.translate(0, -f.len1);
     ctx.fillStyle = finger;
     ctx.beginPath();
-    ctx.rect(-f.w/2+0.3, -f.len2, f.w-0.6, f.len2, 2);
+    ctx.rect(-f.w/2+0.3, -f.len2, f.w-0.6, f.len2);
     ctx.fill();
 
     // fingernail
     ctx.fillStyle = nail;
     ctx.beginPath();
-    ctx.rect(-f.w/2+0.8, -f.len2, f.w-1.6, f.len2*0.4, [2,2,0,0]);
+    ctx.rect(-f.w/2+0.8, -f.len2, f.w-1.6, f.len2*0.4);
     ctx.fill();
 
     ctx.restore();

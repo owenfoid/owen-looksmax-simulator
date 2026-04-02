@@ -64,6 +64,7 @@ document.addEventListener("click", tryMicOnce);
 document.addEventListener("touchstart", tryMicOnce);
 
 function drawBird(time) {
+  try{
   if(!micReady) return;
   const W = 200, H = 280;
   ctx.clearRect(0, 0, W, H);
@@ -106,4 +107,5 @@ function drawBird(time) {
   ctx.fillStyle = "rgba(200,64,255," + (0.5 + Math.sin(time * 8) * 0.5) + ")";
   ctx.fillText("🎤 LISTENING", W/2, H - 8);
   ctx.restore();
+  }catch(e){}
 }
