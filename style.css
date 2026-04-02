@@ -175,3 +175,35 @@ header h1 {
 .toast.show{transform:translateX(-50%) translateY(0)}
 
 footer{text-align:center;font-size:.5rem;color:#222;padding:10px;letter-spacing:1px}
+
+/* COMBO */
+.combo-display {
+  font-family:'Bebas Neue',sans-serif; font-size:1.4rem; letter-spacing:3px;
+  text-align:center; color:var(--gold); text-shadow:0 0 10px currentColor;
+  animation: comboPulse 0.3s infinite alternate;
+}
+@keyframes comboPulse { 0%{transform:scale(1)} 100%{transform:scale(1.05)} }
+
+/* PRESTIGE */
+.prestige-btn {
+  text-align:center; padding:8px; margin-bottom:8px;
+  background:linear-gradient(135deg, rgba(200,160,255,0.15), rgba(255,214,0,0.1));
+  border:1px solid rgba(200,160,255,0.4); border-radius:6px;
+  font-size:.7rem; font-weight:700; color:#c0a0ff;
+  cursor:pointer; transition:all .2s; letter-spacing:1px;
+}
+.prestige-btn:hover { border-color:#c0a0ff; background:rgba(200,160,255,0.2); }
+.prestige-btn.lk { opacity:.4; cursor:not-allowed; }
+.prestige-btn.lk:hover { border-color:rgba(200,160,255,0.4); background:rgba(200,160,255,0.15); }
+.prestige-info {
+  font-size:.6rem; color:#c0a0ff; text-align:center; margin-top:4px;
+  letter-spacing:1px;
+}
+
+/* GOLDEN */
+.golden-indicator {
+  font-family:'Bebas Neue',sans-serif; font-size:1rem; letter-spacing:2px;
+  color:var(--gold); text-align:center; text-shadow:0 0 12px #ffd600;
+  animation: goldenPulse 0.4s infinite alternate;
+}
+@keyframes goldenPulse { 0%{opacity:.6;transform:scale(1)} 100%{opacity:1;transform:scale(1.08)} }

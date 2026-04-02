@@ -183,6 +183,38 @@ header h1 {
 .toast.show{transform:translateX(-50%) translateY(0)}
 
 footer{text-align:center;font-size:.5rem;color:#222;padding:10px;letter-spacing:1px}
+
+/* COMBO */
+.combo-display {
+  font-family:'Bebas Neue',sans-serif; font-size:1.4rem; letter-spacing:3px;
+  text-align:center; color:var(--gold); text-shadow:0 0 10px currentColor;
+  animation: comboPulse 0.3s infinite alternate;
+}
+@keyframes comboPulse { 0%{transform:scale(1)} 100%{transform:scale(1.05)} }
+
+/* PRESTIGE */
+.prestige-btn {
+  text-align:center; padding:8px; margin-bottom:8px;
+  background:linear-gradient(135deg, rgba(200,160,255,0.15), rgba(255,214,0,0.1));
+  border:1px solid rgba(200,160,255,0.4); border-radius:6px;
+  font-size:.7rem; font-weight:700; color:#c0a0ff;
+  cursor:pointer; transition:all .2s; letter-spacing:1px;
+}
+.prestige-btn:hover { border-color:#c0a0ff; background:rgba(200,160,255,0.2); }
+.prestige-btn.lk { opacity:.4; cursor:not-allowed; }
+.prestige-btn.lk:hover { border-color:rgba(200,160,255,0.4); background:rgba(200,160,255,0.15); }
+.prestige-info {
+  font-size:.6rem; color:#c0a0ff; text-align:center; margin-top:4px;
+  letter-spacing:1px;
+}
+
+/* GOLDEN */
+.golden-indicator {
+  font-family:'Bebas Neue',sans-serif; font-size:1rem; letter-spacing:2px;
+  color:var(--gold); text-align:center; text-shadow:0 0 12px #ffd600;
+  animation: goldenPulse 0.4s infinite alternate;
+}
+@keyframes goldenPulse { 0%{opacity:.6;transform:scale(1)} 100%{opacity:1;transform:scale(1.08)} }
 </style>
 </head>
 <body>
@@ -215,12 +247,16 @@ footer{text-align:center;font-size:.5rem;color:#222;padding:10px;letter-spacing:
   </div>
 
   <div class="p click-area" id="click-area">
+    <div id="golden-indicator" class="golden-indicator" style="display:none">✨ GOLDEN MEW — CLICK NOW! ✨</div>
+    <div id="combo-display" class="combo-display" style="display:none"></div>
     <canvas id="face" width="200" height="280"></canvas>
     <div class="click-hint">tap to mew</div>
+    <div id="prestige-info" class="prestige-info" style="display:none"></div>
   </div>
 
   <div class="p">
     <div class="pt">Upgrades</div>
+    <div id="prestige-btn" class="prestige-btn" style="display:none" onclick="doPrestige()"></div>
     <div class="ul" id="ul"></div>
   </div>
 
@@ -234,52 +270,65 @@ footer{text-align:center;font-size:.5rem;color:#222;padding:10px;letter-spacing:
 </div>
 
 <div class="toast" id="toast"></div>
-<footer>auto-saves every 10s &middot; owen looksmax simulator v0.3</footer>
+<footer>auto-saves every 10s &middot; owen looksmax simulator v0.4</footer>
 
 <!-- LOAD ORDER MATTERS -->
 <script>
 // ============ UPGRADES ============
 const UPG = [
-  {id:"mew",     ic:"👅",nm:"Mewing Practice",      ds:"+1/click",              b:15,    m:1.35,pc:1,  ps:0},
-  {id:"jaw",     ic:"🦴",nm:"Jawline Exerciser",     ds:"+3/click",              b:100,   m:1.45,pc:3,  ps:0},
-  {id:"gum",     ic:"🍖",nm:"Falim Gum Pack",        ds:"+8/click",              b:500,   m:1.5, pc:8,  ps:0},
-  {id:"bone",    ic:"💀",nm:"Bonesmashing Session",   ds:"+25/click (trust bro)", b:4000,  m:1.55,pc:25, ps:0},
-  {id:"cant",    ic:"👁️",nm:"Canthal Tilt Surgery",  ds:"+100/click hunter eyes",b:80000, m:1.75,pc:100,ps:0},
-  {id:"cold",    ic:"🥶",nm:"Cold Shower Timer",     ds:"+1/sec",                b:50,    m:1.4, pc:0,  ps:1},
-  {id:"gym",     ic:"🏋️",nm:"Gym Membership",        ds:"+4/sec",                b:250,   m:1.5, pc:0,  ps:4},
-  {id:"skin",    ic:"🧴",nm:"Skincare Routine",      ds:"+12/sec glow up",       b:1200,  m:1.55,pc:0,  ps:12},
-  {id:"rhino",   ic:"🔪",nm:"Rhinoplasty",           ds:"+40/sec",               b:6000,  m:1.6, pc:0,  ps:40},
-  {id:"hgh",     ic:"💉",nm:"HGH Protocol",          ds:"+120/sec ascension",    b:25000, m:1.65,pc:0,  ps:120},
-  {id:"model",   ic:"📸",nm:"Model Agency Contract", ds:"+500/sec",              b:120000,m:1.7, pc:0,  ps:500},
-  {id:"god",     ic:"⚡",nm:"Genetic Recombination", ds:"+2000/sec final form",  b:800000,m:1.8, pc:0,  ps:2000},
+  {id:"mew",     ic:"👅",nm:"Mewing Practice",        ds:"+1/click",               b:15,     m:1.35,pc:1,   ps:0},
+  {id:"jaw",     ic:"🦴",nm:"Jawline Exerciser",       ds:"+3/click",               b:100,    m:1.45,pc:3,   ps:0},
+  {id:"gum",     ic:"🍖",nm:"Falim Gum Pack",          ds:"+8/click",               b:500,    m:1.5, pc:8,   ps:0},
+  {id:"bone",    ic:"💀",nm:"Bonesmashing Session",     ds:"+25/click (trust bro)",  b:4000,   m:1.55,pc:25,  ps:0},
+  {id:"cant",    ic:"👁️",nm:"Canthal Tilt Surgery",    ds:"+100/click hunter eyes", b:80000,  m:1.75,pc:100, ps:0},
+  {id:"domain",  ic:"🟣",nm:"Domain Expansion: Mew",   ds:"+400/click cursed mew",  b:500000, m:1.8, pc:400, ps:0},
+  {id:"cold",    ic:"🥶",nm:"Cold Shower Timer",       ds:"+1/sec",                 b:50,     m:1.4, pc:0,   ps:1},
+  {id:"gym",     ic:"🏋️",nm:"Gym Membership",          ds:"+4/sec",                 b:250,    m:1.5, pc:0,   ps:4},
+  {id:"skin",    ic:"🧴",nm:"Skincare Routine",        ds:"+12/sec glow up",        b:1200,   m:1.55,pc:0,   ps:12},
+  {id:"rhino",   ic:"🔪",nm:"Rhinoplasty",             ds:"+40/sec",                b:6000,   m:1.6, pc:0,   ps:40},
+  {id:"hgh",     ic:"💉",nm:"HGH Protocol",            ds:"+120/sec ascension",     b:25000,  m:1.65,pc:0,   ps:120},
+  {id:"model",   ic:"📸",nm:"Model Agency Contract",   ds:"+500/sec",               b:120000, m:1.7, pc:0,   ps:500},
+  {id:"god",     ic:"⚡",nm:"Genetic Recombination",   ds:"+2000/sec final form",   b:800000, m:1.8, pc:0,   ps:2000},
+  {id:"agartha", ic:"🌍",nm:"Agartha Expedition",      ds:"+8000/sec hollow earth", b:4e6,    m:1.85,pc:0,   ps:8000},
+  {id:"sukuna",  ic:"👹",nm:"Sukuna's Blessing",       ds:"+25K/sec king of curses",b:20e6,   m:1.9, pc:0,   ps:25000},
+  {id:"gojo",    ic:"♾️",nm:"Six Eyes Awakening",      ds:"+100K/sec limitless",    b:100e6,  m:2.0, pc:0,   ps:100000},
 ];
-
-// ============ RANKS ============
 const RANKS = [
-  {min:0,nm:"Subhuman",c:"#555"},{min:0.5,nm:"Normie",c:"#ff2e50"},{min:2,nm:"HTN",c:"#ff8800"},
+  {min:0,nm:"Subhuman",c:"#555"},{min:0.5,nm:"Normie",c:"#ff2e50"},{min:2,nm:"HTN",c:"#ff7744"},
   {min:3.5,nm:"Chadlite",c:"#ffd600"},{min:5,nm:"Chad",c:"#ffd600"},{min:6.5,nm:"Gigachad",c:"#00ffc8"},
-  {min:8,nm:"Ascended",c:"#00aaff"},{min:9,nm:"Owen Tier",c:"#fff"},{min:9.8,nm:"Owen (Final Form)",c:"#fff"},
+  {min:8,nm:"Ascended",c:"#00aaff"},{min:9,nm:"Owen Tier",c:"#fff"},
+  {min:9.5,nm:"Hollow Earth Dweller",c:"#c0a0ff"},{min:9.8,nm:"Owen (Final Form)",c:"#fff"},
 ];
-
-// ============ ACHIEVEMENTS ============
 const ACH = [
-  {id:"c10", ic:"👆",nm:"First Mews",       ds:"10 clicks",           ck:()=>S.clicks>=10},
-  {id:"c100",ic:"👆",nm:"Mew Machine",      ds:"100 clicks",          ck:()=>S.clicks>=100},
-  {id:"c1k", ic:"🤖",nm:"Mewbot 9000",     ds:"1,000 clicks",        ck:()=>S.clicks>=1000},
-  {id:"p1k", ic:"💰",nm:"Stacking",         ds:"1K lifetime",         ck:()=>S.total>=1e3},
-  {id:"p1m", ic:"🏆",nm:"Millionaire Mewer",ds:"1M lifetime",         ck:()=>S.total>=1e6},
-  {id:"p1b", ic:"👑",nm:"Billionaire Mewer",ds:"1B lifetime",         ck:()=>S.total>=1e9},
-  {id:"gym1",ic:"🏋️",nm:"Gymcel",           ds:"First gym pass",      ck:()=>own("gym")>=1},
-  {id:"sr1", ic:"🔪",nm:"Under the Knife", ds:"First surgery",       ck:()=>own("rhino")>=1},
-  {id:"md1", ic:"📸",nm:"Signed",           ds:"Model contract",      ck:()=>own("model")>=1},
-  {id:"psl5",ic:"⭐",nm:"Chad Status",      ds:"PSL 5.0",             ck:()=>psl()>=5},
-  {id:"foid",ic:"💅",nm:"Foid Approved",    ds:"PSL 7.0 — even the foids are mirin'",ck:()=>psl()>=7},
-  {id:"psl9",ic:"🗿",nm:"Owen Mode",        ds:"PSL 9.0",             ck:()=>psl()>=9},
-  {id:"stim",ic:"🌀",nm:"Stimmed Out",      ds:"Max the stim meter",  ck:()=>S.stim>=100},
-  {id:"e67", ic:"🫳",nm:"Emote 67",         ds:"Trigger the rare emote 67", ck:()=>S.ach["e67"]},
+  {id:"c10",  ic:"👆",nm:"First Mews",        ds:"10 clicks",             ck:()=>S.clicks>=10},
+  {id:"c100", ic:"👆",nm:"Mew Machine",       ds:"100 clicks",            ck:()=>S.clicks>=100},
+  {id:"c1k",  ic:"🤖",nm:"Mewbot 9000",      ds:"1,000 clicks",          ck:()=>S.clicks>=1000},
+  {id:"c10k", ic:"🦾",nm:"Carpal Tunnel",     ds:"10,000 clicks",         ck:()=>S.clicks>=10000},
+  {id:"p1k",  ic:"💰",nm:"Stacking",          ds:"1K lifetime",           ck:()=>S.total>=1e3},
+  {id:"p1m",  ic:"🏆",nm:"Millionaire Mewer", ds:"1M lifetime",           ck:()=>S.total>=1e6},
+  {id:"p1b",  ic:"👑",nm:"Billionaire Mewer", ds:"1B lifetime",           ck:()=>S.total>=1e9},
+  {id:"p1t",  ic:"💎",nm:"Trillionaire Grind",ds:"1T lifetime",           ck:()=>S.total>=1e12},
+  {id:"gym1", ic:"🏋️",nm:"Gymcel",            ds:"First gym pass",        ck:()=>own("gym")>=1},
+  {id:"sr1",  ic:"🔪",nm:"Under the Knife",  ds:"First surgery",         ck:()=>own("rhino")>=1},
+  {id:"md1",  ic:"📸",nm:"Signed",            ds:"Model contract",        ck:()=>own("model")>=1},
+  {id:"psl5", ic:"⭐",nm:"Chad Status",       ds:"PSL 5.0",               ck:()=>psl()>=5},
+  {id:"foid", ic:"💅",nm:"Foid Approved",     ds:"PSL 7.0 — even the foids are mirin'",ck:()=>psl()>=7},
+  {id:"psl9", ic:"🗿",nm:"Owen Mode",         ds:"PSL 9.0",               ck:()=>psl()>=9},
+  {id:"stim", ic:"🌀",nm:"Stimmed Out",       ds:"Max the stim meter",    ck:()=>S.stim>=100},
+  {id:"e67",  ic:"🫳",nm:"Emote 67",          ds:"Trigger the rare emote 67", ck:()=>S.ach["e67"]},
+  {id:"cmb10",ic:"🔥",nm:"Combo Starter",     ds:"10x combo",             ck:()=>S.maxCombo>=10},
+  {id:"cmb50",ic:"🔥",nm:"Combo Demon",       ds:"50x combo",             ck:()=>S.maxCombo>=50},
+  {id:"cmb100",ic:"💥",nm:"COMBO GOD",        ds:"100x combo",            ck:()=>S.maxCombo>=100},
+  {id:"pr1",  ic:"🔄",nm:"Reborn",            ds:"Prestige once",         ck:()=>S.prestige>=1},
+  {id:"pr5",  ic:"🔄",nm:"Cycle of Pain",     ds:"Prestige 5 times",      ck:()=>S.prestige>=5},
+  {id:"pr10", ic:"♻️",nm:"Eternal Return",    ds:"Prestige 10 times",     ck:()=>S.prestige>=10},
+  {id:"jjk1", ic:"🟣",nm:"Domain Deployed",   ds:"Buy Domain Expansion",  ck:()=>own("domain")>=1},
+  {id:"jjk2", ic:"👹",nm:"King of Curses",    ds:"Buy Sukuna's Blessing", ck:()=>own("sukuna")>=1},
+  {id:"jjk3", ic:"♾️",nm:"Throughout Heaven and Earth",ds:"Buy Six Eyes (I alone am the honored one)",ck:()=>own("gojo")>=1},
+  {id:"agt1", ic:"🌍",nm:"Inner Earth Found", ds:"Buy Agartha Expedition",ck:()=>own("agartha")>=1},
+  {id:"gold1",ic:"✨",nm:"Golden Touch",      ds:"Click a golden mew",    ck:()=>S.goldenClicks>=1},
+  {id:"gold10",ic:"🌟",nm:"Midas",            ds:"Click 10 golden mews",  ck:()=>S.goldenClicks>=10},
 ];
-
-// ============ RANDOM EVENTS ============
 const EVENTS = [
   "Owen caught you lackin' with bad posture. Sit up.",
   "You accidentally mewed in class. Respect +10.",
@@ -293,21 +342,53 @@ const EVENTS = [
   "Sunlight exposure maxed. Vitamin D protocol complete.",
   "You stood in front of the mirror for 20 minutes. Passed.",
   "Mewing form check: tongue fully on palate. Perfect.",
+  "You rejected seed oils at dinner. Sigma behavior.",
+  "Mouth tape applied. Nasal breathing activated.",
+  "You expanded your domain. Everything within is mew territory.",
+  "Sukuna approves of your jawline. 'Stand proud, you were strong.'",
+  "Gojo removed his blindfold. He saw your PSL. 'Nah, I'd win.'",
+  "You reversed cursed technique'd your receding hairline.",
+  "Malevolent Shrine activated. All weak jawlines destroyed.",
+  "Black Flash achieved — 120% mew efficiency for 10 seconds.",
+  "Todo saw your PSL: 'My best friend!'",
+  "Signal detected from inner earth. The hollow ones are mewing too.",
+  "Admiral Byrd's diary confirmed: Agartha has a gym.",
+  "The beings of Agartha have perfect forward growth. Coincidence?",
+  "Shambhala monks taught you the forbidden mew technique.",
+  "You found a tunnel to Agartha. PSL is different down there.",
+  "The Vril Society had perfect jawlines. Now you know why.",
 ];
+const PRESTIGE_COST = 1e10;
+const PRESTIGE_MULT = 0.25;
+const COMBO_DECAY_MS = 800;
+const COMBO_MAX_MULT = 5;
+const GOLDEN_CHANCE = 0.003;
+const GOLDEN_DURATION = 5000;
+const GOLDEN_MULT = 10;
 
 // ============ STATE ============
-let S = { pts:0, total:0, pc:1, ps:0, upg:{}, ach:{}, clicks:0, stim:0 };
+let S = { pts:0, total:0, pc:1, ps:0, upg:{}, ach:{}, clicks:0, stim:0,
+  prestige:0, combo:0, maxCombo:0, lastClickTime:0, goldenClicks:0,
+  lastSaveTime:Date.now(), totalPrestigeEarnings:0 };
 
 // ============ HELPERS ============
 const own = id => S.upg[id]||0;
 const cost = u => Math.floor(u.b * Math.pow(u.m, own(u.id)));
+function prestigeMult() { return 1 + S.prestige * PRESTIGE_MULT; }
+function comboMult() { return Math.min(COMBO_MAX_MULT, 1 + S.combo * 0.04); }
+
 function recalc() {
   S.pc=1; S.ps=0;
   for(const u of UPG){ const n=own(u.id); S.pc+=u.pc*n; S.ps+=u.ps*n; }
+  // apply prestige multiplier
+  S.pc = Math.floor(S.pc * prestigeMult());
+  S.ps = Math.floor(S.ps * prestigeMult());
 }
 function psl() {
-  if(S.total<=0)return 0;
-  return Math.min(10, parseFloat((Math.log10(S.total+1)).toFixed(2)));
+  // use total across all prestiges
+  const t = S.total + S.totalPrestigeEarnings;
+  if(t<=0)return 0;
+  return Math.min(10, parseFloat((Math.log10(t+1)).toFixed(2)));
 }
 function getRank(p){ let r=RANKS[0]; for(const x of RANKS) if(p>=x.min)r=x; return r; }
 function fmt(n){
@@ -320,12 +401,108 @@ function fmt(n){
 }
 function lerp(a,b,t){ return a+(b-a)*Math.min(1,Math.max(0,t)); }
 
+// ============ PRESTIGE ============
+function canPrestige() { return S.total >= PRESTIGE_COST; }
+function doPrestige() {
+  if(!canPrestige()) return;
+  S.totalPrestigeEarnings += S.total;
+  S.prestige++;
+  S.pts = 0; S.total = 0; S.upg = {}; S.stim = 0;
+  S.combo = 0; S.clicks = 0;
+  recalc();
+  render();
+  // big effects
+  screenShake(3); flash("rgba(255,255,255,0.5)"); chromatic();
+  setTimeout(()=>{ flash("rgba(200,160,255,0.3)"); screenShake(3); }, 200);
+  setTimeout(()=>{ flash("rgba(255,214,0,0.3)"); chromatic(); }, 400);
+  const rect = document.getElementById("face").getBoundingClientRect();
+  particles(rect.left+rect.width/2, rect.top+rect.height/2, 60);
+  toast("🔄 PRESTIGE " + S.prestige + "! x" + prestigeMult().toFixed(2) + " multiplier!");
+  log("PRESTIGE " + S.prestige + " — multiplier now x" + prestigeMult().toFixed(2), true);
+  checkAch();
+}
+
+// ============ COMBO ============
+function tickCombo() {
+  const now = Date.now();
+  if(S.combo > 0 && now - S.lastClickTime > COMBO_DECAY_MS) {
+    S.combo = 0;
+  }
+}
+function addCombo() {
+  S.combo++;
+  S.lastClickTime = Date.now();
+  if(S.combo > S.maxCombo) S.maxCombo = S.combo;
+}
+
+// ============ GOLDEN CLICK ============
+let goldenActive = false;
+let goldenTimeout = null;
+
+function spawnGolden() {
+  if(goldenActive) return;
+  goldenActive = true;
+  toast("✨ GOLDEN MEW! Click fast!");
+  log("GOLDEN MEW appeared!", true);
+  flash("rgba(255,214,0,0.2)");
+  goldenTimeout = setTimeout(()=>{
+    goldenActive = false;
+    toast("💨 Golden mew expired...");
+  }, GOLDEN_DURATION);
+}
+
+function claimGolden() {
+  if(!goldenActive) return;
+  goldenActive = false;
+  clearTimeout(goldenTimeout);
+  const bonus = Math.floor(S.pc * GOLDEN_MULT * comboMult());
+  S.pts += bonus; S.total += bonus;
+  S.goldenClicks = (S.goldenClicks||0) + 1;
+  toast("✨ GOLDEN! +" + fmt(bonus) + "!");
+  log("Golden mew claimed: +" + fmt(bonus), true);
+  screenShake(3); flash("rgba(255,214,0,0.4)"); chromatic();
+  const rect = document.getElementById("face").getBoundingClientRect();
+  particles(rect.left+rect.width/2, rect.top+rect.height/2, 30);
+  checkAch();
+}
+
+// ============ OFFLINE EARNINGS ============
+function calcOfflineEarnings() {
+  if(!S.lastSaveTime || S.ps <= 0) return 0;
+  const elapsed = (Date.now() - S.lastSaveTime) / 1000;
+  if(elapsed < 30) return 0; // only show if away 30s+
+  return Math.floor(S.ps * elapsed * 0.5); // 50% efficiency offline
+}
+
 // ============ SAVE / LOAD ============
-const SAVE_KEY = "owen_lm_v3";
-function save(){ localStorage.setItem(SAVE_KEY, JSON.stringify(S)); }
+const SAVE_KEY = "owen_lm_v4";
+function save(){
+  S.lastSaveTime = Date.now();
+  localStorage.setItem(SAVE_KEY, JSON.stringify(S));
+}
 function load(){
   const r=localStorage.getItem(SAVE_KEY);
-  if(r){ try{Object.assign(S,JSON.parse(r));recalc();}catch(e){} }
+  if(r){ try{
+    const loaded = JSON.parse(r);
+    // migrate from v3
+    if(!loaded.prestige) loaded.prestige = 0;
+    if(!loaded.combo) loaded.combo = 0;
+    if(!loaded.maxCombo) loaded.maxCombo = 0;
+    if(!loaded.goldenClicks) loaded.goldenClicks = 0;
+    if(!loaded.totalPrestigeEarnings) loaded.totalPrestigeEarnings = 0;
+    if(!loaded.lastSaveTime) loaded.lastSaveTime = Date.now();
+    Object.assign(S, loaded);
+    recalc();
+    // offline earnings
+    const offline = calcOfflineEarnings();
+    if(offline > 0) {
+      S.pts += offline; S.total += offline;
+      setTimeout(()=>{
+        toast("💤 Welcome back! +" + fmt(offline) + " earned while away");
+        log("Offline earnings: +" + fmt(offline), true);
+      }, 500);
+    }
+  }catch(e){} }
 }
 
 // ============ SCREEN SHAKE ============
@@ -935,7 +1112,13 @@ function drawBird(time) {
 
 // ============ CLICK ============
 document.getElementById("click-area").addEventListener("click", (e) => {
-  S.pts += S.pc; S.total += S.pc; S.clicks++;
+  addCombo();
+  const cm = comboMult();
+  const clickVal = Math.floor(S.pc * cm);
+  S.pts += clickVal; S.total += clickVal; S.clicks++;
+
+  // golden click check
+  if(goldenActive) { claimGolden(); }
 
   const p = psl();
   const intensity = Math.min(3, Math.floor(p/3) + 1);
@@ -946,7 +1129,8 @@ document.getElementById("click-area").addEventListener("click", (e) => {
 
   particles(e.clientX, e.clientY, Math.min(15, 2 + Math.floor(p * 1.2)));
   const colors = ["#ffd600","#ff2e50","#00ffc8","#ff00ff","#00aaff"];
-  floatText(e.clientX, e.clientY, "+"+fmt(S.pc), colors[Math.floor(Math.random()*colors.length)]);
+  const ftColor = S.combo >= 50 ? "#ff00ff" : S.combo >= 20 ? "#00ffc8" : S.combo >= 10 ? "#ffd600" : colors[Math.floor(Math.random()*colors.length)];
+  floatText(e.clientX, e.clientY, "+"+fmt(clickVal) + (S.combo>=5 ? " x"+S.combo : ""), ftColor);
 
   addStim(lerp(2, 0.5, p/10));
   checkAch(); render();
@@ -980,9 +1164,9 @@ function checkAch() {
 // ============ RENDER ============
 function render() {
   document.getElementById("s-pts").textContent = fmt(S.pts);
-  document.getElementById("s-pc").textContent = fmt(S.pc);
+  document.getElementById("s-pc").textContent = fmt(Math.floor(S.pc * comboMult()));
   document.getElementById("s-ps").textContent = fmt(S.ps);
-  document.getElementById("s-total").textContent = fmt(S.total);
+  document.getElementById("s-total").textContent = fmt(S.total + S.totalPrestigeEarnings);
 
   const p = psl(), r = getRank(p);
   document.getElementById("psl-fill").style.width = Math.min(100,p/10*100)+"%";
@@ -991,10 +1175,57 @@ function render() {
   const rl = document.getElementById("rank");
   rl.textContent = r.nm; rl.style.color = r.c;
 
+  // stim
   document.getElementById("stim-fill").style.width = S.stim+"%";
   document.getElementById("stim-pct").textContent = Math.floor(S.stim)+"%";
   const sf = document.getElementById("stim-fill");
   if(S.stim >= 80) sf.classList.add("maxed"); else sf.classList.remove("maxed");
+
+  // combo
+  const comboEl = document.getElementById("combo-display");
+  if(comboEl) {
+    if(S.combo >= 3) {
+      comboEl.style.display = "block";
+      comboEl.textContent = S.combo + "x COMBO (x" + comboMult().toFixed(1) + ")";
+      comboEl.style.color = S.combo>=50?"#ff00ff":S.combo>=20?"#00ffc8":S.combo>=10?"#ffd600":"var(--accent)";
+    } else {
+      comboEl.style.display = "none";
+    }
+  }
+
+  // prestige button
+  const prestEl = document.getElementById("prestige-btn");
+  if(prestEl) {
+    if(S.total >= PRESTIGE_COST * 0.5) { // show at 50% of cost
+      prestEl.style.display = "block";
+      if(canPrestige()) {
+        prestEl.classList.remove("lk");
+        prestEl.innerHTML = "🔄 PRESTIGE (x" + ((S.prestige+1)*PRESTIGE_MULT+1).toFixed(2) + " mult)";
+      } else {
+        prestEl.classList.add("lk");
+        prestEl.innerHTML = "🔄 PRESTIGE (need " + fmt(PRESTIGE_COST) + ")";
+      }
+    } else {
+      prestEl.style.display = "none";
+    }
+  }
+
+  // prestige info
+  const prInfoEl = document.getElementById("prestige-info");
+  if(prInfoEl) {
+    if(S.prestige > 0) {
+      prInfoEl.style.display = "block";
+      prInfoEl.textContent = "⭐ Prestige " + S.prestige + " — x" + prestigeMult().toFixed(2) + " multiplier";
+    } else {
+      prInfoEl.style.display = "none";
+    }
+  }
+
+  // golden indicator
+  const goldEl = document.getElementById("golden-indicator");
+  if(goldEl) {
+    goldEl.style.display = goldenActive ? "block" : "none";
+  }
 
   // upgrades
   const ul = document.getElementById("ul");
@@ -1022,26 +1253,22 @@ function render() {
 // ============ ANIMATION LOOP ============
 function animate(ts) {
   const time = ts / 1000;
+  tickCombo();
 
   if(typeof micActive !== 'undefined' && micActive) {
-    // MIC MODE — bird takes over
     drawBird(time);
-    // trigger effects when loud
     if(micSmooth > 0.06) {
       screenShake(Math.min(3, Math.floor(micSmooth * 20)));
       if(Math.random() < micSmooth * 2) chromatic();
       if(Math.random() < micSmooth) flash(`rgba(255,46,80,${micSmooth*0.3})`);
     }
   } else {
-    // NORMAL MODE
     drawFace(psl() / 10, time);
     stimIntensity = lerp(stimIntensity, S.stim / 100, 0.1);
-
     if(emote67Active) {
       emote67Timer += 0.012;
       if(emote67Timer >= 1) { emote67Active = false; emote67Timer = 0; }
     }
-
     drawStimHands(time);
   }
 
@@ -1057,6 +1284,10 @@ setInterval(()=>{
     addStim(0.05);
     checkAch(); render();
   }
+  // golden click spawn
+  if(Math.random() < GOLDEN_CHANCE && S.total > 100) {
+    spawnGolden();
+  }
 }, 100);
 
 // ============ STIM DECAY ============
@@ -1067,6 +1298,13 @@ setInterval(()=>{
     document.getElementById("stim-pct").textContent = Math.floor(S.stim)+"%";
   }
 }, 200);
+
+// ============ COMBO DISPLAY UPDATE ============
+setInterval(()=>{
+  tickCombo();
+  const comboEl = document.getElementById("combo-display");
+  if(comboEl && S.combo < 3) comboEl.style.display = "none";
+}, 100);
 
 // ============ RANDOM EVENTS ============
 setInterval(()=>{

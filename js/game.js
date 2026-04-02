@@ -1,6 +1,12 @@
 // ============ CLICK ============
 document.getElementById("click-area").addEventListener("click", (e) => {
-  S.pts += S.pc; S.total += S.pc; S.clicks++;
+  addCombo();
+  const cm = comboMult();
+  const clickVal = Math.floor(S.pc * cm);
+  S.pts += clickVal; S.total += clickVal; S.clicks++;
+
+  // golden click check
+  if(goldenActive) { claimGolden(); }
 
   const p = psl();
   const intensity = Math.min(3, Math.floor(p/3) + 1);
@@ -11,7 +17,8 @@ document.getElementById("click-area").addEventListener("click", (e) => {
 
   particles(e.clientX, e.clientY, Math.min(15, 2 + Math.floor(p * 1.2)));
   const colors = ["#ffd600","#ff2e50","#00ffc8","#ff00ff","#00aaff"];
-  floatText(e.clientX, e.clientY, "+"+fmt(S.pc), colors[Math.floor(Math.random()*colors.length)]);
+  const ftColor = S.combo >= 50 ? "#ff00ff" : S.combo >= 20 ? "#00ffc8" : S.combo >= 10 ? "#ffd600" : colors[Math.floor(Math.random()*colors.length)];
+  floatText(e.clientX, e.clientY, "+"+fmt(clickVal) + (S.combo>=5 ? " x"+S.combo : ""), ftColor);
 
   addStim(lerp(2, 0.5, p/10));
   checkAch(); render();
@@ -45,9 +52,9 @@ function checkAch() {
 // ============ RENDER ============
 function render() {
   document.getElementById("s-pts").textContent = fmt(S.pts);
-  document.getElementById("s-pc").textContent = fmt(S.pc);
+  document.getElementById("s-pc").textContent = fmt(Math.floor(S.pc * comboMult()));
   document.getElementById("s-ps").textContent = fmt(S.ps);
-  document.getElementById("s-total").textContent = fmt(S.total);
+  document.getElementById("s-total").textContent = fmt(S.total + S.totalPrestigeEarnings);
 
   const p = psl(), r = getRank(p);
   document.getElementById("psl-fill").style.width = Math.min(100,p/10*100)+"%";
@@ -56,10 +63,57 @@ function render() {
   const rl = document.getElementById("rank");
   rl.textContent = r.nm; rl.style.color = r.c;
 
+  // stim
   document.getElementById("stim-fill").style.width = S.stim+"%";
   document.getElementById("stim-pct").textContent = Math.floor(S.stim)+"%";
   const sf = document.getElementById("stim-fill");
   if(S.stim >= 80) sf.classList.add("maxed"); else sf.classList.remove("maxed");
+
+  // combo
+  const comboEl = document.getElementById("combo-display");
+  if(comboEl) {
+    if(S.combo >= 3) {
+      comboEl.style.display = "block";
+      comboEl.textContent = S.combo + "x COMBO (x" + comboMult().toFixed(1) + ")";
+      comboEl.style.color = S.combo>=50?"#ff00ff":S.combo>=20?"#00ffc8":S.combo>=10?"#ffd600":"var(--accent)";
+    } else {
+      comboEl.style.display = "none";
+    }
+  }
+
+  // prestige button
+  const prestEl = document.getElementById("prestige-btn");
+  if(prestEl) {
+    if(S.total >= PRESTIGE_COST * 0.5) { // show at 50% of cost
+      prestEl.style.display = "block";
+      if(canPrestige()) {
+        prestEl.classList.remove("lk");
+        prestEl.innerHTML = "🔄 PRESTIGE (x" + ((S.prestige+1)*PRESTIGE_MULT+1).toFixed(2) + " mult)";
+      } else {
+        prestEl.classList.add("lk");
+        prestEl.innerHTML = "🔄 PRESTIGE (need " + fmt(PRESTIGE_COST) + ")";
+      }
+    } else {
+      prestEl.style.display = "none";
+    }
+  }
+
+  // prestige info
+  const prInfoEl = document.getElementById("prestige-info");
+  if(prInfoEl) {
+    if(S.prestige > 0) {
+      prInfoEl.style.display = "block";
+      prInfoEl.textContent = "⭐ Prestige " + S.prestige + " — x" + prestigeMult().toFixed(2) + " multiplier";
+    } else {
+      prInfoEl.style.display = "none";
+    }
+  }
+
+  // golden indicator
+  const goldEl = document.getElementById("golden-indicator");
+  if(goldEl) {
+    goldEl.style.display = goldenActive ? "block" : "none";
+  }
 
   // upgrades
   const ul = document.getElementById("ul");
@@ -87,26 +141,22 @@ function render() {
 // ============ ANIMATION LOOP ============
 function animate(ts) {
   const time = ts / 1000;
+  tickCombo();
 
   if(typeof micActive !== 'undefined' && micActive) {
-    // MIC MODE — bird takes over
     drawBird(time);
-    // trigger effects when loud
     if(micSmooth > 0.06) {
       screenShake(Math.min(3, Math.floor(micSmooth * 20)));
       if(Math.random() < micSmooth * 2) chromatic();
       if(Math.random() < micSmooth) flash(`rgba(255,46,80,${micSmooth*0.3})`);
     }
   } else {
-    // NORMAL MODE
     drawFace(psl() / 10, time);
     stimIntensity = lerp(stimIntensity, S.stim / 100, 0.1);
-
     if(emote67Active) {
       emote67Timer += 0.012;
       if(emote67Timer >= 1) { emote67Active = false; emote67Timer = 0; }
     }
-
     drawStimHands(time);
   }
 
@@ -122,6 +172,10 @@ setInterval(()=>{
     addStim(0.05);
     checkAch(); render();
   }
+  // golden click spawn
+  if(Math.random() < GOLDEN_CHANCE && S.total > 100) {
+    spawnGolden();
+  }
 }, 100);
 
 // ============ STIM DECAY ============
@@ -132,6 +186,13 @@ setInterval(()=>{
     document.getElementById("stim-pct").textContent = Math.floor(S.stim)+"%";
   }
 }, 200);
+
+// ============ COMBO DISPLAY UPDATE ============
+setInterval(()=>{
+  tickCombo();
+  const comboEl = document.getElementById("combo-display");
+  if(comboEl && S.combo < 3) comboEl.style.display = "none";
+}, 100);
 
 // ============ RANDOM EVENTS ============
 setInterval(()=>{

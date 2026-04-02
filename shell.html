@@ -37,12 +37,16 @@
   </div>
 
   <div class="p click-area" id="click-area">
+    <div id="golden-indicator" class="golden-indicator" style="display:none">✨ GOLDEN MEW — CLICK NOW! ✨</div>
+    <div id="combo-display" class="combo-display" style="display:none"></div>
     <canvas id="face" width="200" height="280"></canvas>
     <div class="click-hint">tap to mew</div>
+    <div id="prestige-info" class="prestige-info" style="display:none"></div>
   </div>
 
   <div class="p">
     <div class="pt">Upgrades</div>
+    <div id="prestige-btn" class="prestige-btn" style="display:none" onclick="doPrestige()"></div>
     <div class="ul" id="ul"></div>
   </div>
 
@@ -56,7 +60,7 @@
 </div>
 
 <div class="toast" id="toast"></div>
-<footer>auto-saves every 10s &middot; owen looksmax simulator v0.3</footer>
+<footer>auto-saves every 10s &middot; owen looksmax simulator v0.4</footer>
 
 <!-- LOAD ORDER MATTERS -->
 <script src="js/config.js"></script>

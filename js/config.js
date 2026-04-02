@@ -1,45 +1,58 @@
 // ============ UPGRADES ============
 const UPG = [
-  {id:"mew",     ic:"👅",nm:"Mewing Practice",      ds:"+1/click",              b:15,    m:1.35,pc:1,  ps:0},
-  {id:"jaw",     ic:"🦴",nm:"Jawline Exerciser",     ds:"+3/click",              b:100,   m:1.45,pc:3,  ps:0},
-  {id:"gum",     ic:"🍖",nm:"Falim Gum Pack",        ds:"+8/click",              b:500,   m:1.5, pc:8,  ps:0},
-  {id:"bone",    ic:"💀",nm:"Bonesmashing Session",   ds:"+25/click (trust bro)", b:4000,  m:1.55,pc:25, ps:0},
-  {id:"cant",    ic:"👁️",nm:"Canthal Tilt Surgery",  ds:"+100/click hunter eyes",b:80000, m:1.75,pc:100,ps:0},
-  {id:"cold",    ic:"🥶",nm:"Cold Shower Timer",     ds:"+1/sec",                b:50,    m:1.4, pc:0,  ps:1},
-  {id:"gym",     ic:"🏋️",nm:"Gym Membership",        ds:"+4/sec",                b:250,   m:1.5, pc:0,  ps:4},
-  {id:"skin",    ic:"🧴",nm:"Skincare Routine",      ds:"+12/sec glow up",       b:1200,  m:1.55,pc:0,  ps:12},
-  {id:"rhino",   ic:"🔪",nm:"Rhinoplasty",           ds:"+40/sec",               b:6000,  m:1.6, pc:0,  ps:40},
-  {id:"hgh",     ic:"💉",nm:"HGH Protocol",          ds:"+120/sec ascension",    b:25000, m:1.65,pc:0,  ps:120},
-  {id:"model",   ic:"📸",nm:"Model Agency Contract", ds:"+500/sec",              b:120000,m:1.7, pc:0,  ps:500},
-  {id:"god",     ic:"⚡",nm:"Genetic Recombination", ds:"+2000/sec final form",  b:800000,m:1.8, pc:0,  ps:2000},
+  {id:"mew",     ic:"👅",nm:"Mewing Practice",        ds:"+1/click",               b:15,     m:1.35,pc:1,   ps:0},
+  {id:"jaw",     ic:"🦴",nm:"Jawline Exerciser",       ds:"+3/click",               b:100,    m:1.45,pc:3,   ps:0},
+  {id:"gum",     ic:"🍖",nm:"Falim Gum Pack",          ds:"+8/click",               b:500,    m:1.5, pc:8,   ps:0},
+  {id:"bone",    ic:"💀",nm:"Bonesmashing Session",     ds:"+25/click (trust bro)",  b:4000,   m:1.55,pc:25,  ps:0},
+  {id:"cant",    ic:"👁️",nm:"Canthal Tilt Surgery",    ds:"+100/click hunter eyes", b:80000,  m:1.75,pc:100, ps:0},
+  {id:"domain",  ic:"🟣",nm:"Domain Expansion: Mew",   ds:"+400/click cursed mew",  b:500000, m:1.8, pc:400, ps:0},
+  {id:"cold",    ic:"🥶",nm:"Cold Shower Timer",       ds:"+1/sec",                 b:50,     m:1.4, pc:0,   ps:1},
+  {id:"gym",     ic:"🏋️",nm:"Gym Membership",          ds:"+4/sec",                 b:250,    m:1.5, pc:0,   ps:4},
+  {id:"skin",    ic:"🧴",nm:"Skincare Routine",        ds:"+12/sec glow up",        b:1200,   m:1.55,pc:0,   ps:12},
+  {id:"rhino",   ic:"🔪",nm:"Rhinoplasty",             ds:"+40/sec",                b:6000,   m:1.6, pc:0,   ps:40},
+  {id:"hgh",     ic:"💉",nm:"HGH Protocol",            ds:"+120/sec ascension",     b:25000,  m:1.65,pc:0,   ps:120},
+  {id:"model",   ic:"📸",nm:"Model Agency Contract",   ds:"+500/sec",               b:120000, m:1.7, pc:0,   ps:500},
+  {id:"god",     ic:"⚡",nm:"Genetic Recombination",   ds:"+2000/sec final form",   b:800000, m:1.8, pc:0,   ps:2000},
+  {id:"agartha", ic:"🌍",nm:"Agartha Expedition",      ds:"+8000/sec hollow earth", b:4e6,    m:1.85,pc:0,   ps:8000},
+  {id:"sukuna",  ic:"👹",nm:"Sukuna's Blessing",       ds:"+25K/sec king of curses",b:20e6,   m:1.9, pc:0,   ps:25000},
+  {id:"gojo",    ic:"♾️",nm:"Six Eyes Awakening",      ds:"+100K/sec limitless",    b:100e6,  m:2.0, pc:0,   ps:100000},
 ];
-
-// ============ RANKS ============
 const RANKS = [
-  {min:0,nm:"Subhuman",c:"#555"},{min:0.5,nm:"Normie",c:"#ff2e50"},{min:2,nm:"HTN",c:"#ff8800"},
+  {min:0,nm:"Subhuman",c:"#555"},{min:0.5,nm:"Normie",c:"#ff2e50"},{min:2,nm:"HTN",c:"#ff7744"},
   {min:3.5,nm:"Chadlite",c:"#ffd600"},{min:5,nm:"Chad",c:"#ffd600"},{min:6.5,nm:"Gigachad",c:"#00ffc8"},
-  {min:8,nm:"Ascended",c:"#00aaff"},{min:9,nm:"Owen Tier",c:"#fff"},{min:9.8,nm:"Owen (Final Form)",c:"#fff"},
+  {min:8,nm:"Ascended",c:"#00aaff"},{min:9,nm:"Owen Tier",c:"#fff"},
+  {min:9.5,nm:"Hollow Earth Dweller",c:"#c0a0ff"},{min:9.8,nm:"Owen (Final Form)",c:"#fff"},
 ];
-
-// ============ ACHIEVEMENTS ============
 const ACH = [
-  {id:"c10", ic:"👆",nm:"First Mews",       ds:"10 clicks",           ck:()=>S.clicks>=10},
-  {id:"c100",ic:"👆",nm:"Mew Machine",      ds:"100 clicks",          ck:()=>S.clicks>=100},
-  {id:"c1k", ic:"🤖",nm:"Mewbot 9000",     ds:"1,000 clicks",        ck:()=>S.clicks>=1000},
-  {id:"p1k", ic:"💰",nm:"Stacking",         ds:"1K lifetime",         ck:()=>S.total>=1e3},
-  {id:"p1m", ic:"🏆",nm:"Millionaire Mewer",ds:"1M lifetime",         ck:()=>S.total>=1e6},
-  {id:"p1b", ic:"👑",nm:"Billionaire Mewer",ds:"1B lifetime",         ck:()=>S.total>=1e9},
-  {id:"gym1",ic:"🏋️",nm:"Gymcel",           ds:"First gym pass",      ck:()=>own("gym")>=1},
-  {id:"sr1", ic:"🔪",nm:"Under the Knife", ds:"First surgery",       ck:()=>own("rhino")>=1},
-  {id:"md1", ic:"📸",nm:"Signed",           ds:"Model contract",      ck:()=>own("model")>=1},
-  {id:"psl5",ic:"⭐",nm:"Chad Status",      ds:"PSL 5.0",             ck:()=>psl()>=5},
-  {id:"foid",ic:"💅",nm:"Foid Approved",    ds:"PSL 7.0 — even the foids are mirin'",ck:()=>psl()>=7},
-  {id:"psl9",ic:"🗿",nm:"Owen Mode",        ds:"PSL 9.0",             ck:()=>psl()>=9},
-  {id:"stim",ic:"🌀",nm:"Stimmed Out",      ds:"Max the stim meter",  ck:()=>S.stim>=100},
-  {id:"e67", ic:"🫳",nm:"Emote 67",         ds:"Trigger the rare emote 67", ck:()=>S.ach["e67"]},
+  {id:"c10",  ic:"👆",nm:"First Mews",        ds:"10 clicks",             ck:()=>S.clicks>=10},
+  {id:"c100", ic:"👆",nm:"Mew Machine",       ds:"100 clicks",            ck:()=>S.clicks>=100},
+  {id:"c1k",  ic:"🤖",nm:"Mewbot 9000",      ds:"1,000 clicks",          ck:()=>S.clicks>=1000},
+  {id:"c10k", ic:"🦾",nm:"Carpal Tunnel",     ds:"10,000 clicks",         ck:()=>S.clicks>=10000},
+  {id:"p1k",  ic:"💰",nm:"Stacking",          ds:"1K lifetime",           ck:()=>S.total>=1e3},
+  {id:"p1m",  ic:"🏆",nm:"Millionaire Mewer", ds:"1M lifetime",           ck:()=>S.total>=1e6},
+  {id:"p1b",  ic:"👑",nm:"Billionaire Mewer", ds:"1B lifetime",           ck:()=>S.total>=1e9},
+  {id:"p1t",  ic:"💎",nm:"Trillionaire Grind",ds:"1T lifetime",           ck:()=>S.total>=1e12},
+  {id:"gym1", ic:"🏋️",nm:"Gymcel",            ds:"First gym pass",        ck:()=>own("gym")>=1},
+  {id:"sr1",  ic:"🔪",nm:"Under the Knife",  ds:"First surgery",         ck:()=>own("rhino")>=1},
+  {id:"md1",  ic:"📸",nm:"Signed",            ds:"Model contract",        ck:()=>own("model")>=1},
+  {id:"psl5", ic:"⭐",nm:"Chad Status",       ds:"PSL 5.0",               ck:()=>psl()>=5},
+  {id:"foid", ic:"💅",nm:"Foid Approved",     ds:"PSL 7.0 — even the foids are mirin'",ck:()=>psl()>=7},
+  {id:"psl9", ic:"🗿",nm:"Owen Mode",         ds:"PSL 9.0",               ck:()=>psl()>=9},
+  {id:"stim", ic:"🌀",nm:"Stimmed Out",       ds:"Max the stim meter",    ck:()=>S.stim>=100},
+  {id:"e67",  ic:"🫳",nm:"Emote 67",          ds:"Trigger the rare emote 67", ck:()=>S.ach["e67"]},
+  {id:"cmb10",ic:"🔥",nm:"Combo Starter",     ds:"10x combo",             ck:()=>S.maxCombo>=10},
+  {id:"cmb50",ic:"🔥",nm:"Combo Demon",       ds:"50x combo",             ck:()=>S.maxCombo>=50},
+  {id:"cmb100",ic:"💥",nm:"COMBO GOD",        ds:"100x combo",            ck:()=>S.maxCombo>=100},
+  {id:"pr1",  ic:"🔄",nm:"Reborn",            ds:"Prestige once",         ck:()=>S.prestige>=1},
+  {id:"pr5",  ic:"🔄",nm:"Cycle of Pain",     ds:"Prestige 5 times",      ck:()=>S.prestige>=5},
+  {id:"pr10", ic:"♻️",nm:"Eternal Return",    ds:"Prestige 10 times",     ck:()=>S.prestige>=10},
+  {id:"jjk1", ic:"🟣",nm:"Domain Deployed",   ds:"Buy Domain Expansion",  ck:()=>own("domain")>=1},
+  {id:"jjk2", ic:"👹",nm:"King of Curses",    ds:"Buy Sukuna's Blessing", ck:()=>own("sukuna")>=1},
+  {id:"jjk3", ic:"♾️",nm:"Throughout Heaven and Earth",ds:"Buy Six Eyes (I alone am the honored one)",ck:()=>own("gojo")>=1},
+  {id:"agt1", ic:"🌍",nm:"Inner Earth Found", ds:"Buy Agartha Expedition",ck:()=>own("agartha")>=1},
+  {id:"gold1",ic:"✨",nm:"Golden Touch",      ds:"Click a golden mew",    ck:()=>S.goldenClicks>=1},
+  {id:"gold10",ic:"🌟",nm:"Midas",            ds:"Click 10 golden mews",  ck:()=>S.goldenClicks>=10},
 ];
-
-// ============ RANDOM EVENTS ============
 const EVENTS = [
   "Owen caught you lackin' with bad posture. Sit up.",
   "You accidentally mewed in class. Respect +10.",
@@ -53,4 +66,26 @@ const EVENTS = [
   "Sunlight exposure maxed. Vitamin D protocol complete.",
   "You stood in front of the mirror for 20 minutes. Passed.",
   "Mewing form check: tongue fully on palate. Perfect.",
+  "You rejected seed oils at dinner. Sigma behavior.",
+  "Mouth tape applied. Nasal breathing activated.",
+  "You expanded your domain. Everything within is mew territory.",
+  "Sukuna approves of your jawline. 'Stand proud, you were strong.'",
+  "Gojo removed his blindfold. He saw your PSL. 'Nah, I'd win.'",
+  "You reversed cursed technique'd your receding hairline.",
+  "Malevolent Shrine activated. All weak jawlines destroyed.",
+  "Black Flash achieved — 120% mew efficiency for 10 seconds.",
+  "Todo saw your PSL: 'My best friend!'",
+  "Signal detected from inner earth. The hollow ones are mewing too.",
+  "Admiral Byrd's diary confirmed: Agartha has a gym.",
+  "The beings of Agartha have perfect forward growth. Coincidence?",
+  "Shambhala monks taught you the forbidden mew technique.",
+  "You found a tunnel to Agartha. PSL is different down there.",
+  "The Vril Society had perfect jawlines. Now you know why.",
 ];
+const PRESTIGE_COST = 1e10;
+const PRESTIGE_MULT = 0.25;
+const COMBO_DECAY_MS = 800;
+const COMBO_MAX_MULT = 5;
+const GOLDEN_CHANCE = 0.003;
+const GOLDEN_DURATION = 5000;
+const GOLDEN_MULT = 10;
