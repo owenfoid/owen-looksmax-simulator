@@ -235,3 +235,28 @@ function importSave(){
     toast("Invalid save code!");
   }
 }
+
+// On tab focus, check if save was nuked while we were away
+document.addEventListener("visibilitychange",function(){
+  if(document.visibilityState==="visible"){
+    var r=localStorage.getItem(SAVE_KEY);
+    if(r==="RESET"||localStorage.getItem("OWEN_NUKE")==="1"){
+      // Save was corrupted while this tab was in background - reset JS state
+      localStorage.removeItem("OWEN_NUKE");
+      localStorage.removeItem(SAVE_KEY);
+      S={pts:0,total:0,pc:1,ps:0,upg:{},ach:{},clicks:0,stim:0,prestige:0,combo:0,maxCombo:0,lastClickTime:0,goldenClicks:0,lastSaveTime:Date.now(),totalPrestigeEarnings:0,zorgos:0,totalZorgos:0,teeth:32,suspicion:0};
+      for(var i=0;i<CURRENCIES.length;i++)CURRENCIES[i].val=0;
+      recalc();render();
+    }
+  }
+});
+window.addEventListener("pageshow",function(e){
+  if(e.persisted){
+    var r=localStorage.getItem(SAVE_KEY);
+    if(r==="RESET"||localStorage.getItem("OWEN_NUKE")==="1"){
+      localStorage.removeItem("OWEN_NUKE");
+      localStorage.removeItem(SAVE_KEY);
+      window.location.reload();
+    }
+  }
+});
