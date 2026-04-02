@@ -43,15 +43,18 @@ function render(){
 }
 var curGridEl=document.getElementById("cur-grid");var _curCells=[];
 function initCurrencyGrid(){if(!curGridEl)return;curGridEl.innerHTML="";for(var i=0;i<CURRENCIES.length;i++){var c=CURRENCIES[i];var d=document.createElement("div");d.className="cur";d.innerHTML='<div class="cur-ic">'+c.ic+'</div><div class="cur-v" style="color:'+c.col+'">0</div><div class="cur-n">'+c.nm+'</div>';curGridEl.appendChild(d);_curCells.push(d.querySelector(".cur-v"))}}
-function renderCurrencies(){var p=psl();for(var i=0;i<CURRENCIES.length;i++){if(!_curCells[i])continue;var c=CURRENCIES[i];var el=_curCells[i];var par=el.parentNode;if(p<c.unlockPSL){el.textContent="\u{1F512}";el.style.color="#ccc";if(par)par.style.borderColor="#eee"}else{el.textContent=c.val>=1000?fmt(c.val):c.val.toFixed(1);el.style.color=c.col;
-// highlight special currencies
+var _lastUnlocked=0;
+function renderCurrencies(){var p=psl();var unlocked=0;for(var i=0;i<CURRENCIES.length;i++){if(!_curCells[i])continue;var c=CURRENCIES[i];var el=_curCells[i];var par=el.parentNode;if(p<c.unlockPSL){if(par)par.style.display="none"}else{unlocked++;if(par)par.style.display="";el.textContent=c.val>=1000?fmt(c.val):c.val.toFixed(1);el.style.color=c.col;
 if(par){
   if(i===critCurrency){par.style.borderColor="red";par.style.background="#ffe0e0"}
-  else if(i%10===0){par.style.borderColor="green";par.style.background="#e0ffe0"} // multiplier
-  else if(i%17===3&&c.val>80){par.style.borderColor="red";par.style.background="#fff0f0"} // taxing
-  else if(i%23===5&&c.val>50){par.style.borderColor="blue";par.style.background="#e0e0ff"} // bonus
+  else if(i%10===0){par.style.borderColor="green";par.style.background="#e0ffe0"}
+  else if(i%17===3&&c.val>80){par.style.borderColor="red";par.style.background="#fff0f0"}
+  else if(i%23===5&&c.val>50){par.style.borderColor="blue";par.style.background="#e0e0ff"}
   else{par.style.borderColor="#ccc";par.style.background="#fff"}
-}}}}
+}}}
+if(unlocked>_lastUnlocked&&_lastUnlocked>0){toast("📊 +"+(unlocked-_lastUnlocked)+" new currencies unlocked!");screenShake(2);for(var j=0;j<5;j++)dropEmoji()}
+_lastUnlocked=unlocked;
+var hdr=document.querySelector(".curr-grid")&&document.querySelector(".curr-grid").previousElementSibling;if(hdr&&hdr.classList.contains("pt"))hdr.textContent="CURRENCIES ("+unlocked+"/"+CURRENCIES.length+")"}
 function animate(ts){try{var time=ts/1000;tickCombo();if(typeof micActive!=='undefined'&&micActive){drawBird(time)}else{drawFace(psl()/10,time);stimIntensity=lerp(stimIntensity,S.stim/100,0.1);if(emote67Active){emote67Timer+=0.012;if(emote67Timer>=1){emote67Active=false;emote67Timer=0}}}}catch(e){}requestAnimationFrame(animate)}
 requestAnimationFrame(animate);
 var _lastTick=Date.now();
