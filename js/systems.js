@@ -298,21 +298,6 @@ document.addEventListener("touchend",function(e){
 
 setInterval(function(){if(psl()>=9)initSnake()},5000);
 
-// ============ SAVE/LOAD SKILLS ============
-var _origSave=save;
-save=function(){
-  _origSave();
-  var d=JSON.parse(localStorage.getItem(SAVE_KEY)||"{}");
-  d.skills=skillsBought;d.lore=_loreRead;
-  localStorage.setItem(SAVE_KEY,JSON.stringify(d));
-};
-var _origLoad=load;
-// skills loaded via interval check since load runs before this file
-setInterval(function(){
-  var d=JSON.parse(localStorage.getItem(SAVE_KEY)||"{}");
-  if(d.skills)skillsBought=d.skills;
-  if(d.lore)_loreRead=d.lore;
-},2000);
 
 // Initial renders
 renderSkillTree();renderTrading();renderLore();initSnake();

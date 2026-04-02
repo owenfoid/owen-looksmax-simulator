@@ -120,5 +120,90 @@ function spawnNegZorgo(){if(document.querySelectorAll(".zorgo-float").length>(is
 function teethTick(){var tRate=own('tbrush')>=1?0.0005:0.001;if(typeof craftBonuses!=="undefined"&&craftBonuses.teethslow)tRate*=0.2;if(psl()>=5&&Math.random()<tRate){S.teeth++;if(S.teeth===33)toast("...33 teeth?");else if(S.teeth===40)toast("stop.");else if(S.teeth===50)toast("too many");checkAch()}}
 function addSuspicion(a){var gain=a*(own("shades")>=1?0.7:1);var cap=own("alias")>=1?150:100;S.suspicion=Math.min(cap,S.suspicion+gain);var susCap=own("alias")>=1?150:100;if(S.suspicion>=susCap){S.suspicion=0;var l=Math.floor(S.pts*0.1);S.pts=Math.max(0,S.pts-l);toast("THEY NOTICED. -"+fmt(l));screenShake(3)}}
 var SAVE_KEY="owen_lm_v8";
-function save(){S.lastSaveTime=Date.now();var d={s:S,cur:[],craft:[],cb:typeof craftBonuses!=="undefined"?craftBonuses:{}};for(var i=0;i<CURRENCIES.length;i++)d.cur.push(CURRENCIES[i].val);if(typeof RECIPES!=="undefined")for(var i=0;i<RECIPES.length;i++)d.craft.push(RECIPES[i].done);localStorage.setItem(SAVE_KEY,JSON.stringify(d))}
-function load(){var r=localStorage.getItem(SAVE_KEY);if(r){try{var d=JSON.parse(r);if(d.s){if(!d.s.zorgos)d.s.zorgos=0;if(!d.s.totalZorgos)d.s.totalZorgos=0;if(!d.s.teeth)d.s.teeth=32;if(!d.s.suspicion)d.s.suspicion=0;if(!d.s.prestige)d.s.prestige=0;if(!d.s.combo)d.s.combo=0;if(!d.s.maxCombo)d.s.maxCombo=0;if(!d.s.goldenClicks)d.s.goldenClicks=0;if(!d.s.totalPrestigeEarnings)d.s.totalPrestigeEarnings=0;Object.assign(S,d.s)}if(d.cur){for(var i=0;i<Math.min(d.cur.length,CURRENCIES.length);i++)CURRENCIES[i].val=d.cur[i]||0}if(d.craft&&typeof RECIPES!=="undefined"){for(var i=0;i<Math.min(d.craft.length,RECIPES.length);i++)RECIPES[i].done=d.craft[i]}if(d.cb&&typeof craftBonuses!=="undefined")Object.assign(craftBonuses,d.cb);recalc();var off=(Date.now()-S.lastSaveTime)/1000;if(off>30&&S.ps>0){var e=Math.floor(S.ps*off*0.5);S.pts+=e;S.total+=e;setTimeout(function(){toast("+"+fmt(e)+" while away")},500)}}catch(e){}}}
+// NEVER change SAVE_KEY - it will wipe everyone's progress
+// Migration: also check older keys
+var OLD_KEYS=["owen_lm_v6","owen_lm_v4","owen_lm_v3"];
+
+function save(){
+  S.lastSaveTime=Date.now();
+  var d={v:13,s:S,cur:[],craft:[],cb:typeof craftBonuses!=="undefined"?craftBonuses:{},skills:typeof skillsBought!=="undefined"?skillsBought:{},lore:typeof _loreRead!=="undefined"?_loreRead:{}};
+  for(var i=0;i<CURRENCIES.length;i++)d.cur.push(CURRENCIES[i].val);
+  if(typeof RECIPES!=="undefined")for(var i=0;i<RECIPES.length;i++)d.craft.push(RECIPES[i].done);
+  localStorage.setItem(SAVE_KEY,JSON.stringify(d));
+}
+
+function load(){
+  // try current key first, then migrate from older keys
+  var r=localStorage.getItem(SAVE_KEY);
+  if(!r){
+    for(var k=0;k<OLD_KEYS.length;k++){
+      r=localStorage.getItem(OLD_KEYS[k]);
+      if(r){toast("Migrated save from older version!");break}
+    }
+  }
+  if(!r)return;
+  try{
+    var d=JSON.parse(r);
+    if(d.s){
+      // safe defaults for ALL fields - new fields won't crash
+      var defaults={pts:0,total:0,pc:1,ps:0,upg:{},ach:{},clicks:0,stim:0,prestige:0,combo:0,maxCombo:0,lastClickTime:0,goldenClicks:0,lastSaveTime:Date.now(),totalPrestigeEarnings:0,zorgos:0,totalZorgos:0,teeth:32,suspicion:0};
+      for(var key in defaults){
+        if(d.s[key]===undefined||d.s[key]===null)d.s[key]=defaults[key];
+      }
+      Object.assign(S,d.s);
+    }
+    // currencies - only load as many as we have, new ones stay at default
+    if(d.cur){
+      for(var i=0;i<Math.min(d.cur.length,CURRENCIES.length);i++){
+        if(typeof d.cur[i]==="number")CURRENCIES[i].val=d.cur[i];
+      }
+    }
+    // crafting recipes - only load as many as exist
+    if(d.craft&&typeof RECIPES!=="undefined"){
+      for(var i=0;i<Math.min(d.craft.length,RECIPES.length);i++)RECIPES[i].done=!!d.craft[i];
+    }
+    if(d.cb&&typeof craftBonuses!=="undefined")Object.assign(craftBonuses,d.cb);
+    // skills
+    if(d.skills&&typeof skillsBought!=="undefined")skillsBought=d.skills;
+    // lore
+    if(d.lore&&typeof _loreRead!=="undefined")_loreRead=d.lore;
+    recalc();
+    // offline earnings
+    var off=(Date.now()-S.lastSaveTime)/1000;
+    if(off>30&&S.ps>0){
+      var e=Math.floor(S.ps*off*0.5);
+      S.pts+=e;S.total+=e;
+      setTimeout(function(){toast("+"+fmt(e)+" while away")},500);
+    }
+  }catch(e){}
+}
+
+// EXPORT/IMPORT for backup
+function exportSave(){
+  save(); // save first
+  var data=localStorage.getItem(SAVE_KEY);
+  var encoded=btoa(data);
+  // copy to clipboard
+  if(navigator.clipboard){
+    navigator.clipboard.writeText(encoded).then(function(){toast("Save copied to clipboard!")});
+  }else{
+    // fallback
+    var ta=document.createElement("textarea");
+    ta.value=encoded;document.body.appendChild(ta);ta.select();
+    document.execCommand("copy");document.body.removeChild(ta);
+    toast("Save copied to clipboard!");
+  }
+}
+function importSave(){
+  var code=prompt("Paste your save code:");
+  if(!code)return;
+  try{
+    var decoded=atob(code);
+    JSON.parse(decoded); // validate it's valid JSON
+    localStorage.setItem(SAVE_KEY,decoded);
+    toast("Save imported! Reloading...");
+    setTimeout(function(){location.reload()},1000);
+  }catch(e){
+    toast("Invalid save code!");
+  }
+}

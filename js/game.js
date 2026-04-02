@@ -128,7 +128,7 @@ function toggleAdmin(){
     btn("Spawn zorgo",function(){spawnZorgo()})+
     btn("Spawn golden",function(){spawnGolden()})+
     btn("Force save",function(){save();toast("saved")})+
-    btn("RESET ALL",function(){if(confirm("Reset everything?")){localStorage.removeItem(SAVE_KEY);location.reload()}})+
+    btn("Export Save",function(){exportSave()})+btn("Import Save",function(){importSave()})+btn("RESET ALL",function(){exportSave()},function(){importSave()},function(){if(confirm("Reset everything?")){localStorage.removeItem(SAVE_KEY);location.reload()}})+
     btn("Close",function(){toggleAdmin()})+
   '</div>';
   document.body.appendChild(p);
@@ -162,7 +162,7 @@ document.addEventListener("click",function(e){
     function(){spawnZorgo()},
     function(){spawnGolden()},
     function(){save();toast("saved")},
-    function(){if(confirm("Reset everything?")){localStorage.removeItem(SAVE_KEY);location.reload()}},
+    function(){exportSave()},function(){importSave()},function(){if(confirm("Reset everything?")){localStorage.removeItem(SAVE_KEY);location.reload()}},
     function(){toggleAdmin()},
   ];
   for(var i=0;i<btns.length;i++){if(btns[i]===e.target&&fns[i]){fns[i]();break}}
