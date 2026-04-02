@@ -1,3 +1,5 @@
+const isMobile='ontouchstart' in window || navigator.maxTouchPoints>0;
+
 let S={pts:0,total:0,pc:1,ps:0,upg:{},ach:{},clicks:0,stim:0,
   prestige:0,combo:0,maxCombo:0,lastClickTime:0,goldenClicks:0,
   lastSaveTime:Date.now(),totalPrestigeEarnings:0,
@@ -73,40 +75,44 @@ function claimGolden(){
 
 // ============ ZORGOS ============
 function spawnZorgo(){
+  // limit floating elements to prevent mobile lag
+  if(document.querySelectorAll('.zorgo-float').length > (isMobile?3:8)) return;
   const el=document.createElement("div");
   el.className="zorgo-float";
   el.textContent="🟣";
-  el.style.left=(20+Math.random()*60)+"%";
-  el.style.top=(20+Math.random()*50)+"%";
-  el.onclick=function(e){
-    e.stopPropagation();
+  el.style.left=(10+Math.random()*70)+"%";
+  el.style.top=(15+Math.random()*50)+"%";
+  const handler=function(e){
+    e.stopPropagation();e.preventDefault();
     S.zorgos++;S.totalZorgos++;
     toast("🟣 +1 Zorgo (???)");
-    floatText(e.clientX,e.clientY,"+1 ZORGO","#c840ff");
-    particles(e.clientX,e.clientY,8);
-    el.remove();
-    checkAch();render();
+    const cx=e.clientX||(e.touches&&e.touches[0]?e.touches[0].clientX:0);
+    const cy=e.clientY||(e.touches&&e.touches[0]?e.touches[0].clientY:0);
+    if(cx)floatText(cx,cy,"+1 ZORGO","#c840ff");
+    if(cx)particles(cx,cy,8);
+    el.remove();checkAch();render();
   };
+  el.addEventListener("click",handler);
+  el.addEventListener("touchend",handler,{passive:false});
   document.body.appendChild(el);
-  // disappears after random time
   setTimeout(()=>{if(el.parentNode)el.remove();},3000+Math.random()*4000);
 }
 
-// negative zorgo (rare)
 function spawnNegZorgo(){
+  if(document.querySelectorAll('.zorgo-float').length > (isMobile?3:8)) return;
   const el=document.createElement("div");
   el.className="zorgo-float";
   el.textContent="⚫";
-  el.style.left=(20+Math.random()*60)+"%";
-  el.style.top=(20+Math.random()*50)+"%";
-  el.onclick=function(e){
-    e.stopPropagation();
+  el.style.left=(10+Math.random()*70)+"%";
+  el.style.top=(15+Math.random()*50)+"%";
+  const handler=function(e){
+    e.stopPropagation();e.preventDefault();
     S.zorgos=Math.max(0,S.zorgos-1);
     toast("⚫ -1 Zorgo (why)");
-    floatText(e.clientX,e.clientY,"-1 ZORGO","#ff0000");
-    screenShake(2);
-    el.remove();render();
+    screenShake(2);el.remove();render();
   };
+  el.addEventListener("click",handler);
+  el.addEventListener("touchend",handler,{passive:false});
   document.body.appendChild(el);
   setTimeout(()=>{if(el.parentNode)el.remove();},2000);
 }

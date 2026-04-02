@@ -274,16 +274,18 @@ function dropEmoji(){
   setTimeout(()=>{if(el.parentNode)el.remove();},5000);
 }
 
-// --- MOUSE TRAIL ---
+// --- MOUSE TRAIL (desktop only) ---
 let trailEnabled=false;
-document.addEventListener("mousemove",(e)=>{
-  if(!trailEnabled)return;
-  const d=document.createElement("div");
-  d.className="mouse-trail";
-  d.style.left=e.clientX+"px";d.style.top=e.clientY+"px";
-  document.body.appendChild(d);
-  setTimeout(()=>{if(d.parentNode)d.remove();},500);
-});
+if(!isMobile){
+  document.addEventListener("mousemove",(e)=>{
+    if(!trailEnabled)return;
+    const d=document.createElement("div");
+    d.className="mouse-trail";
+    d.style.left=e.clientX+"px";d.style.top=e.clientY+"px";
+    document.body.appendChild(d);
+    setTimeout(()=>{if(d.parentNode)d.remove();},500);
+  });
+}
 
 // --- PAGE TITLE CHAOS ---
 const TITLES=[
@@ -305,37 +307,32 @@ const TITLES=[
 // --- RANDOM CSS CHAOS ---
 function cssGlitch(){
   const r=Math.random();
+  const target=document.getElementById("chroma-wrap")||document.body;
   if(r<0.15){
-    // briefly invert colors
-    document.body.style.filter="invert(1)";
-    setTimeout(()=>{document.body.style.filter="none";},100+Math.random()*200);
-  } else if(r<0.3){
-    // flip upside down
-    document.body.style.transform="rotate(180deg)";
-    document.body.style.transformOrigin="center center";
-    setTimeout(()=>{document.body.style.transform="none";},200+Math.random()*300);
-  } else if(r<0.45){
-    // skew
-    document.body.style.transform="skewX("+(Math.random()*6-3)+"deg)";
-    setTimeout(()=>{document.body.style.transform="none";},300);
-  } else if(r<0.6){
-    // hue rotate
-    document.body.style.filter="hue-rotate("+Math.floor(Math.random()*360)+"deg)";
-    setTimeout(()=>{document.body.style.filter="none";},400);
-  } else if(r<0.75){
-    // blur briefly
-    document.body.style.filter="blur(2px)";
-    setTimeout(()=>{document.body.style.filter="none";},150);
-  } else if(r<0.85){
-    // change cursor
-    const cursors=["crosshair","wait","help","not-allowed","grab","zoom-in","cell","alias"];
+    target.style.filter="invert(1)";
+    setTimeout(()=>{target.style.filter="none";},100+Math.random()*200);
+  } else if(r<0.25 && !isMobile){
+    // skip flip on mobile - breaks scroll
+    target.style.transform="rotate(180deg)";
+    target.style.transformOrigin="center center";
+    setTimeout(()=>{target.style.transform="none";},200+Math.random()*300);
+  } else if(r<0.4){
+    target.style.filter="hue-rotate("+Math.floor(Math.random()*360)+"deg)";
+    setTimeout(()=>{target.style.filter="none";},400);
+  } else if(r<0.55 && !isMobile){
+    target.style.transform="skewX("+(Math.random()*6-3)+"deg)";
+    setTimeout(()=>{target.style.transform="none";},300);
+  } else if(r<0.7){
+    target.style.filter="blur(2px)";
+    setTimeout(()=>{target.style.filter="none";},150);
+  } else if(r<0.85 && !isMobile){
+    const cursors=["crosshair","wait","help","not-allowed","grab","zoom-in","cell"];
     document.body.style.cursor=cursors[Math.floor(Math.random()*cursors.length)];
     setTimeout(()=>{document.body.style.cursor="auto";},2000);
   } else {
-    // random background flash
     const colors=["#2a002a","#002a00","#2a2a00","#00002a","#2a0000"];
-    document.body.style.background=colors[Math.floor(Math.random()*colors.length)];
-    setTimeout(()=>{document.body.style.background="#1a0a2e";},300);
+    target.style.background=colors[Math.floor(Math.random()*colors.length)];
+    setTimeout(()=>{target.style.background="";},300);
   }
 }
 
@@ -355,27 +352,20 @@ const NOTIF_MSGS=[
 
 // --- MASTER CHAOS LOOP ---
 let chaosLevel=0;
+const chaosRate=isMobile?0.6:1; // less frequent on mobile
 setInterval(()=>{
   const p=psl();
   chaosLevel=Math.floor(p);
 
-  // popups increase with PSL
-  if(p>=2 && Math.random()<0.02*Math.min(4,p/2)) randomPopup();
-
-  // notifications increase aggressively
-  if(p>=1 && Math.random()<0.04*Math.min(5,p/2)){
+  if(p>=2 && Math.random()<0.02*Math.min(4,p/2)*chaosRate) randomPopup();
+  if(p>=1 && Math.random()<0.04*Math.min(5,p/2)*chaosRate){
     const m=NOTIF_MSGS[Math.floor(Math.random()*NOTIF_MSGS.length)];
     pushNotif(typeof m==='function'?m():m);
   }
-
-  // emoji rain increases
-  if(p>=3 && Math.random()<0.03*Math.min(6,p/2)) dropEmoji();
-
-  // css glitches at high PSL
-  if(p>=5 && Math.random()<0.005*Math.min(3,p/3)) cssGlitch();
-
-  // mouse trail activates at PSL 4
-  if(p>=4) trailEnabled=true;
+  // fewer falling emoji on mobile
+  if(p>=3 && Math.random()<0.03*Math.min(isMobile?3:6,p/2)*chaosRate) dropEmoji();
+  if(p>=5 && Math.random()<0.005*Math.min(3,p/3)*chaosRate) cssGlitch();
+  if(p>=4 && !isMobile) trailEnabled=true;
 
   // page title changes
   if(Math.random()<0.01){
