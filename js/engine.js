@@ -170,6 +170,13 @@ function load(){
     if(d.skills&&typeof skillsBought!=="undefined")skillsBought=d.skills;
     // lore
     if(d.lore&&typeof _loreRead!=="undefined")_loreRead=d.lore;
+    // ascension
+    if(typeof ascension!=="undefined"&&d.asc!==undefined)ascension=d.asc;
+    if(typeof ascPoints!=="undefined"&&d.ascPts!==undefined)ascPoints=d.ascPts;
+    if(d.ascUpg&&typeof ASC_UPGRADES!=="undefined"){for(var ai=0;ai<Math.min(d.ascUpg.length,ASC_UPGRADES.length);ai++)ASC_UPGRADES[ai].bought=!!d.ascUpg[ai]}
+    if(d.exp&&typeof expeditions!=="undefined")expeditions=d.exp;
+    if(d.achRew&&typeof _achRewarded!=="undefined")_achRewarded=d.achRew;
+    if(d.pslMile&&typeof _lastPSLMilestone!=="undefined")_lastPSLMilestone=d.pslMile;
     recalc();
     // offline earnings
     var off=(Date.now()-S.lastSaveTime)/1000;

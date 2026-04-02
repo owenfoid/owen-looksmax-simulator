@@ -286,26 +286,33 @@ setInterval(function(){
   }
 },500);
 
-// ============ SAVE ASCENSION/EXPEDITION STATE ============
 var _origSave2=save;
 save=function(){
-  _origSave2();
-  var d=JSON.parse(localStorage.getItem(SAVE_KEY)||"{}");
-  d.asc=ascension;d.ascPts=ascPoints;d.ascUpg=[];
+  S.lastSaveTime=Date.now();
+  var d={v:15,s:S,cur:[],craft:[],cb:typeof craftBonuses!=="undefined"?craftBonuses:{},
+    skills:typeof skillsBought!=="undefined"?skillsBought:{},
+    lore:typeof _loreRead!=="undefined"?_loreRead:{},
+    asc:ascension,ascPts:ascPoints,ascUpg:[],
+    exp:expeditions,achRew:_achRewarded,pslMile:_lastPSLMilestone};
+  for(var i=0;i<CURRENCIES.length;i++)d.cur.push(CURRENCIES[i].val);
+  if(typeof RECIPES!=="undefined")for(var i=0;i<RECIPES.length;i++)d.craft.push(RECIPES[i].done);
   for(var i=0;i<ASC_UPGRADES.length;i++)d.ascUpg.push(ASC_UPGRADES[i].bought);
-  d.exp=expeditions;d.achRew=_achRewarded;d.pslMile=_lastPSLMilestone;
   localStorage.setItem(SAVE_KEY,JSON.stringify(d));
 };
-// load
-setInterval(function(){
-  var d=JSON.parse(localStorage.getItem(SAVE_KEY)||"{}");
-  if(d.asc!==undefined)ascension=d.asc;
-  if(d.ascPts!==undefined)ascPoints=d.ascPts;
-  if(d.ascUpg){for(var i=0;i<Math.min(d.ascUpg.length,ASC_UPGRADES.length);i++)ASC_UPGRADES[i].bought=!!d.ascUpg[i]}
-  if(d.exp)expeditions=d.exp;
-  if(d.achRew)_achRewarded=d.achRew;
-  if(d.pslMile)_lastPSLMilestone=d.pslMile;
-},3000);
 
 // ============ INIT ============
 renderAscension();renderDaily();renderExpeditions();
+
+// Load ascension data on init (runs after engine.js load)
+(function(){
+  var r=localStorage.getItem(SAVE_KEY);if(!r)return;
+  try{var d=JSON.parse(r);
+    if(d.asc!==undefined)ascension=d.asc;
+    if(d.ascPts!==undefined)ascPoints=d.ascPts;
+    if(d.ascUpg){for(var i=0;i<Math.min(d.ascUpg.length,ASC_UPGRADES.length);i++)ASC_UPGRADES[i].bought=!!d.ascUpg[i]}
+    if(d.exp)expeditions=d.exp;
+    if(d.achRew)_achRewarded=d.achRew;
+    if(d.pslMile)_lastPSLMilestone=d.pslMile;
+  }catch(e){}
+  recalc();
+})();

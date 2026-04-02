@@ -355,3 +355,12 @@ if(isMobile){
     checkAch();render();
   },{passive:false});
 }
+
+// ONBOARDING - first time player
+if(!localStorage.getItem("owen_played")){
+  localStorage.setItem("owen_played","1");
+  setTimeout(function(){toast("👆 Tap the face to earn Mew Points!")},1000);
+  setTimeout(function(){toast("💰 Buy upgrades to earn faster!")},4000);
+  setTimeout(function(){toast("🟣 Click purple Zorgos when they appear!")},7000);
+  setTimeout(function(){toast("🎰 Try the Zorgo Casino below!")},10000);
+}
