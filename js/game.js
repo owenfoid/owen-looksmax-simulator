@@ -137,7 +137,6 @@ function animate(ts){
     drawFace(psl()/10,time);
     stimIntensity=lerp(stimIntensity,S.stim/100,0.1);
     if(emote67Active){emote67Timer+=0.012;if(emote67Timer>=1){emote67Active=false;emote67Timer=0;}}
-    drawStimHands(time);
   }
   }catch(e){}
   requestAnimationFrame(animate);
