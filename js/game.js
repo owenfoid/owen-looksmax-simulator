@@ -83,3 +83,87 @@ var vc=document.getElementById("visitor-count");if(vc)vc.textContent=Math.floor(
 load();initCurrencyGrid();render();renderCurrencies();
 setInterval(save,10000);window.addEventListener("beforeunload",save);
 setTimeout(function(){pushNotif("210 currencies active.")},2000);
+
+// ============ SECRET ADMIN PANEL ============
+var _adminCode="";var _adminOpen=false;
+document.addEventListener("keydown",function(e){
+  _adminCode+=e.key;if(_adminCode.length>10)_adminCode=_adminCode.slice(-10);
+  if(_adminCode.includes("owen67")){_adminCode="";toggleAdmin()}
+});
+// mobile: tap title 5 times fast
+var _titleTaps=0;var _titleTimer=0;
+document.querySelector("header h1").addEventListener("click",function(){
+  _titleTaps++;clearTimeout(_titleTimer);
+  _titleTimer=setTimeout(function(){_titleTaps=0},2000);
+  if(_titleTaps>=5){_titleTaps=0;toggleAdmin()}
+});
+
+function toggleAdmin(){
+  _adminOpen=!_adminOpen;
+  var p=document.getElementById("admin-panel");
+  if(p){p.style.display=_adminOpen?"block":"none";return}
+  p=document.createElement("div");p.id="admin-panel";
+  p.style.cssText="position:fixed;bottom:0;left:0;right:0;background:#111;color:#0f0;padding:8px;z-index:9999;font-size:11px;font-family:monospace;max-height:50vh;overflow-y:auto;border-top:2px solid #0f0";
+  p.innerHTML='<div style="display:flex;flex-wrap:wrap;gap:4px">'+
+    btn("1M pts",function(){S.pts+=1e6;S.total+=1e6;recalc();render()})+
+    btn("1B pts",function(){S.pts+=1e9;S.total+=1e9;recalc();render()})+
+    btn("1T pts",function(){S.pts+=1e12;S.total+=1e12;recalc();render()})+
+    btn("+10 zorgos",function(){S.zorgos+=10;S.totalZorgos+=10;render()})+
+    btn("+100 zorgos",function(){S.zorgos+=100;S.totalZorgos+=100;render()})+
+    btn("PSL 3",function(){S.total=1e3;S.totalPrestigeEarnings=0;recalc();render()})+
+    btn("PSL 5",function(){S.total=1e5;S.totalPrestigeEarnings=0;recalc();render()})+
+    btn("PSL 7",function(){S.total=1e7;S.totalPrestigeEarnings=0;recalc();render()})+
+    btn("PSL 9",function(){S.total=1e9;S.totalPrestigeEarnings=0;recalc();render()})+
+    btn("PSL 9.9",function(){S.total=8e9;S.totalPrestigeEarnings=0;recalc();render()})+
+    btn("50 teeth",function(){S.teeth=50;render()})+
+    btn("80 teeth",function(){S.teeth=80;render()})+
+    btn("Max stim",function(){S.stim=99;render()})+
+    btn("50 sus",function(){S.suspicion=50;render()})+
+    btn("100 clicks",function(){S.clicks+=100;render()})+
+    btn("1K clicks",function(){S.clicks+=1000;render()})+
+    btn("+1 prestige",function(){S.prestige++;recalc();render()})+
+    btn("All curr +50",function(){for(var i=0;i<CURRENCIES.length;i++)if(psl()>=CURRENCIES[i].unlockPSL)CURRENCIES[i].val+=50;renderCurrencies()})+
+    btn("All curr 0",function(){for(var i=0;i<CURRENCIES.length;i++)CURRENCIES[i].val=0;renderCurrencies()})+
+    btn("Trigger crisis",function(){critCurrency=-1;currencyCrisis();currencyCrisis();currencyCrisis()})+
+    btn("Spawn zorgo",function(){spawnZorgo()})+
+    btn("Spawn golden",function(){spawnGolden()})+
+    btn("Force save",function(){save();toast("saved")})+
+    btn("RESET ALL",function(){if(confirm("Reset everything?")){localStorage.removeItem(SAVE_KEY);location.reload()}})+
+    btn("Close",function(){toggleAdmin()})+
+  '</div>';
+  document.body.appendChild(p);
+}
+function btn(label,fn){return '<button onclick="void(0)" style="padding:4px 8px;background:#222;color:#0f0;border:1px solid #0f0;font-size:10px;font-family:monospace;cursor:pointer">'+label+'</button>'}
+// need to attach handlers after creation, so use event delegation
+document.addEventListener("click",function(e){
+  if(!e.target.matches||!e.target.matches("#admin-panel button"))return;
+  var btns=document.querySelectorAll("#admin-panel button");
+  var fns=[
+    function(){S.pts+=1e6;S.total+=1e6;recalc();render()},
+    function(){S.pts+=1e9;S.total+=1e9;recalc();render()},
+    function(){S.pts+=1e12;S.total+=1e12;recalc();render()},
+    function(){S.zorgos+=10;S.totalZorgos+=10;render()},
+    function(){S.zorgos+=100;S.totalZorgos+=100;render()},
+    function(){S.total=1e3;S.totalPrestigeEarnings=0;recalc();render()},
+    function(){S.total=1e5;S.totalPrestigeEarnings=0;recalc();render()},
+    function(){S.total=1e7;S.totalPrestigeEarnings=0;recalc();render()},
+    function(){S.total=1e9;S.totalPrestigeEarnings=0;recalc();render()},
+    function(){S.total=8e9;S.totalPrestigeEarnings=0;recalc();render()},
+    function(){S.teeth=50;render()},
+    function(){S.teeth=80;render()},
+    function(){S.stim=99;render()},
+    function(){S.suspicion=50;render()},
+    function(){S.clicks+=100;render()},
+    function(){S.clicks+=1000;render()},
+    function(){S.prestige++;recalc();render()},
+    function(){for(var i=0;i<CURRENCIES.length;i++)if(psl()>=CURRENCIES[i].unlockPSL)CURRENCIES[i].val+=50;renderCurrencies()},
+    function(){for(var i=0;i<CURRENCIES.length;i++)CURRENCIES[i].val=0;renderCurrencies()},
+    function(){critCurrency=-1;for(var j=0;j<20;j++){if(critCurrency>=0)break;currencyCrisis()}},
+    function(){spawnZorgo()},
+    function(){spawnGolden()},
+    function(){save();toast("saved")},
+    function(){if(confirm("Reset everything?")){localStorage.removeItem(SAVE_KEY);location.reload()}},
+    function(){toggleAdmin()},
+  ];
+  for(var i=0;i<btns.length;i++){if(btns[i]===e.target&&fns[i]){fns[i]();break}}
+});
