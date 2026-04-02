@@ -158,3 +158,20 @@ body{background:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg
 .stats-grid{display:grid;grid-template-columns:1fr 1fr;gap:2px;font-size:.45rem}
 .stat-row{display:flex;justify-content:space-between;padding:2px 4px;border-bottom:1px dotted #ccc}
 .stat-row .stat-val{font-weight:700;font-family:'Times New Roman',serif}
+
+/* MOBILE TOUCH FIX - everything clickable gets instant tap */
+.casino-btn,.boss-btn,.ag-door,.craft-recipe.ready,.ug:not(.lk),button,select,.prestige-btn,.ac{
+  touch-action:manipulation;
+  -webkit-tap-highlight-color:rgba(255,0,0,0.1);
+}
+/* active states for feedback */
+.casino-btn:active{background:#fcc!important;transform:scale(0.95)}
+.boss-btn:active{background:#f00!important;color:#fff!important;transform:scale(0.95)}
+.ag-door:active{background:#fcc!important;transform:scale(0.95)}
+.craft-recipe.ready:active{background:#bfb!important;transform:scale(0.98)}
+.ug:not(.lk):active{background:#fcc!important;transform:scale(0.98)}
+.prestige-btn:not(.lk):active{background:#e0c0ff!important;transform:scale(0.95)}
+/* news ticker shouldn't block taps */
+.news-ticker{pointer-events:none}
+/* popups shouldn't block stuff behind them too long */
+.popup{max-width:200px}

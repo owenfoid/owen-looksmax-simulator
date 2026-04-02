@@ -215,7 +215,7 @@ function initSnake(){
   var el=document.getElementById("snake-area");if(!el)return;
   if(psl()<9){el.innerHTML='<div style="font-size:.5rem;color:#999">PSL 9 required</div>';return}
   if(_snakeActive)return;
-  el.innerHTML='<div style="text-align:center"><canvas id="snake-canvas" width="150" height="150" style="border:2px solid #000;background:#000"></canvas><br>'+
+  el.innerHTML='<div style="text-align:center"><canvas id="snake-canvas" width="150" height="150" style="border:2px solid #000;background:#000;touch-action:none"></canvas><br>'+
     '<div style="font-size:.45rem;margin:2px">Score: <span id="snake-score">0</span> | Swipe or arrow keys</div>'+
     '<button class="casino-btn" onclick="startSnake()">Play Snake</button>'+
     '<div style="font-size:.35rem;color:#888;margin-top:2px">Win 20 = +50 zorgos + currency boost</div></div>';

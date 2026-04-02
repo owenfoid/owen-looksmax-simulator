@@ -169,9 +169,26 @@ body{background:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg
 .stats-grid{display:grid;grid-template-columns:1fr 1fr;gap:2px;font-size:.45rem}
 .stat-row{display:flex;justify-content:space-between;padding:2px 4px;border-bottom:1px dotted #ccc}
 .stat-row .stat-val{font-weight:700;font-family:'Times New Roman',serif}
+
+/* MOBILE TOUCH FIX - everything clickable gets instant tap */
+.casino-btn,.boss-btn,.ag-door,.craft-recipe.ready,.ug:not(.lk),button,select,.prestige-btn,.ac{
+  touch-action:manipulation;
+  -webkit-tap-highlight-color:rgba(255,0,0,0.1);
+}
+/* active states for feedback */
+.casino-btn:active{background:#fcc!important;transform:scale(0.95)}
+.boss-btn:active{background:#f00!important;color:#fff!important;transform:scale(0.95)}
+.ag-door:active{background:#fcc!important;transform:scale(0.95)}
+.craft-recipe.ready:active{background:#bfb!important;transform:scale(0.98)}
+.ug:not(.lk):active{background:#fcc!important;transform:scale(0.98)}
+.prestige-btn:not(.lk):active{background:#e0c0ff!important;transform:scale(0.95)}
+/* news ticker shouldn't block taps */
+.news-ticker{pointer-events:none}
+/* popups shouldn't block stuff behind them too long */
+.popup{max-width:200px}
 </style>
 </head>
-</head><body><script>!function(){var B="1775162712",K="owen_bts",s=localStorage.getItem(K);localStorage.setItem(K,B);if(s&&s!==B&&location.search.indexOf(B)<0){location.replace(location.pathname+"?_="+B)}}()</script>
+</head><body><script>!function(){var B="1775165174",K="owen_bts",s=localStorage.getItem(K);localStorage.setItem(K,B);if(s&&s!==B&&location.search.indexOf(B)<0){location.replace(location.pathname+"?_="+B)}}()</script>
 <div id="flash"></div><div id="scanlines"></div>
 <div id="chroma-wrap">
 <header>
@@ -2170,7 +2187,7 @@ function initSnake(){
   var el=document.getElementById("snake-area");if(!el)return;
   if(psl()<9){el.innerHTML='<div style="font-size:.5rem;color:#999">PSL 9 required</div>';return}
   if(_snakeActive)return;
-  el.innerHTML='<div style="text-align:center"><canvas id="snake-canvas" width="150" height="150" style="border:2px solid #000;background:#000"></canvas><br>'+
+  el.innerHTML='<div style="text-align:center"><canvas id="snake-canvas" width="150" height="150" style="border:2px solid #000;background:#000;touch-action:none"></canvas><br>'+
     '<div style="font-size:.45rem;margin:2px">Score: <span id="snake-score">0</span> | Swipe or arrow keys</div>'+
     '<button class="casino-btn" onclick="startSnake()">Play Snake</button>'+
     '<div style="font-size:.35rem;color:#888;margin-top:2px">Win 20 = +50 zorgos + currency boost</div></div>';
