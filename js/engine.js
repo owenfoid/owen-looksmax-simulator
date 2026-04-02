@@ -2,6 +2,21 @@
 (function(){var dominated=false;for(var i=0;i<localStorage.length;i++){var k=localStorage.key(i);if(k&&(k.indexOf("owen")===0)){if(k!=="owen_lm_v9"&&k!=="owen_bts2"&&k!=="owen_played_v2"){localStorage.removeItem(k);dominated=true;i--}}}if(dominated)console.log("Old saves cleared")})();
 
 // URL param reset
+// POISON FLAG CHECK - if reset.html was used, force-wipe everything
+if(localStorage.getItem("OWEN_NUKE")==="1"){
+  localStorage.clear();
+  sessionStorage.clear();
+  // Don't redirect, just let the game load fresh with no data
+}
+
+// Handle iOS bfcache - if page is restored from cache, force reload
+window.addEventListener("pageshow", function(e){
+  if(e.persisted){
+    // Page was restored from bfcache - force hard reload
+    window.location.reload();
+  }
+});
+
 if(location.search.indexOf("reset=1")>=0){localStorage.removeItem("owen_lm_v9");localStorage.removeItem("owen_bts2");location.replace(location.pathname);}
 
 var isMobile='ontouchstart' in window||navigator.maxTouchPoints>0;
