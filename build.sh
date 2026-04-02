@@ -52,7 +52,7 @@ echo '</body></html>' >> "$OUT"
 echo "✅ Built → $OUT ($(wc -c < "$OUT") bytes)"
 
 # Syntax check
-JSONLY=$(mktemp)
+JSONLY=$(mktemp /tmp/check_XXXXX.js)
 sed -n '/<script>/,/<\/script>/p' "$OUT" | sed '1d;$d' > "$JSONLY"
 if node --check "$JSONLY" 2>/dev/null; then
   echo "✅ JS syntax OK"
