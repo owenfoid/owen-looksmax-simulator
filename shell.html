@@ -53,7 +53,8 @@
   <div class="p click-area" id="click-area">
     <div id="golden-indicator" class="golden-indicator" style="display:none">!! GOLDEN MEW - CLICK !!</div>
     <div id="combo-display" class="combo-display" style="display:none"></div>
-    <canvas id="face" width="200" height="280"></canvas>
+    <div id="face-fallback" style="font-size:80px;text-align:center;line-height:1;position:absolute;top:50%;left:50%;transform:translate(-50%,-60%);z-index:1;">🤓</div>
+    <canvas id="face" width="200" height="280" style="position:relative;z-index:2;"></canvas>
     <div class="click-hint">tap to mew</div>
     <div id="prestige-info" class="prestige-info" style="display:none"></div>
   </div>
@@ -86,7 +87,7 @@
 </div></div>
 
 <div class="toast" id="toast"></div>
-<footer>owen looksmax simulator v0.7.2 | do NOT redistribute | <span class="blink" style="color:#f00">UNDER CONSTRUCTION</span></footer>
+<footer>owen looksmax simulator v0.7.3 | do NOT redistribute | <span class="blink" style="color:#f00">UNDER CONSTRUCTION</span></footer>
 
 <script src="js/config.js"></script>
 <script src="js/faces_data.js"></script>

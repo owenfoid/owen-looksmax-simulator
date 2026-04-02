@@ -1,6 +1,11 @@
-// ============ FACE SYSTEM - Real PNGs ============
+// ============ FACE SYSTEM - Real PNGs + HTML Fallback ============
 const canvas = document.getElementById("face");
-const ctx = canvas.getContext("2d");
+const ctx = canvas ? canvas.getContext("2d") : null;
+const faceFallback = document.getElementById("face-fallback");
+
+// detect if canvas actually works after a few frames
+let canvasWorks = false;
+let canvasCheckCount = 0;
 
 // Preload face images
 const faceImgs = [];
@@ -22,13 +27,55 @@ function getFaceIndex(pslVal) {
   return Math.min(faceImgs.length - 1, Math.max(0, idx));
 }
 
+// Update HTML fallback emoji
+function updateFallbackFace(t, time) {
+  if(!faceFallback) return;
+  const idx = getFaceIndex(t * 10);
+  const emoji = EMOJI_FACES[idx] || "🗿";
+  const si = typeof stimIntensity !== 'undefined' ? stimIntensity : 0;
+
+  faceFallback.textContent = emoji;
+  // stim shake via CSS
+  const shakeX = si > 0.1 ? Math.sin(time*25)*si*15 : 0;
+  const shakeY = si > 0.1 ? Math.cos(time*30)*si*10 : 0;
+  const rot = si > 0.2 ? Math.sin(time*18)*si*8 : 0;
+  const scale = 1 + si * 0.15 * Math.sin(time*15);
+  faceFallback.style.transform = `translate(calc(-50% + ${shakeX}px), calc(-60% + ${shakeY}px)) rotate(${rot}deg) scale(${scale})`;
+  faceFallback.style.fontSize = (80 + si * 25) + "px";
+}
+
 let stimIntensity = 0;
 let emote67Timer = 0;
 let emote67Active = false;
 
 function drawFace(t, time) {
+  // always update HTML fallback
+  updateFallbackFace(t, time);
+
+  if(!ctx) return; // no canvas context at all
+
   const W = 200, H = 280;
   ctx.clearRect(0, 0, W, H);
+
+  // check if canvas is actually rendering after 30 frames
+  canvasCheckCount++;
+  if(canvasCheckCount === 30) {
+    try {
+      const pixel = ctx.getImageData(100, 120, 1, 1).data;
+      canvasWorks = (pixel[3] > 0); // has any alpha = something rendered
+    } catch(e) { canvasWorks = false; }
+    if(!canvasWorks) {
+      // canvas broken - hide it, show HTML fallback
+      canvas.style.display = "none";
+      if(faceFallback) faceFallback.style.display = "block";
+      return;
+    } else {
+      // canvas works - hide fallback
+      if(faceFallback) faceFallback.style.display = "none";
+    }
+  }
+  if(canvasCheckCount > 30 && !canvasWorks) return; // skip canvas rendering
+
   try {
   const si = stimIntensity;
   const pslVal = t * 10;

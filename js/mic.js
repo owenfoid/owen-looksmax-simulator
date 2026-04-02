@@ -65,7 +65,7 @@ document.addEventListener("touchstart", tryMicOnce);
 
 function drawBird(time) {
   try{
-  if(!micReady) return;
+  if(!micReady || !ctx) return;
   const W = 200, H = 280;
   ctx.clearRect(0, 0, W, H);
 
