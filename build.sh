@@ -32,6 +32,8 @@ sed -n '/<body>/,/<\/body>/p' shell.html | grep -v '<script' | grep -v '</body>'
 echo '<script>' >> "$OUT"
 cat js/config.js >> "$OUT"
 echo '' >> "$OUT"
+cat js/faces_data.js >> "$OUT"
+echo '' >> "$OUT"
 cat js/engine.js >> "$OUT"
 echo '' >> "$OUT"
 cat js/effects.js >> "$OUT"
