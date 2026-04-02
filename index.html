@@ -1304,7 +1304,7 @@ setInterval(()=>{
     toast("📢 "+ev);
     screenShake(1);
   }
-},18000);
+},12000);
 
 // ============ WEIRDNESS ============
 // visitor counter
@@ -1356,8 +1356,8 @@ function pushNotif(msg){
   d.className="notif";
   d.textContent=msg;
   s.appendChild(d);
-  if(s.children.length>6)s.firstChild.remove();
-  setTimeout(()=>{if(d.parentNode)d.remove();},4000);
+  if(s.children.length>12)s.firstChild.remove();
+  setTimeout(()=>{if(d.parentNode)d.remove();},2500);
 }
 
 // --- RANDOM POPUPS ---
@@ -1368,17 +1368,31 @@ const POPUP_MSGS=[
   {t:"Warning",m:"Your teeth count seems high."},
   {t:"Owen Says",m:"Keep mewing. Don't look behind you."},
   {t:"Error 67",m:"Emote failed to load. Or did it?"},
-  {t:"Fun Fact",m:"The average person has 32 teeth. You have "+()=>S.teeth+"."},
   {t:"Survey",m:"Rate your jawline 1-10. (This is mandatory)"},
   {t:"Notification",m:"Someone viewed your PSL profile."},
   {t:"Zorgo Facts",m:"Nobody knows what zorgos are. This is by design."},
-  {t:"Update",m:"Owen Looksmax Simulator v0.7."+Math.floor(Math.random()*99)+" available."},
   {t:"Privacy",m:"This game does not collect data. The zorgos do."},
   {t:"Help",m:"Need help? Too bad."},
-  {t:"Reminder",m:"You've been playing for "+()=>Math.floor((Date.now()-S.lastSaveTime)/60000)+" minutes."},
+  {t:"Reminder",m:"You've been mewing for a while. Your tongue is fine. Probably."},
   {t:"Alert",m:"Suspicion level noted."},
-  {t:"Message",m:"From: Unknown\nSubject: Your teeth"},
+  {t:"Message",m:"From: Unknown<br>Subject: Your teeth"},
   {t:"???",m:"🟣"},
+  {t:"Terms of Service",m:"By clicking you agree to give your jawline to Owen. No refunds."},
+  {t:"Poll",m:"Is your PSL real? <br>[ ] Yes <br>[ ] No <br>[ ] The zorgos told me"},
+  {t:"Patch Notes",m:"v0.7: added teeth. we can't remove them. sorry."},
+  {t:"Fact",m:"The average zorgo weighs 0 grams. They have no mass. They exist anyway."},
+  {t:"Live Update",m:"67 people are mewing at the same time as you right now."},
+  {t:"⚠️ WARNING",m:"Your mew points may be sentient. Do not make eye contact."},
+  {t:"Agartha News",m:"Depth 847km: they found a Falim Gum wrapper."},
+  {t:"Sukuna",m:"He opened the mouth on your cheek again. It said your name."},
+  {t:"Gojo",m:"He looked at your PSL. He didn't say anything. He just left."},
+  {t:"Owen",m:"Owen is typing..."},
+  {t:"Owen",m:"Owen stopped typing."},
+  {t:"Error",m:"your face could not be loaded. using backup face."},
+  {t:"Tip",m:"If you see a black zorgo, DO NOT click it.<br><br>Actually, do what you want."},
+  {t:"Announcement",m:"The wet floor sign has been moved. We don't know by whom."},
+  {t:"Report",m:"Your teeth count was flagged for review."},
+  {t:"Invitation",m:"You are invited to Agartha. Bring 10 zorgos. Do not bring your teeth."},
 ];
 
 function randomPopup(){
@@ -1470,34 +1484,39 @@ function cssGlitch(){
 
 // --- RANDOM NOTIFICATIONS ---
 const NOTIF_MSGS=[
-  "🟣 zorgo detected nearby","🦷 tooth check: "+()=>S.teeth,
-  "👁️ someone is watching","⚠️ wet floor","🗿 mew harder",
-  ()=>Math.floor(Math.random()*99)+" people are mewing right now",
-  "📢 owen posted","🔮 the zorgos approve",
-  "💀 bonesmash complete","🧴 skincare reminder",
-  "❓ ???","🪞 don't look","♾️ limitless",
-  "🟣 zorgo escaped containment","🦷 new tooth incoming",
-  "⚠️ suspicion +"+()=>Math.floor(Math.random()*5),
-  "👹 sukuna noticed you","🕳️ agartha signal: strong",
-  "📊 your PSL: "+()=>psl().toFixed(1)+" (source: trust me)",
+  "🟣 zorgo detected","🦷 tooth: "+()=>S.teeth,"👁️ watching","⚠️ wet floor","🗿 mew",
+  ()=>Math.floor(Math.random()*99)+" mewing rn","📢 owen posted","🔮 zorgos approve",
+  "💀 bonesmash","🧴 skincare","❓","🪞 don't look","♾️ limitless",
+  "🟣 zorgo escaped","🦷 tooth incoming","👹 sukuna noticed","🕳️ agartha signal",
+  "📊 PSL "+()=>psl().toFixed(1)+" (trust)","🟣","🟣🟣","🟣🟣🟣",
+  "mew","mew mew","✅ form: good","❌ detected",
+  ()=>Math.floor(Math.random()*999)+" zorgos in area",
+  "👤 owen online","👤 owen offline","🦷 #"+()=>S.teeth+" growing",
+  "📈 trending","🔔 new achievement (lie)","💀","⚠️","67",
+  "mirror saw you","incoming zorgo","teeth update","screenshot detected",
+  "cold shower reminder","reflection blinked","🗿 nice jawline",
+  "zorgo approaching","owen is typing","owen stopped typing",
+  "PSL check passed","PSL check failed","mew form: S tier",
+  "agartha depth: "+()=>Math.floor(Math.random()*999)+"km",
+  "teeth growth: normal","teeth growth: abnormal","teeth growth: ████",
+  ()=>S.combo+"x combo recorded","zorgo market: up 12%","zorgo market: crashed",
 ];
 
 // --- MASTER CHAOS LOOP ---
 let chaosLevel=0;
-const chaosRate=isMobile?0.6:1; // less frequent on mobile
+const chaosRate=isMobile?0.7:1;
 setInterval(()=>{
   const p=psl();
   chaosLevel=Math.floor(p);
 
-  if(p>=2 && Math.random()<0.02*Math.min(4,p/2)*chaosRate) randomPopup();
-  if(p>=1 && Math.random()<0.04*Math.min(5,p/2)*chaosRate){
+  if(p>=1 && Math.random()<0.04*Math.min(5,p/2)*chaosRate) randomPopup();
+  if(p>=0.5 && Math.random()<0.08*Math.min(6,p/2)*chaosRate){
     const m=NOTIF_MSGS[Math.floor(Math.random()*NOTIF_MSGS.length)];
     pushNotif(typeof m==='function'?m():m);
   }
-  // fewer falling emoji on mobile
-  if(p>=3 && Math.random()<0.03*Math.min(isMobile?3:6,p/2)*chaosRate) dropEmoji();
-  if(p>=5 && Math.random()<0.005*Math.min(3,p/3)*chaosRate) cssGlitch();
-  if(p>=4 && !isMobile) trailEnabled=true;
+  if(p>=2 && Math.random()<0.06*Math.min(isMobile?4:8,p/2)*chaosRate) dropEmoji();
+  if(p>=4 && Math.random()<0.01*Math.min(4,p/3)*chaosRate) cssGlitch();
+  if(p>=3 && !isMobile) trailEnabled=true;
 
   // page title changes
   if(Math.random()<0.01){
@@ -1537,8 +1556,202 @@ setInterval(()=>{
 },2000);
 
 // --- INITIAL CHAOS BURST ---
-setTimeout(()=>{pushNotif("welcome back. the zorgos missed you.");},2000);
-setTimeout(()=>{pushNotif("teeth count: "+S.teeth);},4000);
-if(psl()>=3) setTimeout(()=>{randomPopup();},6000);
+setTimeout(()=>{pushNotif("welcome back. the zorgos missed you.");},1500);
+setTimeout(()=>{pushNotif("teeth count: "+S.teeth);},3000);
+setTimeout(()=>{if(psl()>=1)pushNotif("⚠️ new update available (lie)");},5000);
+if(psl()>=3) setTimeout(()=>{randomPopup();},4000);
+if(psl()>=2) setTimeout(()=>{dropEmoji();dropEmoji();dropEmoji();},2000);
+
+// ============ EXTRA CHAOS ============
+
+// --- RANDOM SCREEN SHAKE FOR NO REASON ---
+setInterval(()=>{
+  if(psl()>=2 && Math.random()<0.03*chaosRate) screenShake(1);
+  if(psl()>=6 && Math.random()<0.01*chaosRate) screenShake(2);
+  if(psl()>=9 && Math.random()<0.005*chaosRate) screenShake(3);
+},2000);
+
+// --- FAKE ERROR POPUPS ---
+const FAKE_ERRORS=[
+  "Error: teeth overflow (max 32 exceeded)","TypeError: zorgo is not defined",
+  "Warning: PSL exceeds safe limits","Fatal: mirror.reflect() returned undefined",
+  "Error 404: jawline not found","Segfault in bonesmash.c line 67",
+  "Exception: too many teeth","Warning: suspicion leak detected",
+  "Error: cannot read property 'face' of null","ZORGO_OVERFLOW: stack exceeded",
+  "panic: runtime error: mew index out of range","ERR_CONNECTION_AGARTHA",
+  "SyntaxError: unexpected tooth at position "+()=>S.teeth,
+  "RangeError: Maximum mew stack size exceeded",
+];
+setInterval(()=>{
+  if(psl()>=3 && Math.random()<0.008*chaosRate){
+    const err=FAKE_ERRORS[Math.floor(Math.random()*FAKE_ERRORS.length)];
+    const msg=typeof err==='function'?err():err;
+    pushNotif("⛔ "+msg);
+    if(Math.random()<0.3) log("ERROR: "+msg,true);
+  }
+},3000);
+
+// --- TEXT INJECTION INTO LOG ---
+const GHOST_LOGS=[
+  "...","help","it's dark in here","who is clicking",
+  "the zorgos are multiplying","teeth: ████","check behind you",
+  "this isn't a game","owen was never real","PSL is a lie",
+  "they can see your screen","don't close the tab","67 67 67 67",
+  "your mewing form is being recorded","agartha coordinates: ██.████, ██.████",
+  "new tooth detected","zorgo containment breach","",
+  "the mirror remembers","why did you buy the wet floor sign",
+  "level 67","the grind","the grind","the grind",
+];
+setInterval(()=>{
+  if(psl()>=4 && Math.random()<0.02*chaosRate){
+    log(GHOST_LOGS[Math.floor(Math.random()*GHOST_LOGS.length)],Math.random()<0.5);
+  }
+},4000);
+
+// --- RANDOM ELEMENT ZOOM ---
+setInterval(()=>{
+  if(psl()>=3 && Math.random()<0.01*chaosRate){
+    const els=document.querySelectorAll('.st .v, .rank, .click-hint, .pt');
+    const el=els[Math.floor(Math.random()*els.length)];
+    if(el){
+      const s=1+Math.random()*0.8;
+      el.style.transform="scale("+s+")";
+      el.style.transition="transform 0.2s";
+      setTimeout(()=>{el.style.transform="scale(1)";},300+Math.random()*500);
+    }
+  }
+},1500);
+
+// --- COLOR STORM (rapid bg changes) ---
+setInterval(()=>{
+  if(psl()>=8 && Math.random()<0.003*chaosRate){
+    // rapid fire color changes
+    let count=0;
+    const storm=setInterval(()=>{
+      const target=document.getElementById("chroma-wrap")||document.body;
+      target.style.background=`hsl(${Math.random()*360},60%,${5+Math.random()*10}%)`;
+      count++;
+      if(count>8){clearInterval(storm);target.style.background="";}
+    },80);
+  }
+},3000);
+
+// --- FAKE "OTHER PLAYERS" ---
+const FAKE_PLAYERS=["xX_MewGod_Xx","jawline_jake","PSL_enjoyer","zorgo_collector_99","bonesmash_barry","agartha_andy","owen_fan_2009","teeth_guy","coldshower_chris","sukuna_simp"];
+setInterval(()=>{
+  if(psl()>=2 && Math.random()<0.015*chaosRate){
+    const name=FAKE_PLAYERS[Math.floor(Math.random()*FAKE_PLAYERS.length)];
+    const actions=[
+      "just reached PSL "+((Math.random()*4+3).toFixed(1)),
+      "collected a zorgo","lost "+Math.floor(Math.random()*5+1)+" teeth",
+      "bought "+UPG[Math.floor(Math.random()*Math.min(8,UPG.length))].nm,
+      "prestiged (x"+(Math.floor(Math.random()*5+1)*0.25+1).toFixed(2)+")",
+      "was noticed by them (-10%)", "found a golden mew",
+      "entered agartha","expanded their domain",
+    ];
+    pushNotif("👤 "+name+" "+actions[Math.floor(Math.random()*actions.length)]);
+  }
+},5000);
+
+// --- RANDOM STAT DISPLAY GLITCH ---
+setInterval(()=>{
+  if(psl()>=5 && Math.random()<0.008*chaosRate){
+    const statEls=document.querySelectorAll('.st .v');
+    const el=statEls[Math.floor(Math.random()*statEls.length)];
+    if(el){
+      const orig=el.textContent;
+      const glitches=["???","NaN","∞","ERR","−0","null","67","🟣",fmt(Math.random()*1e15),"████"];
+      el.textContent=glitches[Math.floor(Math.random()*glitches.length)];
+      el.style.color="#f00";
+      setTimeout(()=>{el.textContent=orig;el.style.color="";},200+Math.random()*400);
+    }
+  }
+},2000);
+
+// --- NOTIFICATION SPAM BURSTS ---
+setInterval(()=>{
+  if(psl()>=7 && Math.random()<0.005*chaosRate){
+    // rapid fire 5 notifications
+    for(let i=0;i<5;i++){
+      setTimeout(()=>{
+        const msgs=["🟣","🦷","👁️","⚠️","67","!!!","...","🗿","??","PSL"];
+        pushNotif(msgs[Math.floor(Math.random()*msgs.length)]);
+      },i*200);
+    }
+  }
+},5000);
+
+// --- RANDOM TOAST SPAM ---
+const RANDOM_TOASTS=[
+  "🗿","🟣 zorgo.","🦷","mew","67","...","👁️","",
+  "the grind never stops","check your teeth","zorgo?",
+  "PSL "+()=>psl().toFixed(1),"nice jawline (lie)",
+  ()=>S.teeth+" teeth and counting","don't look up",
+  "owen is proud","owen is watching","owen",
+];
+setInterval(()=>{
+  if(psl()>=4 && Math.random()<0.01*chaosRate){
+    const t=RANDOM_TOASTS[Math.floor(Math.random()*RANDOM_TOASTS.length)];
+    toast(typeof t==='function'?t():t);
+  }
+},3000);
+
+// --- ELEMENT DRIFT (things slowly move) ---
+setInterval(()=>{
+  if(psl()>=6 && Math.random()<0.01*chaosRate){
+    const panels=document.querySelectorAll('.p');
+    const p=panels[Math.floor(Math.random()*panels.length)];
+    if(p){
+      const dx=(Math.random()-0.5)*6;
+      const dy=(Math.random()-0.5)*4;
+      p.style.transform=`translate(${dx}px,${dy}px)`;
+      p.style.transition="transform 0.5s";
+      setTimeout(()=>{p.style.transform="none";},1000+Math.random()*2000);
+    }
+  }
+},2000);
+
+// --- EMOJI BURST ON HIGH COMBO ---
+setInterval(()=>{
+  if(S.combo>=20 && Math.random()<0.1){
+    for(let i=0;i<3;i++) setTimeout(()=>dropEmoji(),i*100);
+  }
+  if(S.combo>=50 && Math.random()<0.15){
+    for(let i=0;i<6;i++) setTimeout(()=>dropEmoji(),i*80);
+  }
+},500);
+
+// --- AGGRESSIVE TITLE CHANGES ---
+setInterval(()=>{
+  if(psl()>=5){
+    const t=TITLES[Math.floor(Math.random()*TITLES.length)];
+    document.title=typeof t==='function'?t():t;
+  }
+},3000);
+
+// --- RANDOM FONT CHANGES ---
+setInterval(()=>{
+  if(psl()>=7 && Math.random()<0.005*chaosRate){
+    const fonts=["serif","monospace","cursive","fantasy","system-ui"];
+    document.body.style.fontFamily=fonts[Math.floor(Math.random()*fonts.length)];
+    setTimeout(()=>{document.body.style.fontFamily="'Comic Neue','Comic Sans MS',cursive";},500+Math.random()*1000);
+  }
+},3000);
+
+// --- THE GAME BRIEFLY "BREAKS" ---
+setInterval(()=>{
+  if(psl()>=8 && Math.random()<0.002*chaosRate){
+    const wrap=document.getElementById("chroma-wrap");
+    if(wrap){
+      wrap.style.display="none";
+      toast("error: game crashed");
+      setTimeout(()=>{
+        wrap.style.display="";
+        toast("...nevermind");
+      },800+Math.random()*1200);
+    }
+  }
+},5000);
+
 </script>
 </body></html>
