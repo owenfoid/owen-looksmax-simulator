@@ -213,3 +213,208 @@ setInterval(()=>{
 load();render();
 setInterval(save,10000);
 window.addEventListener("beforeunload",save);
+
+// ============ CHAOS SYSTEMS ============
+
+// --- NOTIFICATION STACK ---
+function pushNotif(msg){
+  const s=document.getElementById("notif-stack");
+  if(!s)return;
+  const d=document.createElement("div");
+  d.className="notif";
+  d.textContent=msg;
+  s.appendChild(d);
+  if(s.children.length>6)s.firstChild.remove();
+  setTimeout(()=>{if(d.parentNode)d.remove();},4000);
+}
+
+// --- RANDOM POPUPS ---
+const POPUP_MSGS=[
+  {t:"System Alert",m:"Your mewing form has been logged."},
+  {t:"Zorgo Update",m:"A zorgo was seen near your location."},
+  {t:"Tip",m:"Did you know? Bonesmashing was invented in Agartha."},
+  {t:"Warning",m:"Your teeth count seems high."},
+  {t:"Owen Says",m:"Keep mewing. Don't look behind you."},
+  {t:"Error 67",m:"Emote failed to load. Or did it?"},
+  {t:"Fun Fact",m:"The average person has 32 teeth. You have "+()=>S.teeth+"."},
+  {t:"Survey",m:"Rate your jawline 1-10. (This is mandatory)"},
+  {t:"Notification",m:"Someone viewed your PSL profile."},
+  {t:"Zorgo Facts",m:"Nobody knows what zorgos are. This is by design."},
+  {t:"Update",m:"Owen Looksmax Simulator v0.7."+Math.floor(Math.random()*99)+" available."},
+  {t:"Privacy",m:"This game does not collect data. The zorgos do."},
+  {t:"Help",m:"Need help? Too bad."},
+  {t:"Reminder",m:"You've been playing for "+()=>Math.floor((Date.now()-S.lastSaveTime)/60000)+" minutes."},
+  {t:"Alert",m:"Suspicion level noted."},
+  {t:"Message",m:"From: Unknown\nSubject: Your teeth"},
+  {t:"???",m:"🟣"},
+];
+
+function randomPopup(){
+  const p=POPUP_MSGS[Math.floor(Math.random()*POPUP_MSGS.length)];
+  const el=document.createElement("div");
+  el.className="popup";
+  const msg=typeof p.m==='function'?p.m():p.m;
+  el.innerHTML='<div class="popup-close" onclick="this.parentNode.remove()">X</div><div class="popup-title">'+p.t+'</div>'+msg;
+  el.style.left=(5+Math.random()*60)+"%";
+  el.style.top=(10+Math.random()*60)+"%";
+  el.onclick=function(){this.remove();};
+  document.body.appendChild(el);
+  setTimeout(()=>{if(el.parentNode)el.remove();},6000+Math.random()*4000);
+}
+
+// --- FALLING EMOJI ---
+function dropEmoji(){
+  const emojis=["🗿","🦷","🟣","👅","💀","🔮","⚠️","👁️","🧴","💉","🦴","🫠","❓","🪞","👹","♾️","🥶","🍖"];
+  const el=document.createElement("div");
+  el.className="falling-emoji";
+  el.textContent=emojis[Math.floor(Math.random()*emojis.length)];
+  el.style.left=Math.random()*95+"%";
+  el.style.setProperty("--dur",(2+Math.random()*3)+"s");
+  document.body.appendChild(el);
+  setTimeout(()=>{if(el.parentNode)el.remove();},5000);
+}
+
+// --- MOUSE TRAIL ---
+let trailEnabled=false;
+document.addEventListener("mousemove",(e)=>{
+  if(!trailEnabled)return;
+  const d=document.createElement("div");
+  d.className="mouse-trail";
+  d.style.left=e.clientX+"px";d.style.top=e.clientY+"px";
+  document.body.appendChild(d);
+  setTimeout(()=>{if(d.parentNode)d.remove();},500);
+});
+
+// --- PAGE TITLE CHAOS ---
+const TITLES=[
+  "Owen Looksmax Simulator",
+  "Owen Looksmax Simulator - "+()=>S.teeth+" teeth",
+  "Owen Looksmax Simulator - "+()=>S.zorgos+" zorgos",
+  "(1) new zorgo",
+  "stop playing",
+  "Owen Looksmax Simulator",
+  "Owen Looksmax Simulator (REAL)",
+  "are you still here",
+  "PSL "+()=>psl().toFixed(1),
+  "Owen Looksmax Simulator",
+  "🟣🟣🟣",
+  "the grind never stops",
+  "Owen Looksmax Simulator",
+];
+
+// --- RANDOM CSS CHAOS ---
+function cssGlitch(){
+  const r=Math.random();
+  if(r<0.15){
+    // briefly invert colors
+    document.body.style.filter="invert(1)";
+    setTimeout(()=>{document.body.style.filter="none";},100+Math.random()*200);
+  } else if(r<0.3){
+    // flip upside down
+    document.body.style.transform="rotate(180deg)";
+    document.body.style.transformOrigin="center center";
+    setTimeout(()=>{document.body.style.transform="none";},200+Math.random()*300);
+  } else if(r<0.45){
+    // skew
+    document.body.style.transform="skewX("+(Math.random()*6-3)+"deg)";
+    setTimeout(()=>{document.body.style.transform="none";},300);
+  } else if(r<0.6){
+    // hue rotate
+    document.body.style.filter="hue-rotate("+Math.floor(Math.random()*360)+"deg)";
+    setTimeout(()=>{document.body.style.filter="none";},400);
+  } else if(r<0.75){
+    // blur briefly
+    document.body.style.filter="blur(2px)";
+    setTimeout(()=>{document.body.style.filter="none";},150);
+  } else if(r<0.85){
+    // change cursor
+    const cursors=["crosshair","wait","help","not-allowed","grab","zoom-in","cell","alias"];
+    document.body.style.cursor=cursors[Math.floor(Math.random()*cursors.length)];
+    setTimeout(()=>{document.body.style.cursor="auto";},2000);
+  } else {
+    // random background flash
+    const colors=["#2a002a","#002a00","#2a2a00","#00002a","#2a0000"];
+    document.body.style.background=colors[Math.floor(Math.random()*colors.length)];
+    setTimeout(()=>{document.body.style.background="#1a0a2e";},300);
+  }
+}
+
+// --- RANDOM NOTIFICATIONS ---
+const NOTIF_MSGS=[
+  "🟣 zorgo detected nearby","🦷 tooth check: "+()=>S.teeth,
+  "👁️ someone is watching","⚠️ wet floor","🗿 mew harder",
+  ()=>Math.floor(Math.random()*99)+" people are mewing right now",
+  "📢 owen posted","🔮 the zorgos approve",
+  "💀 bonesmash complete","🧴 skincare reminder",
+  "❓ ???","🪞 don't look","♾️ limitless",
+  "🟣 zorgo escaped containment","🦷 new tooth incoming",
+  "⚠️ suspicion +"+()=>Math.floor(Math.random()*5),
+  "👹 sukuna noticed you","🕳️ agartha signal: strong",
+  "📊 your PSL: "+()=>psl().toFixed(1)+" (source: trust me)",
+];
+
+// --- MASTER CHAOS LOOP ---
+let chaosLevel=0;
+setInterval(()=>{
+  const p=psl();
+  chaosLevel=Math.floor(p);
+
+  // popups increase with PSL
+  if(p>=2 && Math.random()<0.02*Math.min(4,p/2)) randomPopup();
+
+  // notifications increase aggressively
+  if(p>=1 && Math.random()<0.04*Math.min(5,p/2)){
+    const m=NOTIF_MSGS[Math.floor(Math.random()*NOTIF_MSGS.length)];
+    pushNotif(typeof m==='function'?m():m);
+  }
+
+  // emoji rain increases
+  if(p>=3 && Math.random()<0.03*Math.min(6,p/2)) dropEmoji();
+
+  // css glitches at high PSL
+  if(p>=5 && Math.random()<0.005*Math.min(3,p/3)) cssGlitch();
+
+  // mouse trail activates at PSL 4
+  if(p>=4) trailEnabled=true;
+
+  // page title changes
+  if(Math.random()<0.01){
+    const t=TITLES[Math.floor(Math.random()*TITLES.length)];
+    document.title=typeof t==='function'?t():t;
+  }
+
+  // marquee text updates randomly
+  if(p>=6 && Math.random()<0.005){
+    const extras=[
+      " 🦷 TEETH COUNT: "+S.teeth+" 🦷 ",
+      " 🟣 ZORGO ALERT 🟣 ",
+      " 👁️ THEY ARE WATCHING 👁️ ",
+      " ⚠️ THIS IS FINE ⚠️ ",
+      " 💀 BONESMASH PROTOCOL ACTIVE 💀 ",
+      " 🪞 DO NOT LOOK AT THE MIRROR 🪞 ",
+    ];
+    const m=document.getElementById("marquee-text");
+    if(m)m.textContent+=extras[Math.floor(Math.random()*extras.length)];
+  }
+
+  // fake ad respawns
+  if(Math.random()<0.002){
+    const ad=document.getElementById("fake-ad");
+    if(ad)ad.style.display="block";
+  }
+
+  // random zorgo spawning increases with chaos
+  if(S.total>500 && Math.random()<0.01*Math.min(4,p/2)) spawnZorgo();
+
+},1000);
+
+// extra zorgo spawn interval (stacks with the one in passive tick)
+setInterval(()=>{
+  if(psl()>=4 && Math.random()<0.15) spawnZorgo();
+  if(psl()>=7 && Math.random()<0.03) spawnNegZorgo();
+},2000);
+
+// --- INITIAL CHAOS BURST ---
+setTimeout(()=>{pushNotif("welcome back. the zorgos missed you.");},2000);
+setTimeout(()=>{pushNotif("teeth count: "+S.teeth);},4000);
+if(psl()>=3) setTimeout(()=>{randomPopup();},6000);
