@@ -1,5 +1,5 @@
 // URL param reset
-if(location.search.indexOf("reset=1")>=0){localStorage.removeItem("owen_lm_v8");localStorage.removeItem("owen_bts");location.replace(location.pathname);}
+if(location.search.indexOf("reset=1")>=0){localStorage.removeItem("owen_lm_v9");localStorage.removeItem("owen_bts2");location.replace(location.pathname);}
 
 var isMobile='ontouchstart' in window||navigator.maxTouchPoints>0;
 var S={pts:0,total:0,pc:1,ps:0,upg:{},ach:{},clicks:0,stim:0,prestige:0,combo:0,maxCombo:0,lastClickTime:0,goldenClicks:0,lastSaveTime:Date.now(),totalPrestigeEarnings:0,zorgos:0,totalZorgos:0,teeth:32,suspicion:0};
@@ -122,10 +122,10 @@ function spawnZorgo(){if(document.querySelectorAll(".zorgo-float").length>(isMob
 function spawnNegZorgo(){if(document.querySelectorAll(".zorgo-float").length>(isMobile?3:8))return;var el=document.createElement("div");el.className="zorgo-float";el.textContent="\u{26AB}";el.style.left=(10+Math.random()*70)+"%";el.style.top=(15+Math.random()*50)+"%";var h=function(e){e.stopPropagation();e.preventDefault();if(own("zshield")>=1){toast("Shield!");}else{S.zorgos=Math.max(0,S.zorgos-1)};toast("-1 Zorgo");screenShake(2);el.remove();render()};el.addEventListener("click",h);el.addEventListener("touchend",h,{passive:false});document.body.appendChild(el);setTimeout(function(){if(el.parentNode)el.remove()},2000)}
 function teethTick(){var tRate=own('tbrush')>=1?0.0005:0.001;if(typeof craftBonuses!=="undefined"&&craftBonuses.teethslow)tRate*=0.2;if(psl()>=5&&Math.random()<tRate){S.teeth++;if(S.teeth===33)toast("...33 teeth?");else if(S.teeth===40)toast("stop.");else if(S.teeth===50)toast("too many");checkAch()}}
 function addSuspicion(a){var gain=a*(own("shades")>=1?0.7:1);var cap=own("alias")>=1?150:100;S.suspicion=Math.min(cap,S.suspicion+gain);var susCap=own("alias")>=1?150:100;if(S.suspicion>=susCap){S.suspicion=0;var l=Math.floor(S.pts*0.1);S.pts=Math.max(0,S.pts-l);toast("THEY NOTICED. -"+fmt(l));screenShake(3)}}
-var SAVE_KEY="owen_lm_v8";
+var SAVE_KEY="owen_lm_v9";
 // NEVER change SAVE_KEY - it will wipe everyone's progress
 // Migration: also check older keys
-var OLD_KEYS=["owen_lm_v6","owen_lm_v4","owen_lm_v3"];
+var OLD_KEYS=[];
 
 function save(){
   S.lastSaveTime=Date.now();
