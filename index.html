@@ -136,6 +136,8 @@ footer{text-align:center;font-size:.35rem;color:#ccc;padding:6px 6px 24px;font-f
     <div class="st"><div class="v" id="s-ps">0</div><div class="l">Per Sec</div></div>
     <div class="st"><div class="v" id="s-total">0</div><div class="l">Lifetime</div></div>
     <div class="st" style="color:purple"><div class="v" id="s-zorgos">0</div><div class="l">Zorgos</div></div>
+    <div class="st" style="color:green"><div class="v" id="s-cmult">1.0x</div><div class="l">Curr. Mult</div></div>
+    <div class="st" id="crit-display" style="display:none;color:red"><div class="v" id="s-crit">--</div><div class="l">⚠️ CRITICAL</div></div>
   </div>
   <div class="p full">
     <div class="psl-row"><span>PSL Rating</span><span id="psl-num">0.0 / 10.0</span></div>
@@ -172,6 +174,13 @@ function getEvent(){var p=psl();if(p>=9&&Math.random()<0.3)return EVENTS_LATE[Ma
 var PRESTIGE_COST=1e10;var PRESTIGE_MULT=0.25;var COMBO_DECAY_MS=800;var COMBO_MAX_MULT=5;var GOLDEN_CHANCE=0.003;var GOLDEN_DURATION=5000;var GOLDEN_MULT=10;
 var ACH=[{id:"c10",ic:"👆",nm:"First Mews",ds:"10 clicks",ck:function(){return S.clicks>=10}},{id:"c1k",ic:"🤖",nm:"Mewbot",ds:"1K clicks",ck:function(){return S.clicks>=1000}},{id:"p1m",ic:"🏆",nm:"Millionaire",ds:"1M",ck:function(){return S.total>=1e6}},{id:"p1b",ic:"👑",nm:"Billionaire",ds:"1B",ck:function(){return S.total>=1e9}},{id:"psl5",ic:"⭐",nm:"Chad",ds:"PSL 5",ck:function(){return psl()>=5}},{id:"psl9",ic:"🗿",nm:"Owen Mode",ds:"PSL 9",ck:function(){return psl()>=9}},{id:"stim",ic:"🌀",nm:"Stimmed",ds:"Max stim",ck:function(){return S.stim>=100}},{id:"e67",ic:"🫳",nm:"Emote 67",ds:"rare",ck:function(){return S.ach&&S.ach["e67"]}},{id:"pr1",ic:"🔄",nm:"Reborn",ds:"Prestige",ck:function(){return S.prestige>=1}},{id:"z1",ic:"🟣",nm:"What",ds:"First zorgo",ck:function(){return S.totalZorgos>=1}},{id:"z50",ic:"🔮",nm:"Zorgo Lord",ds:"50 zorgos",ck:function(){return S.totalZorgos>=50}},{id:"cur50",ic:"📊",nm:"Diversified",ds:"50 currencies",ck:function(){var n=0;for(var i=0;i<CURRENCIES.length;i++)if(CURRENCIES[i].val>0)n++;return n>=50}},{id:"wet1",ic:"⚠️",nm:"Why",ds:"Wet Floor Sign",ck:function(){return own("wet")>=1}},{id:"t50",ic:"🦷",nm:"Too Many",ds:"50 teeth",ck:function(){return S.teeth>=50}}];
 
+// CURRENCY-GATED UPGRADES
+UPG.push({id:"cboost1",ic:"📊",nm:"Red Shard Amplifier",ds:"+10K/sec (needs 30+ Red Shards)",b:2e6,m:1.7,pc:0,ps:10000,type:"mew",req:function(){return CURRENCIES[0].val>=30}});
+UPG.push({id:"cboost2",ic:"🌊",nm:"Void Whisper Engine",ds:"+80K/sec (needs 40+ Void Whispers)",b:50e6,m:1.8,pc:0,ps:80000,type:"mew",req:function(){return CURRENCIES[5].val>=40}});
+UPG.push({id:"cboost3",ic:"💀",nm:"Shadow Plate Forge",ds:"+300K/sec (needs 60+ Shadow Plates)",b:200e6,m:1.9,pc:0,ps:300000,type:"mew",req:function(){return psl()>=5&&CURRENCIES[38]&&CURRENCIES[38].val>=60}});
+UPG.push({id:"cdrain",ic:"🔻",nm:"Currency Drain Tap",ds:"All taxes -50% (needs 10 zorgos)",b:15,m:2,pc:0,ps:0,type:"zorgo",req:function(){return S.zorgos>=10},max:1,secret:true});
+UPG.push({id:"cstab",ic:"📌",nm:"Stabilizer",ds:"Reduces currency chaos (needs PSL 4+)",b:5e6,m:1,pc:0,ps:0,type:"mew",req:function(){return psl()>=4},max:1});
+
 const FACE_IMAGES = [
   "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAMgAAADwCAYAAABFcSteAAAFX0lEQVR42u3dv2skVQDA8XfHsSyprhVlrwjIVilMZSGSRrARrxAExQOLqy0Owb9AkCusLQTFA9HixEa0CWJhdRapgpDignBtqpBOqwnjZn7vzOy8N58PHOTuNrnJm/ed92Y3yYUAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAQAgh3DIEu/Haq6/82/Z9/vr7H+dLIGIQjUAEIRiBiGK3xCIQUYhFIMIQikCEIRSBCEMocbltCOYbxxw+PyuIiWM1sYKIw+ctEJPE52+LZWLYcllBxGFcBGISGB+BgHsQV0bck1hBxGHcBAICcRU0fgJxco2jQJxU4ykQEIirnVVEIE4i8xpfWywQCAjE9so4CwQE4qpmvAUCAgGBWO5JddytICAQEIjtlfEXCAgEBAICAYGAQEAgQLKBeA3EeRAICKQb/+GL8yAQEAgIBARi/+v+QyBgBQGBAKkH4j7EuAsEBAICsdwbb4GAQEAgIBD7YoyzFQQEAgIBgdgfG1+BwHTM7ur67Odvr38kzenp2d3s7bc+/Pji8ODg/vXjTk6eZm9/8OhR44//5PHj//0+/zE///ST4+zt9Xr/ou2xT+V4D9/5aDbzxgpSMDG6Traix+c/1mdffHk01+ON1Z3UP8E/vv/qesV44/2Ht4quxmUTpMivT374Jnt7sVg8OHrv3fpV6+TkaX5CZ/9+m1VkasdbNq62WJHGkdnbWxZuV5pcXYsmXAghFE26za1L5rfvvr7bZZs1peO9vLy68bhUI7k9pzjKTu7hwcH9zStmkeMffwqLxeJB9iv/5023RX1sW3Z5vEXjVzXeAokojrqTTLW6cUsxkjtOe/0+vs9/J79lmcvxWkFmouwGt8mNr+MVSBTbq8xq9fJF0Y1o3Y3r5uTqesO7jV0cb3685rTNssXq8crcRtkzWGdn5/dCCGF/f/V88/FlT/WOcbxWEELTq3Kfj5/78QokElXbn6aTqOpxfd/sxna8sUruxZ02e+C9veWNV6jLXoTLFL0YVzchNydb1QuEZVuszK6Ot81T4ym9aOgepGByVE26tluSoa/EsR2vLVZkiq7mQz7b1OWreGM+XlusSLdZ2ddklW1dmm5h2lyFm0y2ui3WLo+3yTYrta/JssXKTYaiSZefPFWTr+4q3veVOLbjFUjCkWy7lRlqssV2vLZYkWyzNrdXbbYwQ0+0plusXR1v1TYrxS95n+33gww58ba5AncNZMzj9f0gidg8aV1O4nq9f9F0ArV57JDbxKGPt49xtYJMVP6HNkzRtivIGPzQBiCE4Fms0Z2fv7iXvb1avfR86PdDINGFsflnVRO+6/thi2X/bPwEkurq0eTvu74fAgH3IHM05ad3rSAMou5muuzvu74fAgFbrBRXkbavZ3R9PwSS5HbLdsoWC6wg3HT++5/9rURvvm5ABSKGNh9fNAJJIoxt/vuFqm/4yv5tobgH2cqYX090eXl149eUPt5Ux80Kkqjs6n36y3EYM8IQQli/feQEWEHAChK97Go+xkpi5RBI9KHkbRONGAQyy2hwDwLR8e2nOVP/kUBj8q3JAhGNGASyy2CursZ7EW+5XApCIHFFM4VAxCCQyUYzdiBi6J9nsRLZ14tDICAQEAgIBAQCAgGBAAIBgYBAQCAgEBAICAQEAgIBBAICAYGAQEAgIBAQCAgEBAICAQQCAgGBgEBAICAQEAgIBAQCAjEEIBAQCAgEBAICAYGAQEAgIBBAICAQEAgIBAQCAgGBgEBAICAQQCAgEBAICAQEAgIBgYBAQCCAQEAgIBAQCAgEBAICAYGAQEAggEBAINCf/wBjQNDEqVmOUgAAAABJRU5ErkJggg==",
   "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAMgAAADwCAYAAABFcSteAAAFOklEQVR42u3dv2sUWQDA8blDluB/EIXlIIUiQbGScJVg53VqJVdIyB9gYSGChXBcccWVx7GEK8TKszOdkErkqpBjkaRYkBTufyDpYpORdTM/s7OzO+99PiCca7IZ377vvDeziZckAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAEAn/WAIFuv62qWTso/5f/TZ6yQQIdQlHIGIQiwCEYVYBCIKsQhEGEIRiDA6FIZQBCIMoQhEGEJZhB8NQbxxxPD3E4jJ4+9pi2XC2HJZQcTh7y8QsMVy5rTdsoKIw7gIxCQwPicCAQTi7GicBOJFN14C8WIbN4GAQJwFjZ9AvLjGUSAgEGc9ohpPKwjEHojVw7gKBATiLGd8BQICAYFY/m2zBAJWEBCIZR/jbQUBgYBAQCAgEBBIW9zBMu4CAYGAQEAgIBAQyPLzP34x7gIBgYBAQCD2w64/BAICAYEAoQfiOsQ4CwQEAgIBgdgfG1+BgEBAICAQ+2SMqxUEBAICAYHYLxtPgcBSi/asur/z8uTgYLQ6+diT3//8JUmSZG84HEw+fu/5b9997u7ff/2b/nev17v/86PNM8//5sWzM4/dXF/fSpIk+ePp47fpY1evro3LjnVZjvPG3V+jmy9WkFN3Hm6O94bDQdmky/L+n+0zj2V9Xtbzh3qcAumYD68HJ+mvrD+/ub6+lZ45yyZZr9e7n/4qmnx5XyddAc5j0cdZNo4C6WgcRb/HOOa5ENuLmvry5fjMtqKN49kbDgfvXm2vzvL5izjO6fGaHN+NB1t+ojCkOFL9/uVx3efMutAtenxRmjzOsnEKeSVxkX4q76yedZdnepJVvTtU9HVCO05brMg1sWJUucWbftz0rd42jzNmwa4gVZf9ye1DnbNzkXmflds8zqrb0FC3WbZYDU++qnHkrR6j0dGVKqtNW8dpi0XmJLnzcHOcN6my3lwrmpjzmnRdOc4uC/b2XJ0l/+LFlSRrj581+ZpYkYquPUajoytra/3DvD9v+zjzbu9mCfF2r0BOA8mbfOedgHln47IL87JA2j5OgQjkWyBFk6/qBCzaplS5a1UlkDaPUyAC+S6Qssl3XlVv6VYNpK3jjD2QYO9iVX2xpuOoM5mbjmPRz5v1fFnjE0scSeIuVulkmeUsPa8wunicAgk8lKqTcFGTrSvH6RqkQ9ciVbcPbapzDdKmomsR380b4LXIMsaxzPLGK+Q4oggk60UURzORhB5HVNcgky/m/s5LP1HY8IpsBYEIRRlIjP98jXGzxeqMo6Pxt29p7/dXD5v+eKwgQcSR9ftZPx6BBBNH048jEBBIzJbxXXSB0Iq8C+ymHkcgwUVSNtnrfjzNivr9AO+oVxfre0dWEBAInI930lv2affDzM/x0+0NAykQMdR5XtEIJJgw6vxLIdPyfpYl/ZpCEUjnzBJE2XP54S+BdE56Fv+4s9tafNfu3jbwcxD1XSw/F2KcrCALlJ7V57mSWDkEEkwoqVmCEYRAogsG1yDQSS5Sp/gGRjcvBCIWUQhEMIIQiFhEIZAuBnN8fNz6MaysrAhCIN3w35tB6yvMrXtbXs+Guc0LAgGBgEBAICAQEAgIBAQCAgEEAgIBgYBAQCAgEBAICAQEAgIBBAICAYGAQEAgIBAQCAgEBAIIBAQCAgGBgEBAICAQEAgIBAQCCAQEAgIBgYBAQCAgEBAICAQQCAgEBAICAYGAQEAgIBAQCAgEEAgIBAQCAgGBgEBAICAQEAggEBAICAQEAgIBgYBAQCAgEIjTV2Nfh8V3PO/EAAAAAElFTkSuQmCC",
@@ -189,7 +198,96 @@ var own=function(id){return S.upg[id]||0};
 function cost(u){if(u.max&&own(u.id)>=u.max)return Infinity;return Math.floor(u.b*Math.pow(u.m,own(u.id)))}
 function prestigeMult(){return 1+S.prestige*PRESTIGE_MULT}
 function comboMult(){return Math.min(COMBO_MAX_MULT,1+S.combo*0.04)}
-function recalc(){S.pc=1;S.ps=0;for(var i=0;i<UPG.length;i++){var u=UPG[i];var n=own(u.id);S.pc+=u.pc*n;S.ps+=u.ps*n;}S.pc=Math.floor(S.pc*prestigeMult());S.ps=Math.floor(S.ps*prestigeMult());if(own("wet")>=1){S.pc*=2;S.ps*=2}if(own("what")>=1){S.ps+=7777}}
+function recalc(){S.pc=1;S.ps=0;for(var i=0;i<UPG.length;i++){var u=UPG[i];var n=own(u.id);S.pc+=u.pc*n;S.ps+=u.ps*n;}S.pc=Math.floor(S.pc*prestigeMult());S.ps=Math.floor(S.ps*prestigeMult());if(own("wet")>=1){S.pc*=2;S.ps*=2}if(own("what")>=1){S.ps+=7777}
+// CURRENCY EFFECTS ON INCOME
+var cm=currencyMult();S.pc=Math.floor(S.pc*cm);S.ps=Math.floor(S.ps*cm)}
+
+// currencies that ACTUALLY DO THINGS
+function currencyMult(){
+  var m=1;var p=psl();
+  // every 10th currency is a multiplier (its value / 50 = bonus %)
+  for(var i=0;i<CURRENCIES.length;i+=10){
+    if(p<CURRENCIES[i].unlockPSL)continue;
+    var v=CURRENCIES[i].val;
+    if(v>0) m+=v/500; // each point = 0.2% bonus
+  }
+  // every 13th currency is a PENALTY if negative or zero
+  for(var i=6;i<CURRENCIES.length;i+=13){
+    if(p<CURRENCIES[i].unlockPSL)continue;
+    if(CURRENCIES[i].val<=0) m*=0.9; // -10% each
+  }
+  return Math.max(0.1,Math.min(m,50)); // cap between 0.1x and 50x
+}
+
+function currencyTax(){
+  var taxMult=own("cdrain")>=1?0.5:1;
+  // every 17th currency drains mew points if above 80
+  var p=psl();
+  for(var i=3;i<CURRENCIES.length;i+=17){
+    if(p<CURRENCIES[i].unlockPSL)continue;
+    if(CURRENCIES[i].val>80){
+      var drain=Math.floor(S.pts*0.001*taxMult);
+      if(drain>0){S.pts=Math.max(0,S.pts-drain)}
+    }
+  }
+  // every 23rd gives points if above 50
+  for(var i=5;i<CURRENCIES.length;i+=23){
+    if(p<CURRENCIES[i].unlockPSL)continue;
+    if(CURRENCIES[i].val>50){
+      var bonus=Math.floor(CURRENCIES[i].val*S.ps*0.001);
+      if(bonus>0){S.pts+=bonus;S.total+=bonus}
+    }
+  }
+}
+
+// currency interactions - some feed into others
+function currencyInteract(){
+  var p=psl();
+  for(var i=0;i<CURRENCIES.length-1;i+=7){
+    if(p<CURRENCIES[i].unlockPSL)continue;
+    var next=CURRENCIES[(i+3)%CURRENCIES.length];
+    if(p<next.unlockPSL)continue;
+    // transfer: if this one > 80, overflow feeds the next
+    if(CURRENCIES[i].val>80){
+      var overflow=(CURRENCIES[i].val-80)*0.01;
+      CURRENCIES[i].val-=overflow;
+      next.val+=overflow*0.5;
+    }
+  }
+}
+
+// critical currency events
+var critCurrency=-1;var critTimer=0;
+function currencyCrisis(){
+  var p=psl();if(p<3)return;
+  if(critCurrency<0&&Math.random()<0.002){
+    // pick a random unlocked currency
+    var unlocked=[];
+    for(var i=0;i<CURRENCIES.length;i++)if(p>=CURRENCIES[i].unlockPSL)unlocked.push(i);
+    if(unlocked.length>10){
+      critCurrency=unlocked[Math.floor(Math.random()*unlocked.length)];
+      critTimer=150; // 15 seconds
+      toast("⚠️ CRITICAL: "+CURRENCIES[critCurrency].nm+" below 20 = lose 5%!");
+      pushNotif("⚠️ "+CURRENCIES[critCurrency].nm+" CRITICAL");
+    }
+  }
+  if(critCurrency>=0){
+    critTimer--;
+    if(critTimer<=0){
+      if(CURRENCIES[critCurrency].val<20){
+        var loss=Math.floor(S.pts*0.05);
+        S.pts=Math.max(0,S.pts-loss);
+        toast("💀 "+CURRENCIES[critCurrency].nm+" failed! -"+fmt(loss));
+        screenShake(3);
+      } else {
+        var bonus=Math.floor(S.ps*10);
+        S.pts+=bonus;S.total+=bonus;
+        toast("✅ "+CURRENCIES[critCurrency].nm+" survived! +"+fmt(bonus));
+      }
+      critCurrency=-1;
+    }
+  }
+}
 function psl(){var t=S.total+S.totalPrestigeEarnings;if(t<=0)return 0;return Math.min(10,parseFloat((Math.log10(t+1)).toFixed(2)))}
 function getRank(p){var r=RANKS[0];for(var i=0;i<RANKS.length;i++)if(p>=RANKS[i].min)r=RANKS[i];return r}
 function fmt(n){if(n>=1e15)return(n/1e15).toFixed(1)+"Q";if(n>=1e12)return(n/1e12).toFixed(1)+"T";if(n>=1e9)return(n/1e9).toFixed(1)+"B";if(n>=1e6)return(n/1e6).toFixed(1)+"M";if(n>=1e3)return(n/1e3).toFixed(1)+"K";return Math.floor(n)}
@@ -660,6 +758,8 @@ function render(){
   document.getElementById("s-ps").textContent=fmt(S.ps);
   document.getElementById("s-total").textContent=fmt(S.total+S.totalPrestigeEarnings);
   document.getElementById("s-zorgos").textContent=S.zorgos;
+  var cm=currencyMult();var cme=document.getElementById("s-cmult");if(cme){cme.textContent=cm.toFixed(1)+"x";cme.style.color=cm>=2?"green":cm<1?"red":"#666"}
+  var crd=document.getElementById("crit-display");var crs=document.getElementById("s-crit");if(crd&&crs){if(critCurrency>=0){crd.style.display="block";crs.textContent=CURRENCIES[critCurrency].ic+" "+Math.floor(critTimer/10)+"s"}else{crd.style.display="none"}}
   var td=document.getElementById("teeth-display");
   if(td){if(psl()>=5||S.teeth>32){td.style.display="block";document.getElementById("s-teeth").textContent=S.teeth}else td.style.display="none"}
   var p=psl(),rk=getRank(p);
@@ -684,11 +784,19 @@ function render(){
 }
 var curGridEl=document.getElementById("cur-grid");var _curCells=[];
 function initCurrencyGrid(){if(!curGridEl)return;curGridEl.innerHTML="";for(var i=0;i<CURRENCIES.length;i++){var c=CURRENCIES[i];var d=document.createElement("div");d.className="cur";d.innerHTML='<div class="cur-ic">'+c.ic+'</div><div class="cur-v" style="color:'+c.col+'">0</div><div class="cur-n">'+c.nm+'</div>';curGridEl.appendChild(d);_curCells.push(d.querySelector(".cur-v"))}}
-function renderCurrencies(){var p=psl();for(var i=0;i<CURRENCIES.length;i++){if(!_curCells[i])continue;var c=CURRENCIES[i];if(p<c.unlockPSL){_curCells[i].textContent="\u{1F512}";_curCells[i].style.color="#ccc"}else{_curCells[i].textContent=c.val>=1000?fmt(c.val):c.val.toFixed(1);_curCells[i].style.color=c.col}}}
+function renderCurrencies(){var p=psl();for(var i=0;i<CURRENCIES.length;i++){if(!_curCells[i])continue;var c=CURRENCIES[i];var el=_curCells[i];var par=el.parentNode;if(p<c.unlockPSL){el.textContent="\u{1F512}";el.style.color="#ccc";if(par)par.style.borderColor="#eee"}else{el.textContent=c.val>=1000?fmt(c.val):c.val.toFixed(1);el.style.color=c.col;
+// highlight special currencies
+if(par){
+  if(i===critCurrency){par.style.borderColor="red";par.style.background="#ffe0e0"}
+  else if(i%10===0){par.style.borderColor="green";par.style.background="#e0ffe0"} // multiplier
+  else if(i%17===3&&c.val>80){par.style.borderColor="red";par.style.background="#fff0f0"} // taxing
+  else if(i%23===5&&c.val>50){par.style.borderColor="blue";par.style.background="#e0e0ff"} // bonus
+  else{par.style.borderColor="#ccc";par.style.background="#fff"}
+}}}}
 function animate(ts){try{var time=ts/1000;tickCombo();if(typeof micActive!=='undefined'&&micActive){drawBird(time)}else{drawFace(psl()/10,time);stimIntensity=lerp(stimIntensity,S.stim/100,0.1);if(emote67Active){emote67Timer+=0.012;if(emote67Timer>=1){emote67Active=false;emote67Timer=0}}}}catch(e){}requestAnimationFrame(animate)}
 requestAnimationFrame(animate);
 var _lastTick=Date.now();
-setInterval(function(){var now=Date.now();var dt=(now-_lastTick)/1000;_lastTick=now;if(S.ps>0){S.pts+=S.ps*dt*0.1;S.total+=S.ps*dt*0.1;addStim(0.05)}if(Math.random()<GOLDEN_CHANCE&&S.total>100)spawnGolden();teethTick();if(S.suspicion>0)S.suspicion=Math.max(0,S.suspicion-0.02);tickCurrencies(dt);checkAch();render();renderCurrencies()},100);
+setInterval(function(){var now=Date.now();var dt=(now-_lastTick)/1000;_lastTick=now;if(S.ps>0){S.pts+=S.ps*dt*0.1;S.total+=S.ps*dt*0.1;addStim(0.05)}if(Math.random()<GOLDEN_CHANCE&&S.total>100)spawnGolden();teethTick();if(S.suspicion>0)S.suspicion=Math.max(0,S.suspicion-0.02);tickCurrencies(dt);currencyTax();currencyInteract();currencyCrisis();recalc();checkAch();render();renderCurrencies()},100);
 setInterval(function(){if(S.stim>0){S.stim=Math.max(0,S.stim-0.3)}},200);
 setInterval(function(){tickCombo()},100);
 setInterval(function(){if(S.total<500)return;if(Math.random()<0.08)spawnZorgo();if(Math.random()<0.008&&S.totalZorgos>5)spawnNegZorgo()},3000);

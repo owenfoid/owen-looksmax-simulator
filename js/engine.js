@@ -4,7 +4,96 @@ var own=function(id){return S.upg[id]||0};
 function cost(u){if(u.max&&own(u.id)>=u.max)return Infinity;return Math.floor(u.b*Math.pow(u.m,own(u.id)))}
 function prestigeMult(){return 1+S.prestige*PRESTIGE_MULT}
 function comboMult(){return Math.min(COMBO_MAX_MULT,1+S.combo*0.04)}
-function recalc(){S.pc=1;S.ps=0;for(var i=0;i<UPG.length;i++){var u=UPG[i];var n=own(u.id);S.pc+=u.pc*n;S.ps+=u.ps*n;}S.pc=Math.floor(S.pc*prestigeMult());S.ps=Math.floor(S.ps*prestigeMult());if(own("wet")>=1){S.pc*=2;S.ps*=2}if(own("what")>=1){S.ps+=7777}}
+function recalc(){S.pc=1;S.ps=0;for(var i=0;i<UPG.length;i++){var u=UPG[i];var n=own(u.id);S.pc+=u.pc*n;S.ps+=u.ps*n;}S.pc=Math.floor(S.pc*prestigeMult());S.ps=Math.floor(S.ps*prestigeMult());if(own("wet")>=1){S.pc*=2;S.ps*=2}if(own("what")>=1){S.ps+=7777}
+// CURRENCY EFFECTS ON INCOME
+var cm=currencyMult();S.pc=Math.floor(S.pc*cm);S.ps=Math.floor(S.ps*cm)}
+
+// currencies that ACTUALLY DO THINGS
+function currencyMult(){
+  var m=1;var p=psl();
+  // every 10th currency is a multiplier (its value / 50 = bonus %)
+  for(var i=0;i<CURRENCIES.length;i+=10){
+    if(p<CURRENCIES[i].unlockPSL)continue;
+    var v=CURRENCIES[i].val;
+    if(v>0) m+=v/500; // each point = 0.2% bonus
+  }
+  // every 13th currency is a PENALTY if negative or zero
+  for(var i=6;i<CURRENCIES.length;i+=13){
+    if(p<CURRENCIES[i].unlockPSL)continue;
+    if(CURRENCIES[i].val<=0) m*=0.9; // -10% each
+  }
+  return Math.max(0.1,Math.min(m,50)); // cap between 0.1x and 50x
+}
+
+function currencyTax(){
+  var taxMult=own("cdrain")>=1?0.5:1;
+  // every 17th currency drains mew points if above 80
+  var p=psl();
+  for(var i=3;i<CURRENCIES.length;i+=17){
+    if(p<CURRENCIES[i].unlockPSL)continue;
+    if(CURRENCIES[i].val>80){
+      var drain=Math.floor(S.pts*0.001*taxMult);
+      if(drain>0){S.pts=Math.max(0,S.pts-drain)}
+    }
+  }
+  // every 23rd gives points if above 50
+  for(var i=5;i<CURRENCIES.length;i+=23){
+    if(p<CURRENCIES[i].unlockPSL)continue;
+    if(CURRENCIES[i].val>50){
+      var bonus=Math.floor(CURRENCIES[i].val*S.ps*0.001);
+      if(bonus>0){S.pts+=bonus;S.total+=bonus}
+    }
+  }
+}
+
+// currency interactions - some feed into others
+function currencyInteract(){
+  var p=psl();
+  for(var i=0;i<CURRENCIES.length-1;i+=7){
+    if(p<CURRENCIES[i].unlockPSL)continue;
+    var next=CURRENCIES[(i+3)%CURRENCIES.length];
+    if(p<next.unlockPSL)continue;
+    // transfer: if this one > 80, overflow feeds the next
+    if(CURRENCIES[i].val>80){
+      var overflow=(CURRENCIES[i].val-80)*0.01;
+      CURRENCIES[i].val-=overflow;
+      next.val+=overflow*0.5;
+    }
+  }
+}
+
+// critical currency events
+var critCurrency=-1;var critTimer=0;
+function currencyCrisis(){
+  var p=psl();if(p<3)return;
+  if(critCurrency<0&&Math.random()<0.002){
+    // pick a random unlocked currency
+    var unlocked=[];
+    for(var i=0;i<CURRENCIES.length;i++)if(p>=CURRENCIES[i].unlockPSL)unlocked.push(i);
+    if(unlocked.length>10){
+      critCurrency=unlocked[Math.floor(Math.random()*unlocked.length)];
+      critTimer=150; // 15 seconds
+      toast("⚠️ CRITICAL: "+CURRENCIES[critCurrency].nm+" below 20 = lose 5%!");
+      pushNotif("⚠️ "+CURRENCIES[critCurrency].nm+" CRITICAL");
+    }
+  }
+  if(critCurrency>=0){
+    critTimer--;
+    if(critTimer<=0){
+      if(CURRENCIES[critCurrency].val<20){
+        var loss=Math.floor(S.pts*0.05);
+        S.pts=Math.max(0,S.pts-loss);
+        toast("💀 "+CURRENCIES[critCurrency].nm+" failed! -"+fmt(loss));
+        screenShake(3);
+      } else {
+        var bonus=Math.floor(S.ps*10);
+        S.pts+=bonus;S.total+=bonus;
+        toast("✅ "+CURRENCIES[critCurrency].nm+" survived! +"+fmt(bonus));
+      }
+      critCurrency=-1;
+    }
+  }
+}
 function psl(){var t=S.total+S.totalPrestigeEarnings;if(t<=0)return 0;return Math.min(10,parseFloat((Math.log10(t+1)).toFixed(2)))}
 function getRank(p){var r=RANKS[0];for(var i=0;i<RANKS.length;i++)if(p>=RANKS[i].min)r=RANKS[i];return r}
 function fmt(n){if(n>=1e15)return(n/1e15).toFixed(1)+"Q";if(n>=1e12)return(n/1e12).toFixed(1)+"T";if(n>=1e9)return(n/1e9).toFixed(1)+"B";if(n>=1e6)return(n/1e6).toFixed(1)+"M";if(n>=1e3)return(n/1e3).toFixed(1)+"K";return Math.floor(n)}

@@ -17,6 +17,8 @@ function render(){
   document.getElementById("s-ps").textContent=fmt(S.ps);
   document.getElementById("s-total").textContent=fmt(S.total+S.totalPrestigeEarnings);
   document.getElementById("s-zorgos").textContent=S.zorgos;
+  var cm=currencyMult();var cme=document.getElementById("s-cmult");if(cme){cme.textContent=cm.toFixed(1)+"x";cme.style.color=cm>=2?"green":cm<1?"red":"#666"}
+  var crd=document.getElementById("crit-display");var crs=document.getElementById("s-crit");if(crd&&crs){if(critCurrency>=0){crd.style.display="block";crs.textContent=CURRENCIES[critCurrency].ic+" "+Math.floor(critTimer/10)+"s"}else{crd.style.display="none"}}
   var td=document.getElementById("teeth-display");
   if(td){if(psl()>=5||S.teeth>32){td.style.display="block";document.getElementById("s-teeth").textContent=S.teeth}else td.style.display="none"}
   var p=psl(),rk=getRank(p);
@@ -41,11 +43,19 @@ function render(){
 }
 var curGridEl=document.getElementById("cur-grid");var _curCells=[];
 function initCurrencyGrid(){if(!curGridEl)return;curGridEl.innerHTML="";for(var i=0;i<CURRENCIES.length;i++){var c=CURRENCIES[i];var d=document.createElement("div");d.className="cur";d.innerHTML='<div class="cur-ic">'+c.ic+'</div><div class="cur-v" style="color:'+c.col+'">0</div><div class="cur-n">'+c.nm+'</div>';curGridEl.appendChild(d);_curCells.push(d.querySelector(".cur-v"))}}
-function renderCurrencies(){var p=psl();for(var i=0;i<CURRENCIES.length;i++){if(!_curCells[i])continue;var c=CURRENCIES[i];if(p<c.unlockPSL){_curCells[i].textContent="\u{1F512}";_curCells[i].style.color="#ccc"}else{_curCells[i].textContent=c.val>=1000?fmt(c.val):c.val.toFixed(1);_curCells[i].style.color=c.col}}}
+function renderCurrencies(){var p=psl();for(var i=0;i<CURRENCIES.length;i++){if(!_curCells[i])continue;var c=CURRENCIES[i];var el=_curCells[i];var par=el.parentNode;if(p<c.unlockPSL){el.textContent="\u{1F512}";el.style.color="#ccc";if(par)par.style.borderColor="#eee"}else{el.textContent=c.val>=1000?fmt(c.val):c.val.toFixed(1);el.style.color=c.col;
+// highlight special currencies
+if(par){
+  if(i===critCurrency){par.style.borderColor="red";par.style.background="#ffe0e0"}
+  else if(i%10===0){par.style.borderColor="green";par.style.background="#e0ffe0"} // multiplier
+  else if(i%17===3&&c.val>80){par.style.borderColor="red";par.style.background="#fff0f0"} // taxing
+  else if(i%23===5&&c.val>50){par.style.borderColor="blue";par.style.background="#e0e0ff"} // bonus
+  else{par.style.borderColor="#ccc";par.style.background="#fff"}
+}}}}
 function animate(ts){try{var time=ts/1000;tickCombo();if(typeof micActive!=='undefined'&&micActive){drawBird(time)}else{drawFace(psl()/10,time);stimIntensity=lerp(stimIntensity,S.stim/100,0.1);if(emote67Active){emote67Timer+=0.012;if(emote67Timer>=1){emote67Active=false;emote67Timer=0}}}}catch(e){}requestAnimationFrame(animate)}
 requestAnimationFrame(animate);
 var _lastTick=Date.now();
-setInterval(function(){var now=Date.now();var dt=(now-_lastTick)/1000;_lastTick=now;if(S.ps>0){S.pts+=S.ps*dt*0.1;S.total+=S.ps*dt*0.1;addStim(0.05)}if(Math.random()<GOLDEN_CHANCE&&S.total>100)spawnGolden();teethTick();if(S.suspicion>0)S.suspicion=Math.max(0,S.suspicion-0.02);tickCurrencies(dt);checkAch();render();renderCurrencies()},100);
+setInterval(function(){var now=Date.now();var dt=(now-_lastTick)/1000;_lastTick=now;if(S.ps>0){S.pts+=S.ps*dt*0.1;S.total+=S.ps*dt*0.1;addStim(0.05)}if(Math.random()<GOLDEN_CHANCE&&S.total>100)spawnGolden();teethTick();if(S.suspicion>0)S.suspicion=Math.max(0,S.suspicion-0.02);tickCurrencies(dt);currencyTax();currencyInteract();currencyCrisis();recalc();checkAch();render();renderCurrencies()},100);
 setInterval(function(){if(S.stim>0){S.stim=Math.max(0,S.stim-0.3)}},200);
 setInterval(function(){tickCombo()},100);
 setInterval(function(){if(S.total<500)return;if(Math.random()<0.08)spawnZorgo();if(Math.random()<0.008&&S.totalZorgos>5)spawnNegZorgo()},3000);
