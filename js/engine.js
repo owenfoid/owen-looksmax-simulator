@@ -1,3 +1,22 @@
+// GLOBAL SAVE WIPE - change this number to reset ALL players
+var REQUIRED_SAVE_VERSION = 20;
+(function(){
+  try {
+    var keys = ["owen_lm_v3","owen_lm_v4","owen_lm_v6","owen_lm_v8","owen_lm_v9"];
+    for (var k = 0; k < keys.length; k++) {
+      var raw = localStorage.getItem(keys[k]);
+      if (raw && raw !== "RESET") {
+        try {
+          var d = JSON.parse(raw);
+          if (!d.v || d.v < REQUIRED_SAVE_VERSION) {
+            localStorage.removeItem(keys[k]);
+          }
+        } catch(e) { localStorage.removeItem(keys[k]); }
+      }
+    }
+  } catch(e) {}
+})();
+
 // NUCLEAR RESET v2.0 - clear all old saves
 (function(){var dominated=false;for(var i=0;i<localStorage.length;i++){var k=localStorage.key(i);if(k&&(k.indexOf("owen")===0)){if(k!=="owen_lm_v9"&&k!=="owen_bts2"&&k!=="owen_played_v2"){localStorage.removeItem(k);dominated=true;i--}}}if(dominated)console.log("Old saves cleared")})();
 
@@ -147,7 +166,7 @@ var OLD_KEYS=[];
 
 function save(){
   S.lastSaveTime=Date.now();
-  var d={v:13,s:S,cur:[],craft:[],cb:typeof craftBonuses!=="undefined"?craftBonuses:{},skills:typeof skillsBought!=="undefined"?skillsBought:{},lore:typeof _loreRead!=="undefined"?_loreRead:{}};
+  var d={v:REQUIRED_SAVE_VERSION,s:S,cur:[],craft:[],cb:typeof craftBonuses!=="undefined"?craftBonuses:{},skills:typeof skillsBought!=="undefined"?skillsBought:{},lore:typeof _loreRead!=="undefined"?_loreRead:{}};
   for(var i=0;i<CURRENCIES.length;i++)d.cur.push(CURRENCIES[i].val);
   if(typeof RECIPES!=="undefined")for(var i=0;i<RECIPES.length;i++)d.craft.push(RECIPES[i].done);
   localStorage.setItem(SAVE_KEY,JSON.stringify(d));
@@ -165,6 +184,7 @@ function load(){
   if(!r)return;
   try{
     var d=JSON.parse(r);
+    if(!d.v||d.v<REQUIRED_SAVE_VERSION){localStorage.removeItem(SAVE_KEY);return}
     if(d.s){
       // safe defaults for ALL fields - new fields won't crash
       var defaults={pts:0,total:0,pc:1,ps:0,upg:{},ach:{},clicks:0,stim:0,prestige:0,combo:0,maxCombo:0,lastClickTime:0,goldenClicks:0,lastSaveTime:Date.now(),totalPrestigeEarnings:0,zorgos:0,totalZorgos:0,teeth:32,suspicion:0};
