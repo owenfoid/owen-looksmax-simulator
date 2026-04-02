@@ -16,3 +16,65 @@ UPG.push({id:"cboost2",ic:"🌊",nm:"Void Whisper Engine",ds:"+80K/sec (needs 40
 UPG.push({id:"cboost3",ic:"💀",nm:"Shadow Plate Forge",ds:"+300K/sec (needs 60+ Shadow Plates)",b:200e6,m:1.9,pc:0,ps:300000,type:"mew",req:function(){return psl()>=5&&CURRENCIES[38]&&CURRENCIES[38].val>=60}});
 UPG.push({id:"cdrain",ic:"🔻",nm:"Currency Drain Tap",ds:"All taxes -50% (needs 10 zorgos)",b:15,m:2,pc:0,ps:0,type:"zorgo",req:function(){return S.zorgos>=10},max:1,secret:true});
 UPG.push({id:"cstab",ic:"📌",nm:"Stabilizer",ds:"Reduces currency chaos (needs PSL 4+)",b:5e6,m:1,pc:0,ps:0,type:"mew",req:function(){return psl()>=4},max:1});
+
+// MASSIVE UPGRADE EXPANSION
+// Tier 2 click
+UPG.push({id:"mew2",ic:"👅",nm:"Advanced Mewing",ds:"+500/click",b:200000,m:1.6,pc:500,ps:0,type:"mew"});
+UPG.push({id:"mew3",ic:"👅",nm:"Transcendent Mew",ds:"+5000/click",b:10e6,m:1.7,pc:5000,ps:0,type:"mew",req:function(){return psl()>=6}});
+UPG.push({id:"mew4",ic:"👅",nm:"Mew Beyond Mew",ds:"+50K/click",b:500e6,m:1.8,pc:50000,ps:0,type:"mew",req:function(){return psl()>=8}});
+
+// Passive boosters
+UPG.push({id:"sleep",ic:"😴",nm:"Sleep Mewing Apparatus",ds:"+3000/sec (mews while u sleep)",b:1.5e6,m:1.65,pc:0,ps:3000,type:"mew"});
+UPG.push({id:"bone2",ic:"💀",nm:"Advanced Bonesmash",ds:"+15K/sec",b:30e6,m:1.75,pc:0,ps:15000,type:"mew",req:function(){return own("bone")>=5}});
+UPG.push({id:"raw",ic:"🥩",nm:"Raw Liver Protocol",ds:"+50K/sec ancestral",b:80e6,m:1.8,pc:0,ps:50000,type:"mew",req:function(){return psl()>=6}});
+UPG.push({id:"sun",ic:"☀️",nm:"Sungazing",ds:"+200K/sec (don't actually do this)",b:300e6,m:1.85,pc:0,ps:200000,type:"mew",req:function(){return psl()>=7}});
+UPG.push({id:"dna",ic:"🧬",nm:"DNA Resequencer",ds:"+1M/sec",b:2e9,m:1.95,pc:0,ps:1000000,type:"mew",req:function(){return psl()>=8.5}});
+
+// TRAP UPGRADES (look good but have side effects)
+UPG.push({id:"trap1",ic:"🎁",nm:"Free Points (Trust Me)",ds:"+10K/sec but +5 suspicion/sec",b:50000,m:1.3,pc:0,ps:10000,type:"mew",trap:"sus5"});
+UPG.push({id:"trap2",ic:"💊",nm:"Mystery Supplement",ds:"+25K/sec but drains random currencies",b:500000,m:1.4,pc:0,ps:25000,type:"mew",trap:"currdrain"});
+UPG.push({id:"trap3",ic:"🃏",nm:"Deal With Sukuna",ds:"+200K/sec but -1 tooth per minute",b:50e6,m:1.5,pc:0,ps:200000,type:"mew",trap:"teethloss",req:function(){return psl()>=6}});
+UPG.push({id:"trap4",ic:"⚫",nm:"Dark Zorgo Pact",ds:"+500K/sec but negative zorgos spawn 3x",b:15,m:1.8,pc:0,ps:500000,type:"zorgo",trap:"negzorgo",req:function(){return S.zorgos>=15}});
+UPG.push({id:"trap5",ic:"🪞",nm:"Stare Into Mirror",ds:"+1M/sec but suspicion never decays",b:200e6,m:2,pc:0,ps:1000000,type:"mew",trap:"nodecay",max:1,req:function(){return psl()>=7}});
+
+// CURRENCY BOOSTERS
+UPG.push({id:"cb1",ic:"🔴",nm:"Red Shard Generator",ds:"Red Shards +0.5/sec",b:100000,m:1.4,pc:0,ps:0,type:"mew",currBoost:{idx:0,rate:0.5}});
+UPG.push({id:"cb2",ic:"🟢",nm:"Dark Ember Furnace",ds:"Dark Embers +0.3/sec",b:300000,m:1.5,pc:0,ps:0,type:"mew",currBoost:{idx:3,rate:0.3}});
+UPG.push({id:"cb3",ic:"🔵",nm:"Light Wave Antenna",ds:"Light Waves stabilized",b:800000,m:1.6,pc:0,ps:0,type:"mew",currBoost:{idx:4,rate:0.2}});
+UPG.push({id:"cb4",ic:"🟣",nm:"Void Whisper Collector",ds:"Void Whispers +0.4/sec",b:2e6,m:1.7,pc:0,ps:0,type:"mew",currBoost:{idx:5,rate:0.4}});
+UPG.push({id:"cb5",ic:"⚫",nm:"Cursed Memory Bank",ds:"Cursed Memories +0.2/sec",b:5e6,m:1.8,pc:0,ps:0,type:"mew",currBoost:{idx:6,rate:0.2}});
+
+// ZORGO UPGRADES
+UPG.push({id:"zspeed",ic:"🟣",nm:"Zorgo Magnet",ds:"Zorgos spawn 2x faster",b:8,m:2,pc:0,ps:0,type:"zorgo",max:3});
+UPG.push({id:"zdouble",ic:"🟣",nm:"Double Zorgo",ds:"Each zorgo gives 2",b:20,m:2.5,pc:0,ps:0,type:"zorgo",max:1});
+UPG.push({id:"zshield",ic:"🛡️",nm:"Zorgo Shield",ds:"Immune to negative zorgos",b:30,m:1,pc:0,ps:0,type:"zorgo",max:1});
+
+// TEETH UPGRADES
+UPG.push({id:"tbrush",ic:"🪥",nm:"Industrial Toothbrush",ds:"Teeth growth -50%",b:2e6,m:1,pc:0,ps:0,type:"mew",max:1,req:function(){return S.teeth>=35}});
+UPG.push({id:"tfarm",ic:"🦷",nm:"Tooth Farm",ds:"+50K/sec per tooth over 32",b:100e6,m:1,pc:0,ps:0,type:"mew",max:1,req:function(){return S.teeth>=40}});
+
+// SUSPICION UPGRADES
+UPG.push({id:"shades",ic:"🕶️",nm:"Dark Shades",ds:"Suspicion gain -30%",b:500000,m:1,pc:0,ps:0,type:"mew",max:1});
+UPG.push({id:"alias",ic:"🎭",nm:"Fake Identity",ds:"Suspicion cap raised to 150",b:5e6,m:1,pc:0,ps:0,type:"mew",max:1});
+UPG.push({id:"paranoia",ic:"👁️",nm:"Controlled Paranoia",ds:"+100/sec per suspicion point",b:20e6,m:1,pc:0,ps:0,type:"mew",max:1,req:function(){return S.suspicion>=30}});
+
+// PRESTIGE UPGRADES
+UPG.push({id:"pboost",ic:"🔄",nm:"Prestige Accelerator",ds:"Prestige mult +50%",b:50,m:3,pc:0,ps:0,type:"zorgo",max:3,req:function(){return S.prestige>=1}});
+UPG.push({id:"pkeep",ic:"💾",nm:"Prestige Memory",ds:"Keep 10% of points on prestige",b:100,m:1,pc:0,ps:0,type:"zorgo",max:1,req:function(){return S.prestige>=3}});
+
+// COMBO UPGRADES
+UPG.push({id:"cextend",ic:"⏱️",nm:"Combo Extender",ds:"Combo decay +200ms",b:200000,m:1.5,pc:0,ps:0,type:"mew",max:5});
+UPG.push({id:"cmult",ic:"🔥",nm:"Combo Amplifier",ds:"Combo mult +0.02/hit",b:1e6,m:1.6,pc:0,ps:0,type:"mew",max:5});
+
+// GOLDEN UPGRADES
+UPG.push({id:"gfreq",ic:"✨",nm:"Golden Frequency",ds:"Golden mews 2x more often",b:10,m:2,pc:0,ps:0,type:"zorgo",max:3});
+UPG.push({id:"gvalue",ic:"✨",nm:"Golden Multiplier",ds:"Golden mew value x2",b:25,m:2,pc:0,ps:0,type:"zorgo",max:3});
+
+// STIM UPGRADES
+UPG.push({id:"sboost",ic:"🌀",nm:"Stim Booster",ds:"Stim builds 2x faster",b:300000,m:1.5,pc:0,ps:0,type:"mew",max:3});
+UPG.push({id:"sburst",ic:"💥",nm:"Super Stim Burst",ds:"Burst gives 5x more",b:5e6,m:1,pc:0,ps:0,type:"mew",max:1});
+
+// WEIRD TIER
+UPG.push({id:"w67",ic:"6️⃣",nm:"Channel 67",ds:"Emote 67 chance x3",b:67,m:1,pc:0,ps:6700,type:"zorgo",max:1,secret:true,req:function(){return S.ach&&S.ach["e67"]}});
+UPG.push({id:"wvoid",ic:"🕳️",nm:"Peer Into Void",ds:"All currencies x1.5 but vision gets worse",b:100e6,m:1,pc:0,ps:0,type:"mew",max:1,trap:"blur",req:function(){return psl()>=7}});
+UPG.push({id:"wowen",ic:"🗿",nm:"Become Owen",ds:"Everything x10. No going back.",b:1e12,m:1,pc:0,ps:0,type:"mew",max:1,secret:true,req:function(){return psl()>=9.5}});

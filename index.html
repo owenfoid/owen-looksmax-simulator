@@ -181,6 +181,68 @@ UPG.push({id:"cboost3",ic:"💀",nm:"Shadow Plate Forge",ds:"+300K/sec (needs 60
 UPG.push({id:"cdrain",ic:"🔻",nm:"Currency Drain Tap",ds:"All taxes -50% (needs 10 zorgos)",b:15,m:2,pc:0,ps:0,type:"zorgo",req:function(){return S.zorgos>=10},max:1,secret:true});
 UPG.push({id:"cstab",ic:"📌",nm:"Stabilizer",ds:"Reduces currency chaos (needs PSL 4+)",b:5e6,m:1,pc:0,ps:0,type:"mew",req:function(){return psl()>=4},max:1});
 
+// MASSIVE UPGRADE EXPANSION
+// Tier 2 click
+UPG.push({id:"mew2",ic:"👅",nm:"Advanced Mewing",ds:"+500/click",b:200000,m:1.6,pc:500,ps:0,type:"mew"});
+UPG.push({id:"mew3",ic:"👅",nm:"Transcendent Mew",ds:"+5000/click",b:10e6,m:1.7,pc:5000,ps:0,type:"mew",req:function(){return psl()>=6}});
+UPG.push({id:"mew4",ic:"👅",nm:"Mew Beyond Mew",ds:"+50K/click",b:500e6,m:1.8,pc:50000,ps:0,type:"mew",req:function(){return psl()>=8}});
+
+// Passive boosters
+UPG.push({id:"sleep",ic:"😴",nm:"Sleep Mewing Apparatus",ds:"+3000/sec (mews while u sleep)",b:1.5e6,m:1.65,pc:0,ps:3000,type:"mew"});
+UPG.push({id:"bone2",ic:"💀",nm:"Advanced Bonesmash",ds:"+15K/sec",b:30e6,m:1.75,pc:0,ps:15000,type:"mew",req:function(){return own("bone")>=5}});
+UPG.push({id:"raw",ic:"🥩",nm:"Raw Liver Protocol",ds:"+50K/sec ancestral",b:80e6,m:1.8,pc:0,ps:50000,type:"mew",req:function(){return psl()>=6}});
+UPG.push({id:"sun",ic:"☀️",nm:"Sungazing",ds:"+200K/sec (don't actually do this)",b:300e6,m:1.85,pc:0,ps:200000,type:"mew",req:function(){return psl()>=7}});
+UPG.push({id:"dna",ic:"🧬",nm:"DNA Resequencer",ds:"+1M/sec",b:2e9,m:1.95,pc:0,ps:1000000,type:"mew",req:function(){return psl()>=8.5}});
+
+// TRAP UPGRADES (look good but have side effects)
+UPG.push({id:"trap1",ic:"🎁",nm:"Free Points (Trust Me)",ds:"+10K/sec but +5 suspicion/sec",b:50000,m:1.3,pc:0,ps:10000,type:"mew",trap:"sus5"});
+UPG.push({id:"trap2",ic:"💊",nm:"Mystery Supplement",ds:"+25K/sec but drains random currencies",b:500000,m:1.4,pc:0,ps:25000,type:"mew",trap:"currdrain"});
+UPG.push({id:"trap3",ic:"🃏",nm:"Deal With Sukuna",ds:"+200K/sec but -1 tooth per minute",b:50e6,m:1.5,pc:0,ps:200000,type:"mew",trap:"teethloss",req:function(){return psl()>=6}});
+UPG.push({id:"trap4",ic:"⚫",nm:"Dark Zorgo Pact",ds:"+500K/sec but negative zorgos spawn 3x",b:15,m:1.8,pc:0,ps:500000,type:"zorgo",trap:"negzorgo",req:function(){return S.zorgos>=15}});
+UPG.push({id:"trap5",ic:"🪞",nm:"Stare Into Mirror",ds:"+1M/sec but suspicion never decays",b:200e6,m:2,pc:0,ps:1000000,type:"mew",trap:"nodecay",max:1,req:function(){return psl()>=7}});
+
+// CURRENCY BOOSTERS
+UPG.push({id:"cb1",ic:"🔴",nm:"Red Shard Generator",ds:"Red Shards +0.5/sec",b:100000,m:1.4,pc:0,ps:0,type:"mew",currBoost:{idx:0,rate:0.5}});
+UPG.push({id:"cb2",ic:"🟢",nm:"Dark Ember Furnace",ds:"Dark Embers +0.3/sec",b:300000,m:1.5,pc:0,ps:0,type:"mew",currBoost:{idx:3,rate:0.3}});
+UPG.push({id:"cb3",ic:"🔵",nm:"Light Wave Antenna",ds:"Light Waves stabilized",b:800000,m:1.6,pc:0,ps:0,type:"mew",currBoost:{idx:4,rate:0.2}});
+UPG.push({id:"cb4",ic:"🟣",nm:"Void Whisper Collector",ds:"Void Whispers +0.4/sec",b:2e6,m:1.7,pc:0,ps:0,type:"mew",currBoost:{idx:5,rate:0.4}});
+UPG.push({id:"cb5",ic:"⚫",nm:"Cursed Memory Bank",ds:"Cursed Memories +0.2/sec",b:5e6,m:1.8,pc:0,ps:0,type:"mew",currBoost:{idx:6,rate:0.2}});
+
+// ZORGO UPGRADES
+UPG.push({id:"zspeed",ic:"🟣",nm:"Zorgo Magnet",ds:"Zorgos spawn 2x faster",b:8,m:2,pc:0,ps:0,type:"zorgo",max:3});
+UPG.push({id:"zdouble",ic:"🟣",nm:"Double Zorgo",ds:"Each zorgo gives 2",b:20,m:2.5,pc:0,ps:0,type:"zorgo",max:1});
+UPG.push({id:"zshield",ic:"🛡️",nm:"Zorgo Shield",ds:"Immune to negative zorgos",b:30,m:1,pc:0,ps:0,type:"zorgo",max:1});
+
+// TEETH UPGRADES
+UPG.push({id:"tbrush",ic:"🪥",nm:"Industrial Toothbrush",ds:"Teeth growth -50%",b:2e6,m:1,pc:0,ps:0,type:"mew",max:1,req:function(){return S.teeth>=35}});
+UPG.push({id:"tfarm",ic:"🦷",nm:"Tooth Farm",ds:"+50K/sec per tooth over 32",b:100e6,m:1,pc:0,ps:0,type:"mew",max:1,req:function(){return S.teeth>=40}});
+
+// SUSPICION UPGRADES
+UPG.push({id:"shades",ic:"🕶️",nm:"Dark Shades",ds:"Suspicion gain -30%",b:500000,m:1,pc:0,ps:0,type:"mew",max:1});
+UPG.push({id:"alias",ic:"🎭",nm:"Fake Identity",ds:"Suspicion cap raised to 150",b:5e6,m:1,pc:0,ps:0,type:"mew",max:1});
+UPG.push({id:"paranoia",ic:"👁️",nm:"Controlled Paranoia",ds:"+100/sec per suspicion point",b:20e6,m:1,pc:0,ps:0,type:"mew",max:1,req:function(){return S.suspicion>=30}});
+
+// PRESTIGE UPGRADES
+UPG.push({id:"pboost",ic:"🔄",nm:"Prestige Accelerator",ds:"Prestige mult +50%",b:50,m:3,pc:0,ps:0,type:"zorgo",max:3,req:function(){return S.prestige>=1}});
+UPG.push({id:"pkeep",ic:"💾",nm:"Prestige Memory",ds:"Keep 10% of points on prestige",b:100,m:1,pc:0,ps:0,type:"zorgo",max:1,req:function(){return S.prestige>=3}});
+
+// COMBO UPGRADES
+UPG.push({id:"cextend",ic:"⏱️",nm:"Combo Extender",ds:"Combo decay +200ms",b:200000,m:1.5,pc:0,ps:0,type:"mew",max:5});
+UPG.push({id:"cmult",ic:"🔥",nm:"Combo Amplifier",ds:"Combo mult +0.02/hit",b:1e6,m:1.6,pc:0,ps:0,type:"mew",max:5});
+
+// GOLDEN UPGRADES
+UPG.push({id:"gfreq",ic:"✨",nm:"Golden Frequency",ds:"Golden mews 2x more often",b:10,m:2,pc:0,ps:0,type:"zorgo",max:3});
+UPG.push({id:"gvalue",ic:"✨",nm:"Golden Multiplier",ds:"Golden mew value x2",b:25,m:2,pc:0,ps:0,type:"zorgo",max:3});
+
+// STIM UPGRADES
+UPG.push({id:"sboost",ic:"🌀",nm:"Stim Booster",ds:"Stim builds 2x faster",b:300000,m:1.5,pc:0,ps:0,type:"mew",max:3});
+UPG.push({id:"sburst",ic:"💥",nm:"Super Stim Burst",ds:"Burst gives 5x more",b:5e6,m:1,pc:0,ps:0,type:"mew",max:1});
+
+// WEIRD TIER
+UPG.push({id:"w67",ic:"6️⃣",nm:"Channel 67",ds:"Emote 67 chance x3",b:67,m:1,pc:0,ps:6700,type:"zorgo",max:1,secret:true,req:function(){return S.ach&&S.ach["e67"]}});
+UPG.push({id:"wvoid",ic:"🕳️",nm:"Peer Into Void",ds:"All currencies x1.5 but vision gets worse",b:100e6,m:1,pc:0,ps:0,type:"mew",max:1,trap:"blur",req:function(){return psl()>=7}});
+UPG.push({id:"wowen",ic:"🗿",nm:"Become Owen",ds:"Everything x10. No going back.",b:1e12,m:1,pc:0,ps:0,type:"mew",max:1,secret:true,req:function(){return psl()>=9.5}});
+
 const FACE_IMAGES = [
   "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAMgAAADwCAYAAABFcSteAAAFX0lEQVR42u3dv2skVQDA8XfHsSyprhVlrwjIVilMZSGSRrARrxAExQOLqy0Owb9AkCusLQTFA9HixEa0CWJhdRapgpDignBtqpBOqwnjZn7vzOy8N58PHOTuNrnJm/ed92Y3yYUAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAQAgh3DIEu/Haq6/82/Z9/vr7H+dLIGIQjUAEIRiBiGK3xCIQUYhFIMIQikCEIRSBCEMocbltCOYbxxw+PyuIiWM1sYKIw+ctEJPE52+LZWLYcllBxGFcBGISGB+BgHsQV0bck1hBxGHcBAICcRU0fgJxco2jQJxU4ykQEIirnVVEIE4i8xpfWywQCAjE9so4CwQE4qpmvAUCAgGBWO5JddytICAQEIjtlfEXCAgEBAICAYGAQEAgQLKBeA3EeRAICKQb/+GL8yAQEAgIBARi/+v+QyBgBQGBAKkH4j7EuAsEBAICsdwbb4GAQEAgIBD7YoyzFQQEAgIBgdgfG1+BwHTM7ur67Odvr38kzenp2d3s7bc+/Pji8ODg/vXjTk6eZm9/8OhR44//5PHj//0+/zE///ST4+zt9Xr/ou2xT+V4D9/5aDbzxgpSMDG6Traix+c/1mdffHk01+ON1Z3UP8E/vv/qesV44/2Ht4quxmUTpMivT374Jnt7sVg8OHrv3fpV6+TkaX5CZ/9+m1VkasdbNq62WJHGkdnbWxZuV5pcXYsmXAghFE26za1L5rfvvr7bZZs1peO9vLy68bhUI7k9pzjKTu7hwcH9zStmkeMffwqLxeJB9iv/5023RX1sW3Z5vEXjVzXeAokojrqTTLW6cUsxkjtOe/0+vs9/J79lmcvxWkFmouwGt8mNr+MVSBTbq8xq9fJF0Y1o3Y3r5uTqesO7jV0cb3685rTNssXq8crcRtkzWGdn5/dCCGF/f/V88/FlT/WOcbxWEELTq3Kfj5/78QokElXbn6aTqOpxfd/sxna8sUruxZ02e+C9veWNV6jLXoTLFL0YVzchNydb1QuEZVuszK6Ot81T4ym9aOgepGByVE26tluSoa/EsR2vLVZkiq7mQz7b1OWreGM+XlusSLdZ2ddklW1dmm5h2lyFm0y2ui3WLo+3yTYrta/JssXKTYaiSZefPFWTr+4q3veVOLbjFUjCkWy7lRlqssV2vLZYkWyzNrdXbbYwQ0+0plusXR1v1TYrxS95n+33gww58ba5AncNZMzj9f0gidg8aV1O4nq9f9F0ArV57JDbxKGPt49xtYJMVP6HNkzRtivIGPzQBiCE4Fms0Z2fv7iXvb1avfR86PdDINGFsflnVRO+6/thi2X/bPwEkurq0eTvu74fAgH3IHM05ad3rSAMou5muuzvu74fAgFbrBRXkbavZ3R9PwSS5HbLdsoWC6wg3HT++5/9rURvvm5ABSKGNh9fNAJJIoxt/vuFqm/4yv5tobgH2cqYX090eXl149eUPt5Ux80Kkqjs6n36y3EYM8IQQli/feQEWEHAChK97Go+xkpi5RBI9KHkbRONGAQyy2hwDwLR8e2nOVP/kUBj8q3JAhGNGASyy2CursZ7EW+5XApCIHFFM4VAxCCQyUYzdiBi6J9nsRLZ14tDICAQEAgIBAQCAgGBAAIBgYBAQCAgEBAICAQEAgIBBAICAYGAQEAgIBAQCAgEBAICAQQCAgGBgEBAICAQEAgIBAQCAjEEIBAQCAgEBAICAYGAQEAgIBBAICAQEAgIBAQCAgGBgEBAICAQQCAgEBAICAQEAgIBgYBAQCCAQEAgIBAQCAgEBAICAYGAQEAggEBAINCf/wBjQNDEqVmOUgAAAABJRU5ErkJggg==",
   "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAMgAAADwCAYAAABFcSteAAAFOklEQVR42u3dv2sUWQDA8blDluB/EIXlIIUiQbGScJVg53VqJVdIyB9gYSGChXBcccWVx7GEK8TKszOdkErkqpBjkaRYkBTufyDpYpORdTM/s7OzO+99PiCca7IZ377vvDeziZckAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAEAn/WAIFuv62qWTso/5f/TZ6yQQIdQlHIGIQiwCEYVYBCIKsQhEGEIRiDA6FIZQBCIMoQhEGEJZhB8NQbxxxPD3E4jJ4+9pi2XC2HJZQcTh7y8QsMVy5rTdsoKIw7gIxCQwPicCAQTi7GicBOJFN14C8WIbN4GAQJwFjZ9AvLjGUSAgEGc9ohpPKwjEHojVw7gKBATiLGd8BQICAYFY/m2zBAJWEBCIZR/jbQUBgYBAQCAgEBBIW9zBMu4CAYGAQEAgIBAQyPLzP34x7gIBgYBAQCD2w64/BAICAYEAoQfiOsQ4CwQEAgIBgdgfG1+BgEBAICAQ+2SMqxUEBAICAYHYLxtPgcBSi/asur/z8uTgYLQ6+diT3//8JUmSZG84HEw+fu/5b9997u7ff/2b/nev17v/86PNM8//5sWzM4/dXF/fSpIk+ePp47fpY1evro3LjnVZjvPG3V+jmy9WkFN3Hm6O94bDQdmky/L+n+0zj2V9Xtbzh3qcAumYD68HJ+mvrD+/ub6+lZ45yyZZr9e7n/4qmnx5XyddAc5j0cdZNo4C6WgcRb/HOOa5ENuLmvry5fjMtqKN49kbDgfvXm2vzvL5izjO6fGaHN+NB1t+ojCkOFL9/uVx3efMutAtenxRmjzOsnEKeSVxkX4q76yedZdnepJVvTtU9HVCO05brMg1sWJUucWbftz0rd42jzNmwa4gVZf9ye1DnbNzkXmflds8zqrb0FC3WbZYDU++qnHkrR6j0dGVKqtNW8dpi0XmJLnzcHOcN6my3lwrmpjzmnRdOc4uC/b2XJ0l/+LFlSRrj581+ZpYkYquPUajoytra/3DvD9v+zjzbu9mCfF2r0BOA8mbfOedgHln47IL87JA2j5OgQjkWyBFk6/qBCzaplS5a1UlkDaPUyAC+S6Qssl3XlVv6VYNpK3jjD2QYO9iVX2xpuOoM5mbjmPRz5v1fFnjE0scSeIuVulkmeUsPa8wunicAgk8lKqTcFGTrSvH6RqkQ9ciVbcPbapzDdKmomsR380b4LXIMsaxzPLGK+Q4oggk60UURzORhB5HVNcgky/m/s5LP1HY8IpsBYEIRRlIjP98jXGzxeqMo6Pxt29p7/dXD5v+eKwgQcSR9ftZPx6BBBNH048jEBBIzJbxXXSB0Iq8C+ymHkcgwUVSNtnrfjzNivr9AO+oVxfre0dWEBAInI930lv2affDzM/x0+0NAykQMdR5XtEIJJgw6vxLIdPyfpYl/ZpCEUjnzBJE2XP54S+BdE56Fv+4s9tafNfu3jbwcxD1XSw/F2KcrCALlJ7V57mSWDkEEkwoqVmCEYRAogsG1yDQSS5Sp/gGRjcvBCIWUQhEMIIQiFhEIZAuBnN8fNz6MaysrAhCIN3w35tB6yvMrXtbXs+Guc0LAgGBgEBAICAQEAgIBAQCAgEEAgIBgYBAQCAgEBAICAQEAgIBBAICAYGAQEAgIBAQCAgEBAIIBAQCAgGBgEBAICAQEAgIBAQCCAQEAgIBgYBAQCAgEBAICAQQCAgEBAICAYGAQEAgIBAQCAgEEAgIBAQCAgGBgEBAICAQEAggEBAICAQEAgIBgYBAQCAgEIjTV2Nfh8V3PO/EAAAAAElFTkSuQmCC",
@@ -196,12 +258,19 @@ var isMobile='ontouchstart' in window||navigator.maxTouchPoints>0;
 var S={pts:0,total:0,pc:1,ps:0,upg:{},ach:{},clicks:0,stim:0,prestige:0,combo:0,maxCombo:0,lastClickTime:0,goldenClicks:0,lastSaveTime:Date.now(),totalPrestigeEarnings:0,zorgos:0,totalZorgos:0,teeth:32,suspicion:0};
 var own=function(id){return S.upg[id]||0};
 function cost(u){if(u.max&&own(u.id)>=u.max)return Infinity;return Math.floor(u.b*Math.pow(u.m,own(u.id)))}
-function prestigeMult(){return 1+S.prestige*PRESTIGE_MULT}
-function comboMult(){return Math.min(COMBO_MAX_MULT,1+S.combo*0.04)}
+
+
 function recalc(){S.pc=1;S.ps=0;for(var i=0;i<UPG.length;i++){var u=UPG[i];var n=own(u.id);S.pc+=u.pc*n;S.ps+=u.ps*n;}S.pc=Math.floor(S.pc*prestigeMult());S.ps=Math.floor(S.ps*prestigeMult());if(own("wet")>=1){S.pc*=2;S.ps*=2}if(own("what")>=1){S.ps+=7777}
-// CURRENCY EFFECTS ON INCOME
+// tooth farm: +50K per tooth over 32
+if(own("tfarm")>=1){S.ps+=Math.max(0,(S.teeth-32))*50000}
+// paranoia: +100/sec per suspicion
+if(own("paranoia")>=1){S.ps+=Math.floor(S.suspicion)*100}
+// become owen: x10 everything
+if(own("wowen")>=1){S.pc*=10;S.ps*=10}
 var cm=currencyMult();S.pc=Math.floor(S.pc*cm);S.ps=Math.floor(S.ps*cm)}
 
+function prestigeMult(){var base=1+S.prestige*PRESTIGE_MULT;if(own("pboost")>0)base+=S.prestige*PRESTIGE_MULT*0.5*own("pboost");return base}
+function comboMult(){var max=COMBO_MAX_MULT+own("cmult")*0.5;var rate=0.04+own("cmult")*0.02;return Math.min(max,1+S.combo*rate)}
 // currencies that ACTUALLY DO THINGS
 function currencyMult(){
   var m=1;var p=psl();
@@ -296,16 +365,16 @@ var _curTime=0;
 function tickCurrencies(dt){_curTime+=dt;var p=psl();for(var i=0;i<CURRENCIES.length;i++){var c=CURRENCIES[i];if(p<c.unlockPSL)continue;switch(c.beh){case"click":break;case"passive":c.val+=c.rate*dt;break;case"decay":c.val=Math.max(0,c.val-c.rate*dt*0.3);break;case"random":c.val+=(Math.random()-0.5)*c.rate*dt*2;break;case"sin":c.val=Math.max(0,50+Math.sin(_curTime*c.rate*0.5)*50);break;case"chaos":c.val=Math.random()*100;break;case"step":if(Math.random()<0.002*dt)c.val+=1;break;case"drain":c.val*=(1-0.01*dt);if(c.val<0.01)c.val=0;break;case"spike":if(Math.random()<0.001*dt){c.val=50+Math.random()*200}else{c.val*=0.95}break;case"time":c.val+=dt;break}if(c.val<0)c.val=0}}
 function clickCurrencies(){var p=psl();for(var i=0;i<CURRENCIES.length;i++){var c=CURRENCIES[i];if(p<c.unlockPSL)continue;if(c.beh==="click")c.val+=c.rate;else if(c.beh==="decay")c.val+=0.5;else if(c.beh==="random")c.val+=Math.random()*0.5;else if(c.beh==="drain")c.val+=0.3;else if(Math.random()<0.1)c.val+=0.1}}
 function canPrestige(){return S.total>=PRESTIGE_COST}
-function doPrestige(){if(!canPrestige())return;S.totalPrestigeEarnings+=S.total;S.prestige++;S.pts=0;S.total=0;S.upg={};S.stim=0;S.combo=0;S.clicks=0;recalc();render();screenShake(3);flash("rgba(128,0,255,0.4)");chromatic();var r=document.getElementById("face").getBoundingClientRect();particles(r.left+r.width/2,r.top+r.height/2,50);toast("PRESTIGE "+S.prestige+"! x"+prestigeMult().toFixed(2));checkAch()}
-function tickCombo(){if(S.combo>0&&Date.now()-S.lastClickTime>COMBO_DECAY_MS)S.combo=0}
+function doPrestige(){if(!canPrestige())return;S.totalPrestigeEarnings+=S.total;S.prestige++;var keep=own("pkeep")>=1?Math.floor(S.pts*0.1):0;S.pts=keep;S.total=0;S.upg={};S.stim=0;S.combo=0;S.clicks=0;recalc();render();screenShake(3);flash("rgba(128,0,255,0.4)");chromatic();var r=document.getElementById("face").getBoundingClientRect();particles(r.left+r.width/2,r.top+r.height/2,50);toast("PRESTIGE "+S.prestige+"! x"+prestigeMult().toFixed(2));checkAch()}
+function tickCombo(){var decay=COMBO_DECAY_MS+own('cextend')*200;if(S.combo>0&&Date.now()-S.lastClickTime>decay)S.combo=0}
 function addCombo(){S.combo++;S.lastClickTime=Date.now();if(S.combo>S.maxCombo)S.maxCombo=S.combo}
 var goldenActive=false,goldenTimeout=null;
 function spawnGolden(){if(goldenActive)return;goldenActive=true;toast("GOLDEN MEW!");goldenTimeout=setTimeout(function(){goldenActive=false},GOLDEN_DURATION)}
-function claimGolden(){if(!goldenActive)return;goldenActive=false;clearTimeout(goldenTimeout);var b=Math.floor(S.pc*GOLDEN_MULT*comboMult());S.pts+=b;S.total+=b;S.goldenClicks=(S.goldenClicks||0)+1;toast("+"+fmt(b)+" GOLDEN");screenShake(3);chromatic();checkAch()}
-function spawnZorgo(){if(document.querySelectorAll(".zorgo-float").length>(isMobile?3:8))return;var el=document.createElement("div");el.className="zorgo-float";el.textContent="\u{1F7E3}";el.style.left=(10+Math.random()*70)+"%";el.style.top=(15+Math.random()*50)+"%";var h=function(e){e.stopPropagation();e.preventDefault();S.zorgos++;S.totalZorgos++;toast("+1 Zorgo");var cx=e.clientX||(e.changedTouches&&e.changedTouches[0]?e.changedTouches[0].clientX:0);var cy=e.clientY||(e.changedTouches&&e.changedTouches[0]?e.changedTouches[0].clientY:0);if(cx)floatText(cx,cy,"+1","purple");if(cx)particles(cx,cy,8);el.remove();checkAch();render()};el.addEventListener("click",h);el.addEventListener("touchend",h,{passive:false});document.body.appendChild(el);setTimeout(function(){if(el.parentNode)el.remove()},4000)}
-function spawnNegZorgo(){if(document.querySelectorAll(".zorgo-float").length>(isMobile?3:8))return;var el=document.createElement("div");el.className="zorgo-float";el.textContent="\u{26AB}";el.style.left=(10+Math.random()*70)+"%";el.style.top=(15+Math.random()*50)+"%";var h=function(e){e.stopPropagation();e.preventDefault();S.zorgos=Math.max(0,S.zorgos-1);toast("-1 Zorgo");screenShake(2);el.remove();render()};el.addEventListener("click",h);el.addEventListener("touchend",h,{passive:false});document.body.appendChild(el);setTimeout(function(){if(el.parentNode)el.remove()},2000)}
-function teethTick(){if(psl()>=5&&Math.random()<0.001){S.teeth++;if(S.teeth===33)toast("...33 teeth?");else if(S.teeth===40)toast("stop.");else if(S.teeth===50)toast("too many");checkAch()}}
-function addSuspicion(a){S.suspicion=Math.min(100,S.suspicion+a);if(S.suspicion>=100){S.suspicion=0;var l=Math.floor(S.pts*0.1);S.pts=Math.max(0,S.pts-l);toast("THEY NOTICED. -"+fmt(l));screenShake(3)}}
+function claimGolden(){if(!goldenActive)return;goldenActive=false;clearTimeout(goldenTimeout);var gm=GOLDEN_MULT*(1+own('gvalue'));var b=Math.floor(S.pc*gm*comboMult());S.pts+=b;S.total+=b;S.goldenClicks=(S.goldenClicks||0)+1;toast("+"+fmt(b)+" GOLDEN");screenShake(3);chromatic();checkAch()}
+function spawnZorgo(){if(document.querySelectorAll(".zorgo-float").length>(isMobile?3:8))return;var el=document.createElement("div");el.className="zorgo-float";el.textContent="\u{1F7E3}";el.style.left=(10+Math.random()*70)+"%";el.style.top=(15+Math.random()*50)+"%";var h=function(e){e.stopPropagation();e.preventDefault();var zamt=own("zdouble")>=1?2:1;S.zorgos+=zamt;S.totalZorgos+=zamt;toast("+1 Zorgo");var cx=e.clientX||(e.changedTouches&&e.changedTouches[0]?e.changedTouches[0].clientX:0);var cy=e.clientY||(e.changedTouches&&e.changedTouches[0]?e.changedTouches[0].clientY:0);if(cx)floatText(cx,cy,"+1","purple");if(cx)particles(cx,cy,8);el.remove();checkAch();render()};el.addEventListener("click",h);el.addEventListener("touchend",h,{passive:false});document.body.appendChild(el);setTimeout(function(){if(el.parentNode)el.remove()},4000)}
+function spawnNegZorgo(){if(document.querySelectorAll(".zorgo-float").length>(isMobile?3:8))return;var el=document.createElement("div");el.className="zorgo-float";el.textContent="\u{26AB}";el.style.left=(10+Math.random()*70)+"%";el.style.top=(15+Math.random()*50)+"%";var h=function(e){e.stopPropagation();e.preventDefault();if(own("zshield")>=1){toast("Shield!");}else{S.zorgos=Math.max(0,S.zorgos-1)};toast("-1 Zorgo");screenShake(2);el.remove();render()};el.addEventListener("click",h);el.addEventListener("touchend",h,{passive:false});document.body.appendChild(el);setTimeout(function(){if(el.parentNode)el.remove()},2000)}
+function teethTick(){var tRate=own('tbrush')>=1?0.0005:0.001;if(psl()>=5&&Math.random()<tRate){S.teeth++;if(S.teeth===33)toast("...33 teeth?");else if(S.teeth===40)toast("stop.");else if(S.teeth===50)toast("too many");checkAch()}}
+function addSuspicion(a){var gain=a*(own("shades")>=1?0.7:1);var cap=own("alias")>=1?150:100;S.suspicion=Math.min(cap,S.suspicion+gain);var susCap=own("alias")>=1?150:100;if(S.suspicion>=susCap){S.suspicion=0;var l=Math.floor(S.pts*0.1);S.pts=Math.max(0,S.pts-l);toast("THEY NOTICED. -"+fmt(l));screenShake(3)}}
 var SAVE_KEY="owen_lm_v8";
 function save(){S.lastSaveTime=Date.now();var d={s:S,cur:[]};for(var i=0;i<CURRENCIES.length;i++)d.cur.push(CURRENCIES[i].val);localStorage.setItem(SAVE_KEY,JSON.stringify(d))}
 function load(){var r=localStorage.getItem(SAVE_KEY);if(r){try{var d=JSON.parse(r);if(d.s){if(!d.s.zorgos)d.s.zorgos=0;if(!d.s.totalZorgos)d.s.totalZorgos=0;if(!d.s.teeth)d.s.teeth=32;if(!d.s.suspicion)d.s.suspicion=0;if(!d.s.prestige)d.s.prestige=0;if(!d.s.combo)d.s.combo=0;if(!d.s.maxCombo)d.s.maxCombo=0;if(!d.s.goldenClicks)d.s.goldenClicks=0;if(!d.s.totalPrestigeEarnings)d.s.totalPrestigeEarnings=0;Object.assign(S,d.s)}if(d.cur){for(var i=0;i<Math.min(d.cur.length,CURRENCIES.length);i++)CURRENCIES[i].val=d.cur[i]||0}recalc();var off=(Date.now()-S.lastSaveTime)/1000;if(off>30&&S.ps>0){var e=Math.floor(S.ps*off*0.5);S.pts+=e;S.total+=e;setTimeout(function(){toast("+"+fmt(e)+" while away")},500)}}catch(e){}}}
@@ -403,7 +472,8 @@ function stimBurst() {
   const cx = rect.left + rect.width/2, cy = rect.top + rect.height/2;
   particles(cx, cy, 40);
 
-  const bonus = Math.floor(S.pc * 10);
+  const stimMult = own("sburst") >= 1 ? 5 : 1;
+  const bonus = Math.floor(S.pc * 10 * stimMult);
   S.pts += bonus; S.total += bonus;
   floatText(cx, cy-30, "STIMMED! +" + fmt(bonus), "#c840ff");
   toast("🌀 STIM BURST! +" + fmt(bonus) + " bonus!");
@@ -796,10 +866,21 @@ if(par){
 function animate(ts){try{var time=ts/1000;tickCombo();if(typeof micActive!=='undefined'&&micActive){drawBird(time)}else{drawFace(psl()/10,time);stimIntensity=lerp(stimIntensity,S.stim/100,0.1);if(emote67Active){emote67Timer+=0.012;if(emote67Timer>=1){emote67Active=false;emote67Timer=0}}}}catch(e){}requestAnimationFrame(animate)}
 requestAnimationFrame(animate);
 var _lastTick=Date.now();
-setInterval(function(){var now=Date.now();var dt=(now-_lastTick)/1000;_lastTick=now;if(S.ps>0){S.pts+=S.ps*dt*0.1;S.total+=S.ps*dt*0.1;addStim(0.05)}if(Math.random()<GOLDEN_CHANCE&&S.total>100)spawnGolden();teethTick();if(S.suspicion>0)S.suspicion=Math.max(0,S.suspicion-0.02);tickCurrencies(dt);currencyTax();currencyInteract();currencyCrisis();recalc();checkAch();render();renderCurrencies()},100);
+setInterval(function(){var now=Date.now();var dt=(now-_lastTick)/1000;_lastTick=now;if(S.ps>0){S.pts+=S.ps*dt*0.1;S.total+=S.ps*dt*0.1;addStim(0.05*(1+own("sboost")))}if(Math.random()<GOLDEN_CHANCE&&S.total>100)spawnGolden();teethTick();
+// trap effects
+if(own("trap1")>0)addSuspicion(0.05*own("trap1")*dt);
+if(own("trap2")>0&&Math.random()<0.01*own("trap2")){var ri=Math.floor(Math.random()*CURRENCIES.length);if(psl()>=CURRENCIES[ri].unlockPSL)CURRENCIES[ri].val=Math.max(0,CURRENCIES[ri].val-1)}
+if(own("trap3")>0&&Math.random()<0.001*own("trap3")){S.teeth=Math.max(28,S.teeth-1);toast("-1 tooth (sukuna)")}
+if(own("trap5")>0){S.suspicion=Math.max(S.suspicion,S.suspicion)} // no decay handled below
+if(S.suspicion>0&&own("trap5")<1)S.suspicion=Math.max(0,S.suspicion-0.02);
+// currency boosters
+for(var ui=0;ui<UPG.length;ui++){var u=UPG[ui];if(u.currBoost&&own(u.id)>0){var ci=u.currBoost.idx;if(ci<CURRENCIES.length)CURRENCIES[ci].val+=u.currBoost.rate*own(u.id)*dt}}
+// void peer: all currencies x1.5 (already bought = permanent)
+if(own("wvoid")>=1&&Math.random()<0.01){for(var i=0;i<CURRENCIES.length;i++)if(psl()>=CURRENCIES[i].unlockPSL)CURRENCIES[i].val*=1.001}
+tickCurrencies(dt);currencyTax();currencyInteract();currencyCrisis();recalc();checkAch();render();renderCurrencies()},100);
 setInterval(function(){if(S.stim>0){S.stim=Math.max(0,S.stim-0.3)}},200);
 setInterval(function(){tickCombo()},100);
-setInterval(function(){if(S.total<500)return;if(Math.random()<0.08)spawnZorgo();if(Math.random()<0.008&&S.totalZorgos>5)spawnNegZorgo()},3000);
+setInterval(function(){if(S.total<500)return;var zRate=0.08*(1+own('zspeed'));if(Math.random()<zRate)spawnZorgo();var nzRate=0.008*(1+own('trap4')*2);if(Math.random()<nzRate&&S.totalZorgos>5)spawnNegZorgo()},3000);
 setInterval(function(){if(Math.random()<0.15&&S.total>50){toast(getEvent());screenShake(1)}},12000);
 var chaosRate=isMobile?0.7:1;
 function pushNotif(msg){var s=document.getElementById("notif-stack");if(!s)return;var d=document.createElement("div");d.className="notif";d.textContent=msg;s.appendChild(d);if(s.children.length>10)s.firstChild.remove();setTimeout(function(){if(d.parentNode)d.remove()},2500)}

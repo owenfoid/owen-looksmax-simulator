@@ -2,12 +2,19 @@ var isMobile='ontouchstart' in window||navigator.maxTouchPoints>0;
 var S={pts:0,total:0,pc:1,ps:0,upg:{},ach:{},clicks:0,stim:0,prestige:0,combo:0,maxCombo:0,lastClickTime:0,goldenClicks:0,lastSaveTime:Date.now(),totalPrestigeEarnings:0,zorgos:0,totalZorgos:0,teeth:32,suspicion:0};
 var own=function(id){return S.upg[id]||0};
 function cost(u){if(u.max&&own(u.id)>=u.max)return Infinity;return Math.floor(u.b*Math.pow(u.m,own(u.id)))}
-function prestigeMult(){return 1+S.prestige*PRESTIGE_MULT}
-function comboMult(){return Math.min(COMBO_MAX_MULT,1+S.combo*0.04)}
+
+
 function recalc(){S.pc=1;S.ps=0;for(var i=0;i<UPG.length;i++){var u=UPG[i];var n=own(u.id);S.pc+=u.pc*n;S.ps+=u.ps*n;}S.pc=Math.floor(S.pc*prestigeMult());S.ps=Math.floor(S.ps*prestigeMult());if(own("wet")>=1){S.pc*=2;S.ps*=2}if(own("what")>=1){S.ps+=7777}
-// CURRENCY EFFECTS ON INCOME
+// tooth farm: +50K per tooth over 32
+if(own("tfarm")>=1){S.ps+=Math.max(0,(S.teeth-32))*50000}
+// paranoia: +100/sec per suspicion
+if(own("paranoia")>=1){S.ps+=Math.floor(S.suspicion)*100}
+// become owen: x10 everything
+if(own("wowen")>=1){S.pc*=10;S.ps*=10}
 var cm=currencyMult();S.pc=Math.floor(S.pc*cm);S.ps=Math.floor(S.ps*cm)}
 
+function prestigeMult(){var base=1+S.prestige*PRESTIGE_MULT;if(own("pboost")>0)base+=S.prestige*PRESTIGE_MULT*0.5*own("pboost");return base}
+function comboMult(){var max=COMBO_MAX_MULT+own("cmult")*0.5;var rate=0.04+own("cmult")*0.02;return Math.min(max,1+S.combo*rate)}
 // currencies that ACTUALLY DO THINGS
 function currencyMult(){
   var m=1;var p=psl();
@@ -102,16 +109,16 @@ var _curTime=0;
 function tickCurrencies(dt){_curTime+=dt;var p=psl();for(var i=0;i<CURRENCIES.length;i++){var c=CURRENCIES[i];if(p<c.unlockPSL)continue;switch(c.beh){case"click":break;case"passive":c.val+=c.rate*dt;break;case"decay":c.val=Math.max(0,c.val-c.rate*dt*0.3);break;case"random":c.val+=(Math.random()-0.5)*c.rate*dt*2;break;case"sin":c.val=Math.max(0,50+Math.sin(_curTime*c.rate*0.5)*50);break;case"chaos":c.val=Math.random()*100;break;case"step":if(Math.random()<0.002*dt)c.val+=1;break;case"drain":c.val*=(1-0.01*dt);if(c.val<0.01)c.val=0;break;case"spike":if(Math.random()<0.001*dt){c.val=50+Math.random()*200}else{c.val*=0.95}break;case"time":c.val+=dt;break}if(c.val<0)c.val=0}}
 function clickCurrencies(){var p=psl();for(var i=0;i<CURRENCIES.length;i++){var c=CURRENCIES[i];if(p<c.unlockPSL)continue;if(c.beh==="click")c.val+=c.rate;else if(c.beh==="decay")c.val+=0.5;else if(c.beh==="random")c.val+=Math.random()*0.5;else if(c.beh==="drain")c.val+=0.3;else if(Math.random()<0.1)c.val+=0.1}}
 function canPrestige(){return S.total>=PRESTIGE_COST}
-function doPrestige(){if(!canPrestige())return;S.totalPrestigeEarnings+=S.total;S.prestige++;S.pts=0;S.total=0;S.upg={};S.stim=0;S.combo=0;S.clicks=0;recalc();render();screenShake(3);flash("rgba(128,0,255,0.4)");chromatic();var r=document.getElementById("face").getBoundingClientRect();particles(r.left+r.width/2,r.top+r.height/2,50);toast("PRESTIGE "+S.prestige+"! x"+prestigeMult().toFixed(2));checkAch()}
-function tickCombo(){if(S.combo>0&&Date.now()-S.lastClickTime>COMBO_DECAY_MS)S.combo=0}
+function doPrestige(){if(!canPrestige())return;S.totalPrestigeEarnings+=S.total;S.prestige++;var keep=own("pkeep")>=1?Math.floor(S.pts*0.1):0;S.pts=keep;S.total=0;S.upg={};S.stim=0;S.combo=0;S.clicks=0;recalc();render();screenShake(3);flash("rgba(128,0,255,0.4)");chromatic();var r=document.getElementById("face").getBoundingClientRect();particles(r.left+r.width/2,r.top+r.height/2,50);toast("PRESTIGE "+S.prestige+"! x"+prestigeMult().toFixed(2));checkAch()}
+function tickCombo(){var decay=COMBO_DECAY_MS+own('cextend')*200;if(S.combo>0&&Date.now()-S.lastClickTime>decay)S.combo=0}
 function addCombo(){S.combo++;S.lastClickTime=Date.now();if(S.combo>S.maxCombo)S.maxCombo=S.combo}
 var goldenActive=false,goldenTimeout=null;
 function spawnGolden(){if(goldenActive)return;goldenActive=true;toast("GOLDEN MEW!");goldenTimeout=setTimeout(function(){goldenActive=false},GOLDEN_DURATION)}
-function claimGolden(){if(!goldenActive)return;goldenActive=false;clearTimeout(goldenTimeout);var b=Math.floor(S.pc*GOLDEN_MULT*comboMult());S.pts+=b;S.total+=b;S.goldenClicks=(S.goldenClicks||0)+1;toast("+"+fmt(b)+" GOLDEN");screenShake(3);chromatic();checkAch()}
-function spawnZorgo(){if(document.querySelectorAll(".zorgo-float").length>(isMobile?3:8))return;var el=document.createElement("div");el.className="zorgo-float";el.textContent="\u{1F7E3}";el.style.left=(10+Math.random()*70)+"%";el.style.top=(15+Math.random()*50)+"%";var h=function(e){e.stopPropagation();e.preventDefault();S.zorgos++;S.totalZorgos++;toast("+1 Zorgo");var cx=e.clientX||(e.changedTouches&&e.changedTouches[0]?e.changedTouches[0].clientX:0);var cy=e.clientY||(e.changedTouches&&e.changedTouches[0]?e.changedTouches[0].clientY:0);if(cx)floatText(cx,cy,"+1","purple");if(cx)particles(cx,cy,8);el.remove();checkAch();render()};el.addEventListener("click",h);el.addEventListener("touchend",h,{passive:false});document.body.appendChild(el);setTimeout(function(){if(el.parentNode)el.remove()},4000)}
-function spawnNegZorgo(){if(document.querySelectorAll(".zorgo-float").length>(isMobile?3:8))return;var el=document.createElement("div");el.className="zorgo-float";el.textContent="\u{26AB}";el.style.left=(10+Math.random()*70)+"%";el.style.top=(15+Math.random()*50)+"%";var h=function(e){e.stopPropagation();e.preventDefault();S.zorgos=Math.max(0,S.zorgos-1);toast("-1 Zorgo");screenShake(2);el.remove();render()};el.addEventListener("click",h);el.addEventListener("touchend",h,{passive:false});document.body.appendChild(el);setTimeout(function(){if(el.parentNode)el.remove()},2000)}
-function teethTick(){if(psl()>=5&&Math.random()<0.001){S.teeth++;if(S.teeth===33)toast("...33 teeth?");else if(S.teeth===40)toast("stop.");else if(S.teeth===50)toast("too many");checkAch()}}
-function addSuspicion(a){S.suspicion=Math.min(100,S.suspicion+a);if(S.suspicion>=100){S.suspicion=0;var l=Math.floor(S.pts*0.1);S.pts=Math.max(0,S.pts-l);toast("THEY NOTICED. -"+fmt(l));screenShake(3)}}
+function claimGolden(){if(!goldenActive)return;goldenActive=false;clearTimeout(goldenTimeout);var gm=GOLDEN_MULT*(1+own('gvalue'));var b=Math.floor(S.pc*gm*comboMult());S.pts+=b;S.total+=b;S.goldenClicks=(S.goldenClicks||0)+1;toast("+"+fmt(b)+" GOLDEN");screenShake(3);chromatic();checkAch()}
+function spawnZorgo(){if(document.querySelectorAll(".zorgo-float").length>(isMobile?3:8))return;var el=document.createElement("div");el.className="zorgo-float";el.textContent="\u{1F7E3}";el.style.left=(10+Math.random()*70)+"%";el.style.top=(15+Math.random()*50)+"%";var h=function(e){e.stopPropagation();e.preventDefault();var zamt=own("zdouble")>=1?2:1;S.zorgos+=zamt;S.totalZorgos+=zamt;toast("+1 Zorgo");var cx=e.clientX||(e.changedTouches&&e.changedTouches[0]?e.changedTouches[0].clientX:0);var cy=e.clientY||(e.changedTouches&&e.changedTouches[0]?e.changedTouches[0].clientY:0);if(cx)floatText(cx,cy,"+1","purple");if(cx)particles(cx,cy,8);el.remove();checkAch();render()};el.addEventListener("click",h);el.addEventListener("touchend",h,{passive:false});document.body.appendChild(el);setTimeout(function(){if(el.parentNode)el.remove()},4000)}
+function spawnNegZorgo(){if(document.querySelectorAll(".zorgo-float").length>(isMobile?3:8))return;var el=document.createElement("div");el.className="zorgo-float";el.textContent="\u{26AB}";el.style.left=(10+Math.random()*70)+"%";el.style.top=(15+Math.random()*50)+"%";var h=function(e){e.stopPropagation();e.preventDefault();if(own("zshield")>=1){toast("Shield!");}else{S.zorgos=Math.max(0,S.zorgos-1)};toast("-1 Zorgo");screenShake(2);el.remove();render()};el.addEventListener("click",h);el.addEventListener("touchend",h,{passive:false});document.body.appendChild(el);setTimeout(function(){if(el.parentNode)el.remove()},2000)}
+function teethTick(){var tRate=own('tbrush')>=1?0.0005:0.001;if(psl()>=5&&Math.random()<tRate){S.teeth++;if(S.teeth===33)toast("...33 teeth?");else if(S.teeth===40)toast("stop.");else if(S.teeth===50)toast("too many");checkAch()}}
+function addSuspicion(a){var gain=a*(own("shades")>=1?0.7:1);var cap=own("alias")>=1?150:100;S.suspicion=Math.min(cap,S.suspicion+gain);var susCap=own("alias")>=1?150:100;if(S.suspicion>=susCap){S.suspicion=0;var l=Math.floor(S.pts*0.1);S.pts=Math.max(0,S.pts-l);toast("THEY NOTICED. -"+fmt(l));screenShake(3)}}
 var SAVE_KEY="owen_lm_v8";
 function save(){S.lastSaveTime=Date.now();var d={s:S,cur:[]};for(var i=0;i<CURRENCIES.length;i++)d.cur.push(CURRENCIES[i].val);localStorage.setItem(SAVE_KEY,JSON.stringify(d))}
 function load(){var r=localStorage.getItem(SAVE_KEY);if(r){try{var d=JSON.parse(r);if(d.s){if(!d.s.zorgos)d.s.zorgos=0;if(!d.s.totalZorgos)d.s.totalZorgos=0;if(!d.s.teeth)d.s.teeth=32;if(!d.s.suspicion)d.s.suspicion=0;if(!d.s.prestige)d.s.prestige=0;if(!d.s.combo)d.s.combo=0;if(!d.s.maxCombo)d.s.maxCombo=0;if(!d.s.goldenClicks)d.s.goldenClicks=0;if(!d.s.totalPrestigeEarnings)d.s.totalPrestigeEarnings=0;Object.assign(S,d.s)}if(d.cur){for(var i=0;i<Math.min(d.cur.length,CURRENCIES.length);i++)CURRENCIES[i].val=d.cur[i]||0}recalc();var off=(Date.now()-S.lastSaveTime)/1000;if(off>30&&S.ps>0){var e=Math.floor(S.ps*off*0.5);S.pts+=e;S.total+=e;setTimeout(function(){toast("+"+fmt(e)+" while away")},500)}}catch(e){}}}

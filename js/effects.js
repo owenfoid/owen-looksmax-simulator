@@ -91,7 +91,8 @@ function stimBurst() {
   const cx = rect.left + rect.width/2, cy = rect.top + rect.height/2;
   particles(cx, cy, 40);
 
-  const bonus = Math.floor(S.pc * 10);
+  const stimMult = own("sburst") >= 1 ? 5 : 1;
+  const bonus = Math.floor(S.pc * 10 * stimMult);
   S.pts += bonus; S.total += bonus;
   floatText(cx, cy-30, "STIMMED! +" + fmt(bonus), "#c840ff");
   toast("🌀 STIM BURST! +" + fmt(bonus) + " bonus!");

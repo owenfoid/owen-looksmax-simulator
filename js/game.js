@@ -55,10 +55,21 @@ if(par){
 function animate(ts){try{var time=ts/1000;tickCombo();if(typeof micActive!=='undefined'&&micActive){drawBird(time)}else{drawFace(psl()/10,time);stimIntensity=lerp(stimIntensity,S.stim/100,0.1);if(emote67Active){emote67Timer+=0.012;if(emote67Timer>=1){emote67Active=false;emote67Timer=0}}}}catch(e){}requestAnimationFrame(animate)}
 requestAnimationFrame(animate);
 var _lastTick=Date.now();
-setInterval(function(){var now=Date.now();var dt=(now-_lastTick)/1000;_lastTick=now;if(S.ps>0){S.pts+=S.ps*dt*0.1;S.total+=S.ps*dt*0.1;addStim(0.05)}if(Math.random()<GOLDEN_CHANCE&&S.total>100)spawnGolden();teethTick();if(S.suspicion>0)S.suspicion=Math.max(0,S.suspicion-0.02);tickCurrencies(dt);currencyTax();currencyInteract();currencyCrisis();recalc();checkAch();render();renderCurrencies()},100);
+setInterval(function(){var now=Date.now();var dt=(now-_lastTick)/1000;_lastTick=now;if(S.ps>0){S.pts+=S.ps*dt*0.1;S.total+=S.ps*dt*0.1;addStim(0.05*(1+own("sboost")))}if(Math.random()<GOLDEN_CHANCE&&S.total>100)spawnGolden();teethTick();
+// trap effects
+if(own("trap1")>0)addSuspicion(0.05*own("trap1")*dt);
+if(own("trap2")>0&&Math.random()<0.01*own("trap2")){var ri=Math.floor(Math.random()*CURRENCIES.length);if(psl()>=CURRENCIES[ri].unlockPSL)CURRENCIES[ri].val=Math.max(0,CURRENCIES[ri].val-1)}
+if(own("trap3")>0&&Math.random()<0.001*own("trap3")){S.teeth=Math.max(28,S.teeth-1);toast("-1 tooth (sukuna)")}
+if(own("trap5")>0){S.suspicion=Math.max(S.suspicion,S.suspicion)} // no decay handled below
+if(S.suspicion>0&&own("trap5")<1)S.suspicion=Math.max(0,S.suspicion-0.02);
+// currency boosters
+for(var ui=0;ui<UPG.length;ui++){var u=UPG[ui];if(u.currBoost&&own(u.id)>0){var ci=u.currBoost.idx;if(ci<CURRENCIES.length)CURRENCIES[ci].val+=u.currBoost.rate*own(u.id)*dt}}
+// void peer: all currencies x1.5 (already bought = permanent)
+if(own("wvoid")>=1&&Math.random()<0.01){for(var i=0;i<CURRENCIES.length;i++)if(psl()>=CURRENCIES[i].unlockPSL)CURRENCIES[i].val*=1.001}
+tickCurrencies(dt);currencyTax();currencyInteract();currencyCrisis();recalc();checkAch();render();renderCurrencies()},100);
 setInterval(function(){if(S.stim>0){S.stim=Math.max(0,S.stim-0.3)}},200);
 setInterval(function(){tickCombo()},100);
-setInterval(function(){if(S.total<500)return;if(Math.random()<0.08)spawnZorgo();if(Math.random()<0.008&&S.totalZorgos>5)spawnNegZorgo()},3000);
+setInterval(function(){if(S.total<500)return;var zRate=0.08*(1+own('zspeed'));if(Math.random()<zRate)spawnZorgo();var nzRate=0.008*(1+own('trap4')*2);if(Math.random()<nzRate&&S.totalZorgos>5)spawnNegZorgo()},3000);
 setInterval(function(){if(Math.random()<0.15&&S.total>50){toast(getEvent());screenShake(1)}},12000);
 var chaosRate=isMobile?0.7:1;
 function pushNotif(msg){var s=document.getElementById("notif-stack");if(!s)return;var d=document.createElement("div");d.className="notif";d.textContent=msg;s.appendChild(d);if(s.children.length>10)s.firstChild.remove();setTimeout(function(){if(d.parentNode)d.remove()},2500)}
