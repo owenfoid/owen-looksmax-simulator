@@ -4,45 +4,31 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Owen Looksmax Simulator</title>
-<link href="https://fonts.googleapis.com/css2?family=VT323&family=Share+Tech+Mono&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;600;800&family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet">
 <style>
-@import url('https://fonts.googleapis.com/css2?family=VT323&family=Share+Tech+Mono&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Outfit:wght@400;600;800&family=JetBrains+Mono:wght@400;700&display=swap');
 
 :root {
-  --bg: #0a0a0a;
-  --panel: #0d0d0d;
-  --border: #1f1f1f;
-  --green: #39ff14;
-  --pink: #ff2a6d;
-  --amber: #ff9f1c;
-  --dim: #333;
-  --text: #b0b0b0;
-  --glow: 0 0 8px rgba(57,255,20,0.3);
+  --bg: #111113;
+  --panel: #1a1a1f;
+  --border: #2a2a30;
+  --accent: #ff5c35;
+  --accent2: #ff9f1c;
+  --text: #e0e0e0;
+  --dim: #666;
+  --muted: #444;
 }
 * { margin:0; padding:0; box-sizing:border-box; }
 html, body { overflow-x:hidden; }
 body {
-  font-family: 'Share Tech Mono', monospace;
+  font-family: 'Outfit', system-ui, sans-serif;
   background: var(--bg);
   color: var(--text);
   min-height: 100vh;
   user-select: none;
-  cursor: crosshair;
 }
 
-/* === CRT GRAIN + SCANLINES === */
-#scanlines {
-  position:fixed; inset:0; pointer-events:none; z-index:50;
-  background:
-    repeating-linear-gradient(0deg, rgba(0,0,0,0) 0px, rgba(0,0,0,0) 1px, rgba(0,0,0,0.15) 1px, rgba(0,0,0,0.15) 3px);
-}
-body::before {
-  content:''; position:fixed; inset:0; pointer-events:none; z-index:49;
-  background: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.06'/%3E%3C/svg%3E");
-  opacity:0.5;
-}
-
-/* === SHAKE === */
+/* === EFFECTS === */
 .shake-1{animation:shake1 .12s linear}
 .shake-2{animation:shake2 .18s linear}
 .shake-3{animation:shake3 .25s linear}
@@ -50,230 +36,206 @@ body::before {
 @keyframes shake2{0%,100%{transform:translate(0)}20%{transform:translate(-6px,4px)}40%{transform:translate(5px,-5px)}60%{transform:translate(-4px,3px)}80%{transform:translate(6px,-2px)}}
 @keyframes shake3{0%,100%{transform:translate(0)}10%{transform:translate(-10px,6px)}30%{transform:translate(8px,-8px)}50%{transform:translate(-12px,4px)}70%{transform:translate(10px,-6px)}90%{transform:translate(-6px,8px)}}
 
-/* === FLASH / CHROMA / WOBBLE === */
 #flash{position:fixed;inset:0;pointer-events:none;z-index:100;opacity:0;transition:opacity 0.05s}
 #flash.fire{opacity:1}
-#chroma-wrap{filter:none;transition:filter 0.1s}
+#chroma-wrap{filter:none}
 #chroma-wrap.aberr{animation:chroma .2s ease-out}
-@keyframes chroma{0%{filter:drop-shadow(-3px 0 0 rgba(255,42,109,.5)) drop-shadow(3px 0 0 rgba(57,255,20,.5))}100%{filter:none}}
+@keyframes chroma{0%{filter:drop-shadow(-3px 0 rgba(255,92,53,.4)) drop-shadow(3px 0 rgba(100,200,255,.4))}100%{filter:none}}
+#scanlines{position:fixed;inset:0;pointer-events:none;z-index:50;background:repeating-linear-gradient(0deg,transparent,transparent 2px,rgba(0,0,0,0.04) 2px,rgba(0,0,0,0.04) 4px);opacity:0.4}
 .wobble{animation:wobble .3s ease-out}
 @keyframes wobble{0%{transform:scale(1)}25%{transform:scale(1.04,0.96)}50%{transform:scale(0.96,1.04)}75%{transform:scale(1.02,0.98)}100%{transform:scale(1)}}
 
 /* === LAYOUT === */
-header { text-align:center; padding:20px 12px 6px; }
+header { text-align:center; padding:18px 12px 4px; }
 header h1 {
-  font-family: 'VT323', monospace;
-  font-size: clamp(2.2rem, 7vw, 3.6rem);
-  color: var(--green);
-  text-shadow: var(--glow), 0 0 30px rgba(57,255,20,0.15);
-  letter-spacing: 4px;
-  text-transform: uppercase;
-  line-height: 1;
+  font-family: 'Outfit', sans-serif;
+  font-weight: 800;
+  font-size: clamp(1.6rem, 5vw, 2.4rem);
+  color: var(--text);
+  letter-spacing: -0.5px;
 }
+header h1 span { color:var(--accent); }
 .sub {
-  font-family: 'VT323', monospace;
-  font-size: .9rem;
-  color: var(--dim);
-  letter-spacing: 6px;
+  font-size: .65rem;
+  color: var(--muted);
+  letter-spacing: 3px;
   text-transform: uppercase;
-  margin-top: 2px;
+  font-weight: 400;
 }
-.sub::before { content:'> '; color:var(--green); }
 
 .game {
-  max-width:880px; margin:0 auto; padding:10px;
+  max-width:860px; margin:0 auto; padding:8px;
   display:grid; grid-template-columns:1fr 1fr; gap:8px;
 }
 @media(max-width:640px){ .game{grid-template-columns:1fr} }
 .full { grid-column:1/-1; }
 
-/* === PANELS - thick border, no radius, terminal feel === */
 .p {
   background: var(--panel);
-  border: 2px solid var(--border);
+  border: 1px solid var(--border);
+  border-radius: 6px;
   padding: 12px;
-  position: relative;
 }
-/* corner markers */
-.p::before, .p::after {
-  content:''; position:absolute; width:6px; height:6px;
-  border-color:var(--green); border-style:solid;
-}
-.p::before { top:-1px; left:-1px; border-width:2px 0 0 2px; }
-.p::after { bottom:-1px; right:-1px; border-width:0 2px 2px 0; }
-
 .pt {
-  font-family:'VT323',monospace; font-size:1rem;
-  color:var(--green); text-transform:uppercase;
-  letter-spacing:3px; margin-bottom:8px;
-  padding-bottom:5px; border-bottom:1px solid var(--border);
+  font-size: .7rem;
+  font-weight: 600;
+  color: var(--dim);
+  text-transform: uppercase;
+  letter-spacing: 2px;
+  margin-bottom: 8px;
+  padding-bottom: 5px;
+  border-bottom: 1px solid var(--border);
 }
-.pt::before { content:'[ '; } .pt::after { content:' ]'; }
 
 /* === STATS === */
-.stats { display:flex; justify-content:center; gap:24px; flex-wrap:wrap; text-align:center; padding:6px; }
+.stats { display:flex; justify-content:center; gap:28px; flex-wrap:wrap; text-align:center; padding:6px; }
 .st .v {
-  font-family:'VT323',monospace; font-size:2rem;
-  color:var(--green); line-height:1;
-  text-shadow: var(--glow);
+  font-family: 'JetBrains Mono', monospace;
+  font-weight: 700;
+  font-size: 1.6rem;
+  color: var(--accent);
+  line-height: 1;
 }
 .st .l {
-  font-size:.55rem; color:var(--dim);
-  letter-spacing:2px; text-transform:uppercase;
+  font-size: .55rem; color:var(--muted);
+  letter-spacing: 1.5px; text-transform:uppercase;
 }
 
 /* === PSL BAR === */
 .psl-row { display:flex; justify-content:space-between; font-size:.6rem; color:var(--dim); letter-spacing:1px; text-transform:uppercase; margin-bottom:3px; }
 .psl-bar {
-  height:18px; background:#080808; overflow:hidden; position:relative;
-  border:1px solid var(--border);
+  height:16px; background:#141416; border-radius:8px; overflow:hidden;
+  border:1px solid var(--border); position:relative;
 }
 .psl-fill {
-  height:100%; transition:width .4s; position:relative;
-  background: linear-gradient(90deg, var(--pink), var(--amber), var(--green));
+  height:100%; border-radius:8px; transition:width .4s;
+  background: linear-gradient(90deg, var(--accent), var(--accent2), #4ade80);
 }
 .psl-inner {
   position:absolute; right:6px; top:50%; transform:translateY(-50%);
-  font-family:'VT323',monospace; font-size:.9rem; color:#000;
-  text-shadow:0 0 4px rgba(255,255,255,.5);
+  font-family:'JetBrains Mono',monospace; font-size:.7rem; font-weight:700;
+  color:#000;
 }
 .rank {
-  text-align:center; font-family:'VT323',monospace;
-  font-size:1.2rem; margin-top:4px; letter-spacing:4px;
-  text-shadow: 0 0 10px currentColor;
+  text-align:center; font-weight:800;
+  font-size:1rem; margin-top:4px; letter-spacing:1px;
 }
 
 /* === STIM === */
-.stim-wrap { margin-top:8px; }
-.stim-label { font-size:.55rem; color:var(--dim); letter-spacing:1px; text-transform:uppercase; margin-bottom:2px; display:flex; justify-content:space-between; }
-.stim-bar { height:8px; background:#080808; overflow:hidden; border:1px solid var(--border); }
-.stim-fill { height:100%; transition:width .15s; background:linear-gradient(90deg,var(--pink),#ff00ff,var(--green)); }
-.stim-fill.maxed { animation:stimPulse .3s infinite alternate; }
-@keyframes stimPulse{0%{opacity:.7}100%{opacity:1;box-shadow:0 0 12px var(--pink)}}
+.stim-wrap{margin-top:8px}
+.stim-label{font-size:.55rem;color:var(--muted);letter-spacing:1px;text-transform:uppercase;margin-bottom:2px;display:flex;justify-content:space-between}
+.stim-bar{height:6px;background:#141416;border-radius:3px;overflow:hidden;border:1px solid var(--border)}
+.stim-fill{height:100%;border-radius:3px;transition:width .15s;background:linear-gradient(90deg,var(--accent),#ff2a6d,#c084fc)}
+.stim-fill.maxed{animation:stimPulse .3s infinite alternate}
+@keyframes stimPulse{0%{opacity:.7}100%{opacity:1;box-shadow:0 0 10px var(--accent)}}
 
-/* === CLICKER === */
+/* === CLICKER AREA === */
 .click-area {
   display:flex; flex-direction:column; align-items:center; justify-content:center;
-  min-height:300px; position:relative; cursor:crosshair;
-  background: repeating-linear-gradient(0deg, transparent 0px, transparent 3px, rgba(57,255,20,0.01) 3px, rgba(57,255,20,0.01) 4px);
+  min-height:300px; position:relative; cursor:pointer;
 }
+.click-area:active { opacity:.9; }
 #face { image-rendering:auto; }
 .click-hint {
-  font-family:'VT323',monospace;
-  font-size:.8rem; color:var(--dim); margin-top:8px;
-  letter-spacing:3px; text-transform:uppercase;
+  font-size: .6rem; color:var(--muted); margin-top:6px;
+  letter-spacing:2px; text-transform:uppercase;
 }
-.click-hint::before { content:'>> '; color:var(--green); }
 
 /* === FLOAT TEXT === */
 .ft {
   position:fixed; pointer-events:none; z-index:200;
-  font-family:'VT323',monospace; font-size:1.8rem;
-  text-shadow:0 0 10px currentColor;
+  font-family:'JetBrains Mono',monospace; font-weight:700; font-size:1.4rem;
+  text-shadow:0 0 8px currentColor;
   animation:ftUp .6s ease-out forwards;
 }
-@keyframes ftUp{0%{opacity:1;transform:translateY(0) scale(1)}100%{opacity:0;transform:translateY(-60px) scale(1.4) rotate(var(--r,5deg))}}
+@keyframes ftUp{0%{opacity:1;transform:translateY(0) scale(1)}100%{opacity:0;transform:translateY(-60px) scale(1.3) rotate(var(--r,3deg))}}
 
 /* === PARTICLES === */
-.particle{position:fixed;pointer-events:none;z-index:150;animation:particleOut var(--dur,.5s) ease-out forwards}
+.particle{position:fixed;pointer-events:none;z-index:150;border-radius:50%;animation:particleOut var(--dur,.5s) ease-out forwards}
 @keyframes particleOut{0%{opacity:1;transform:translate(0,0) scale(1)}100%{opacity:0;transform:translate(var(--dx,20px),var(--dy,-40px)) scale(0)}}
 
-/* === UPGRADES - dossier style with left accent stripe === */
-.ul { display:flex; flex-direction:column; gap:4px; max-height:400px; overflow-y:auto; }
-.ul::-webkit-scrollbar{width:4px} .ul::-webkit-scrollbar-thumb{background:var(--green);} .ul::-webkit-scrollbar-track{background:var(--border)}
+/* === UPGRADES === */
+.ul { display:flex; flex-direction:column; gap:4px; max-height:420px; overflow-y:auto; }
+.ul::-webkit-scrollbar{width:3px} .ul::-webkit-scrollbar-thumb{background:var(--muted);border-radius:2px}
 .ug {
-  display:flex; align-items:center; gap:8px; padding:6px 8px;
-  background:rgba(57,255,20,0.02);
+  display:flex; align-items:center; gap:8px; padding:7px 10px;
+  background:rgba(255,255,255,0.02);
   border:1px solid var(--border);
-  border-left:3px solid var(--green);
+  border-radius:4px;
   cursor:pointer; transition:all .15s;
 }
-.ug:hover { background:rgba(57,255,20,0.06); border-left-color:var(--pink); }
-.ug.lk { opacity:.25; cursor:not-allowed; border-left-color:var(--border); }
-.ug.lk:hover { background:transparent; border-left-color:var(--border); }
-.ug .ic { font-size:1.2rem; width:26px; text-align:center; flex-shrink:0; }
+.ug:hover { background:rgba(255,92,53,0.06); border-color:var(--accent); }
+.ug.lk { opacity:.2; cursor:not-allowed; }
+.ug.lk:hover { background:transparent; border-color:var(--border); }
+.ug .ic { font-size:1.1rem; width:24px; text-align:center; flex-shrink:0; }
 .ug .inf { flex:1; min-width:0; }
-.ug .nm { font-family:'VT323',monospace; font-size:.85rem; color:var(--green); }
-.ug .ds { font-size:.5rem; color:var(--dim); }
+.ug .nm { font-size:.7rem; font-weight:600; color:var(--text); }
+.ug .ds { font-size:.5rem; color:var(--muted); }
 .ug .rt { text-align:right; flex-shrink:0; }
-.ug .co { font-family:'VT323',monospace; font-size:.85rem; color:var(--amber); }
-.ug .ow { font-size:.5rem; color:var(--pink); }
+.ug .co { font-family:'JetBrains Mono',monospace; font-size:.7rem; font-weight:700; color:var(--accent2); }
+.ug .ow { font-size:.5rem; color:var(--accent); }
 
 /* === ACHIEVEMENTS === */
 .ag { display:flex; flex-wrap:wrap; gap:4px; }
 .ac {
-  width:32px; height:32px;
-  background:#080808; border:1px solid var(--border);
+  width:30px; height:30px;
+  background:rgba(255,255,255,0.03); border:1px solid var(--border);
+  border-radius:4px;
   display:flex; align-items:center; justify-content:center;
-  font-size:.85rem; opacity:.15; transition:all .3s; position:relative;
+  font-size:.8rem; opacity:.15; transition:all .3s; position:relative;
 }
-.ac.un {
-  opacity:1; border-color:var(--green);
-  box-shadow: 0 0 6px rgba(57,255,20,0.3);
-}
-.ac .tt{display:none;position:absolute;bottom:110%;left:50%;transform:translateX(-50%);background:#0d0d0d;border:1px solid var(--green);padding:3px 7px;font-size:.5rem;color:var(--green);white-space:nowrap;z-index:10}
+.ac.un { opacity:1; border-color:var(--accent); background:rgba(255,92,53,0.08); }
+.ac .tt{display:none;position:absolute;bottom:110%;left:50%;transform:translateX(-50%);background:var(--panel);border:1px solid var(--border);padding:3px 8px;border-radius:4px;font-size:.5rem;color:var(--text);white-space:nowrap;z-index:10}
 .ac:hover .tt{display:block}
 
 /* === LOG === */
-.log{max-height:50px;overflow-y:auto;font-size:.55rem;color:var(--dim);text-align:left;padding:4px;font-family:'Share Tech Mono',monospace}
-.log::-webkit-scrollbar{width:2px} .log::-webkit-scrollbar-thumb{background:var(--green)}
-.log span{display:block;line-height:1.5} .log span::before{content:'> ';color:var(--border)} .log .hl{color:var(--green)} .log .hl::before{content:'>> ';color:var(--green)}
+.log{max-height:50px;overflow-y:auto;font-size:.55rem;color:var(--muted);padding:4px}
+.log::-webkit-scrollbar{width:2px} .log::-webkit-scrollbar-thumb{background:var(--muted)}
+.log span{display:block;line-height:1.5} .log .hl{color:var(--accent)}
 
 /* === TOAST === */
-.toast {
-  position:fixed;top:14px;left:50%;transform:translateX(-50%) translateY(-80px);
-  background:#0d0d0d;border:2px solid var(--green);
-  padding:8px 18px;font-family:'VT323',monospace;font-size:.85rem;
-  color:var(--green);z-index:300;transition:transform .35s ease;
-  pointer-events:none;text-align:center;max-width:90vw;
-  box-shadow: 0 0 20px rgba(57,255,20,0.15);
-}
+.toast{position:fixed;top:12px;left:50%;transform:translateX(-50%) translateY(-80px);background:var(--panel);border:1px solid var(--accent);padding:8px 18px;border-radius:6px;font-size:.7rem;color:var(--accent);z-index:300;transition:transform .3s ease;pointer-events:none;text-align:center;max-width:90vw;font-weight:600}
 .toast.show{transform:translateX(-50%) translateY(0)}
-
-/* === MIC === */
-.mic-btn {
-  margin-top:8px; padding:5px 14px; border:1px solid var(--green);
-  background:transparent; color:var(--green); font-family:'VT323',monospace; font-size:.8rem;
-  letter-spacing:2px; text-transform:uppercase; cursor:pointer; transition:all .2s;
-}
-.mic-btn:hover { background:var(--green); color:#000; }
-
-footer {
-  text-align:center; font-family:'VT323',monospace;
-  font-size:.7rem; color:#1a1a1a; padding:12px; letter-spacing:2px;
-}
 
 /* === COMBO === */
 .combo-display {
-  font-family:'VT323',monospace; font-size:1.6rem; letter-spacing:4px;
-  text-align:center; color:var(--green); text-shadow:var(--glow);
+  font-family:'JetBrains Mono',monospace; font-weight:700;
+  font-size:1.2rem; letter-spacing:1px;
+  text-align:center; color:var(--accent);
   animation:comboPulse .3s infinite alternate;
 }
-@keyframes comboPulse{0%{transform:scale(1)}100%{transform:scale(1.06)}}
+@keyframes comboPulse{0%{transform:scale(1)}100%{transform:scale(1.05)}}
 
 /* === PRESTIGE === */
 .prestige-btn {
   text-align:center; padding:8px; margin-bottom:6px;
-  background:rgba(57,255,20,0.04);
-  border:1px solid rgba(200,160,255,0.3); border-left:3px solid #c0a0ff;
-  font-family:'VT323',monospace; font-size:.85rem; color:#c0a0ff;
-  cursor:pointer; transition:all .2s; letter-spacing:2px;
+  background:rgba(192,132,252,0.06);
+  border:1px solid rgba(192,132,252,0.25); border-radius:4px;
+  font-size:.65rem; font-weight:600; color:#c084fc;
+  cursor:pointer; transition:all .2s;
 }
-.prestige-btn:hover { background:rgba(200,160,255,0.1); border-color:#c0a0ff; }
+.prestige-btn:hover { background:rgba(192,132,252,0.12); border-color:#c084fc; }
 .prestige-btn.lk { opacity:.3; cursor:not-allowed; }
-.prestige-btn.lk:hover { background:rgba(57,255,20,0.04); border-color:rgba(200,160,255,0.3); }
-.prestige-info {
-  font-family:'VT323',monospace; font-size:.75rem;
-  color:#c0a0ff; text-align:center; margin-top:4px; letter-spacing:2px;
-}
+.prestige-btn.lk:hover { background:rgba(192,132,252,0.06); }
+.prestige-info { font-size:.55rem; color:#c084fc; text-align:center; margin-top:4px; }
 
 /* === GOLDEN === */
 .golden-indicator {
-  font-family:'VT323',monospace; font-size:1.1rem; letter-spacing:3px;
-  color:var(--amber); text-align:center; text-shadow:0 0 12px var(--amber);
+  font-weight:700; font-size:.8rem;
+  color:var(--accent2); text-align:center;
   animation:goldenPulse .4s infinite alternate;
 }
-@keyframes goldenPulse{0%{opacity:.6;transform:scale(1)}100%{opacity:1;transform:scale(1.08)}}
+@keyframes goldenPulse{0%{opacity:.7;transform:scale(1)}100%{opacity:1;transform:scale(1.06)}}
+
+/* === MIC === */
+.mic-btn {
+  margin-top:6px; padding:4px 12px; border:1px solid var(--accent);
+  border-radius:4px; background:transparent; color:var(--accent);
+  font-family:inherit; font-size:.55rem; cursor:pointer; transition:all .2s;
+}
+.mic-btn:hover { background:var(--accent); color:#000; }
+
+footer{text-align:center;font-size:.5rem;color:#333;padding:10px}
 </style>
 </head>
 <body>
@@ -283,8 +245,8 @@ footer {
 
 <div id="chroma-wrap">
 <header>
-  <h1>Owen Looksmax Simulator</h1>
-  <div class="sub">The Grind Never Stops</div>
+  <h1>Owen <span>Looksmax</span> Simulator</h1>
+  <div class="sub">the grind never stops</div>
 </header>
 
 <div class="game" id="game">
@@ -329,9 +291,8 @@ footer {
 </div>
 
 <div class="toast" id="toast"></div>
-<footer>auto-saves every 10s &middot; owen looksmax simulator v0.4</footer>
+<footer>owen looksmax simulator v0.5</footer>
 
-<!-- LOAD ORDER MATTERS -->
 <script>
 // ============ UPGRADES ============
 const UPG = [
@@ -471,8 +432,8 @@ function doPrestige() {
   recalc();
   render();
   // big effects
-  screenShake(3); flash("rgba(57,255,20,0.5)"); chromatic();
-  setTimeout(()=>{ flash("rgba(192,160,255,0.3)"); screenShake(3); }, 200);
+  screenShake(3); flash("rgba(255,92,53,0.5)"); chromatic();
+  setTimeout(()=>{ flash("rgba(192,132,252,0.3)"); screenShake(3); }, 200);
   setTimeout(()=>{ flash("rgba(255,159,28,0.3)"); chromatic(); }, 400);
   const rect = document.getElementById("face").getBoundingClientRect();
   particles(rect.left+rect.width/2, rect.top+rect.height/2, 60);
@@ -503,7 +464,7 @@ function spawnGolden() {
   goldenActive = true;
   toast("✨ GOLDEN MEW! Click fast!");
   log("GOLDEN MEW appeared!", true);
-  flash("rgba(57,255,20,0.2)");
+  flash("rgba(255,92,53,0.2)");
   goldenTimeout = setTimeout(()=>{
     goldenActive = false;
     toast("💨 Golden mew expired...");
@@ -596,7 +557,7 @@ function wobble() {
 
 // ============ PARTICLES ============
 function particles(x, y, count) {
-  const colors = ["#39ff14","#ff2a6d","#ff9f1c","#c0a0ff","#fff"];
+  const colors = ["#ff5c35","#ff9f1c","#c084fc","#4ade80","#fff"];
   for(let i=0;i<count;i++) {
     const p = document.createElement("div");
     p.className = "particle";
@@ -648,9 +609,9 @@ function addStim(amount) {
 
 function stimBurst() {
   screenShake(3);
-  flash("rgba(57,255,20,0.25)");
+  flash("rgba(255,92,53,0.25)");
   chromatic(); wobble();
-  setTimeout(()=>{ flash("rgba(255,42,109,0.2)"); screenShake(2); }, 150);
+  setTimeout(()=>{ flash("rgba(192,132,252,0.2)"); screenShake(2); }, 150);
   setTimeout(()=>{ flash("rgba(255,159,28,0.2)"); chromatic(); }, 300);
 
   const rect = document.getElementById("face").getBoundingClientRect();
@@ -659,7 +620,7 @@ function stimBurst() {
 
   const bonus = Math.floor(S.pc * 10);
   S.pts += bonus; S.total += bonus;
-  floatText(cx, cy-30, "STIMMED! +" + fmt(bonus), "#39ff14");
+  floatText(cx, cy-30, "STIMMED! +" + fmt(bonus), "#ff5c35");
   toast("🌀 STIM BURST! +" + fmt(bonus) + " bonus!");
   log("STIM BURST — +" + fmt(bonus) + " bonus mew points!", true);
 
@@ -671,393 +632,139 @@ function stimBurst() {
     toast("🫳🫳 EMOTE 67 ACTIVATED 🫳🫳");
     log("RARE: Emote 67 triggered!", true);
     screenShake(3);
-    flash("rgba(57,255,20,0.3)");
+    flash("rgba(255,92,53,0.3)");
   }
 }
 
+// ============ EMOJI FACE SYSTEM ============
 const canvas = document.getElementById("face");
 const ctx = canvas.getContext("2d");
 
-function drawFace(t, time) {
-  const W=200, H=280;
-  ctx.clearRect(0,0,W,H);
+// PSL -> emoji progression
+const FACE_STAGES = [
+  { min:0,   emoji:"🤓", label:"" },
+  { min:1,   emoji:"😐", label:"" },
+  { min:2.5, emoji:"😤", label:"grinding" },
+  { min:4,   emoji:"😏", label:"chadlite arc" },
+  { min:5.5, emoji:"😎", label:"" },
+  { min:7,   emoji:"🗿", label:"" },
+  { min:8.5, emoji:"👑", label:"" },
+  { min:9.5, emoji:"🗿👑", label:"final form" },
+];
 
-  const si = typeof stimIntensity !== 'undefined' ? stimIntensity : 0;
-
-  // normal breathing + stim shaking layered on top
-  const breathe = Math.sin(time*2)*1.5 + si * Math.sin(time*35) * 8;
-  const headTilt = Math.sin(time*0.7)*0.5 + si * Math.sin(time*20) * 12;
-  const headShakeX = si * Math.sin(time*25) * 6;
-
-  ctx.save();
-  ctx.translate(W/2 + headShakeX, H/2 + breathe - 10);
-  ctx.rotate(headTilt * Math.PI/180);
-
-  // stim face scale throb
-  if(si > 0.3) {
-    const throb = 1 + Math.sin(time*18) * si * 0.06;
-    ctx.scale(throb, throb);
-  }
-
-  // HEAD SHAPE
-  const headW = lerp(42, 36, t);
-  const headH = lerp(50, 56, t);
-  const jawW = lerp(40, 32, t);
-  const jawDrop = lerp(46, 52, t);
-  const cheekbone = lerp(0, 6, t);
-
-  const skinR = Math.floor(lerp(210, 230, t));
-  const skinG = Math.floor(lerp(180, 195, t));
-  const skinB = Math.floor(lerp(160, 165, t));
-  ctx.fillStyle = `rgb(${skinR},${skinG},${skinB})`;
-
-  ctx.beginPath();
-  ctx.moveTo(0, -headH);
-  ctx.quadraticCurveTo(headW*0.6, -headH, headW, -headH*0.3);
-  ctx.quadraticCurveTo(headW + cheekbone, 0, jawW, jawDrop*0.6);
-  const chinW = lerp(18, 10, t);
-  const chinSharp = lerp(8, 2, t);
-  ctx.quadraticCurveTo(jawW*0.8, jawDrop*0.85, chinW, jawDrop);
-  ctx.quadraticCurveTo(chinSharp, jawDrop+lerp(4,8,t), 0, jawDrop+lerp(6,10,t));
-  ctx.quadraticCurveTo(-chinSharp, jawDrop+lerp(4,8,t), -chinW, jawDrop);
-  ctx.quadraticCurveTo(-jawW*0.8, jawDrop*0.85, -jawW, jawDrop*0.6);
-  ctx.quadraticCurveTo(-headW - cheekbone, 0, -headW, -headH*0.3);
-  ctx.quadraticCurveTo(-headW*0.6, -headH, 0, -headH);
-  ctx.fill();
-
-  // CHEEKBONE SHADOWS
-  if(t > 0.3) {
-    ctx.fillStyle = `rgba(0,0,0,${lerp(0, 0.08, (t-0.3)/0.7)})`;
-    ctx.beginPath(); ctx.ellipse(22, 10, 10, 4, 0.2, 0, Math.PI*2); ctx.fill();
-    ctx.beginPath(); ctx.ellipse(-22, 10, 10, 4, -0.2, 0, Math.PI*2); ctx.fill();
-  }
-
-  // EYES — bug out during stim
-  const eyeY = lerp(-4, -8, t);
-  const eyeSpacing = lerp(16, 15, t);
-  const eyeW = lerp(9, 11, t) + si * 4;           // eyes get HUGE
-  const eyeH = lerp(7, 6, t) + si * 5;             // wider vertically too
-  const eyeTilt = lerp(0, -0.12, t) + si * Math.sin(time*22) * 0.15;
-  const browH = lerp(-13, -17, t) - si * 5;        // brows shoot up
-  const browThick = lerp(2, 3, t) + si * 2;
-  const browTilt = lerp(0, 0.15, t) + si * Math.sin(time*18) * 0.3;
-  // stim eye jitter
-  const eyeJitterX = si > 0.4 ? Math.sin(time*40) * si * 3 : 0;
-  const eyeJitterY = si > 0.4 ? Math.cos(time*33) * si * 2 : 0;
-
-  // brow ridge shadow
-  ctx.fillStyle = `rgba(0,0,0,${lerp(0.03, 0.12, t)})`;
-  for(let side of [-1,1]) {
-    ctx.beginPath(); ctx.ellipse(side*eyeSpacing, eyeY-3, eyeW+2, lerp(4,6,t), 0, 0, Math.PI*2); ctx.fill();
-  }
-
-  for(let side of [-1,1]) {
-    ctx.save();
-    ctx.translate(side*eyeSpacing + eyeJitterX, eyeY + eyeJitterY);
-    ctx.rotate(side * eyeTilt);
-
-    ctx.fillStyle = "#f0ece8";
-    ctx.beginPath(); ctx.ellipse(0, 0, eyeW, eyeH, 0, 0, Math.PI*2); ctx.fill();
-
-    // stim: pupil darts around, dilates
-    const pupilOffX = si > 0.3 ? Math.sin(time*30+side*2) * si * 3 : 0;
-    const pupilOffY = si > 0.3 ? Math.cos(time*26+side) * si * 2 : 0;
-    const pupilSize = lerp(2.5, 3, t) + si * 2; // dilated af
-
-    const irisG = Math.floor(lerp(80, 140, t));
-    const irisB = Math.floor(lerp(60, 180, t));
-    ctx.fillStyle = si > 0.6 ? `rgb(${Math.floor(200+Math.sin(time*20)*55)},${irisG},${irisB})` : `rgb(40,${irisG},${irisB})`;
-    ctx.beginPath(); ctx.arc(pupilOffX, pupilOffY, lerp(5, 5.5, t) + si*1.5, 0, Math.PI*2); ctx.fill();
-
-    ctx.fillStyle = "#111";
-    ctx.beginPath(); ctx.arc(pupilOffX, pupilOffY, pupilSize, 0, Math.PI*2); ctx.fill();
-
-    // bloodshot veins at high stim
-    if(si > 0.5) {
-      ctx.strokeStyle = `rgba(255,30,30,${si*0.5})`;
-      ctx.lineWidth = 0.5;
-      for(let v=0;v<4;v++) {
-        const a = v*Math.PI/2 + time*2;
-        ctx.beginPath();
-        ctx.moveTo(Math.cos(a)*3, Math.sin(a)*3);
-        ctx.lineTo(Math.cos(a)*(eyeW-1), Math.sin(a)*(eyeH-1));
-        ctx.stroke();
-      }
-    }
-
-    ctx.fillStyle = "rgba(255,255,255,0.7)";
-    ctx.beginPath(); ctx.arc(pupilOffX-2, pupilOffY-2, 1.5, 0, Math.PI*2); ctx.fill();
-
-    ctx.strokeStyle = `rgba(40,30,20,${lerp(0.4,0.8,t)})`;
-    ctx.lineWidth = lerp(1, 1.5, t);
-    ctx.beginPath(); ctx.ellipse(0, -1, eyeW, eyeH*0.7, 0, Math.PI, Math.PI*2); ctx.stroke();
-
-    ctx.restore();
-
-    // EYEBROW
-    ctx.save();
-    ctx.translate(side*eyeSpacing, browH);
-    ctx.rotate(side * browTilt);
-    ctx.fillStyle = `rgba(40,30,20,${lerp(0.5,0.9,t)})`;
-    ctx.beginPath(); ctx.ellipse(0, 0, eyeW+2, browThick, 0, 0, Math.PI*2); ctx.fill();
-    ctx.restore();
-  }
-
-  // NOSE
-  const noseW = lerp(8, 5, t);
-  const noseH = lerp(14, 16, t);
-  const noseY = lerp(8, 6, t);
-  ctx.strokeStyle = `rgba(60,40,30,${lerp(0.2,0.35,t)})`;
-  ctx.lineWidth = lerp(1.5, 1, t);
-  ctx.beginPath(); ctx.moveTo(0, noseY); ctx.lineTo(0, noseY+noseH); ctx.stroke();
-  ctx.beginPath();
-  ctx.arc(-noseW*0.5, noseY+noseH, noseW*0.3, 0, Math.PI*2);
-  ctx.arc(noseW*0.5, noseY+noseH, noseW*0.3, 0, Math.PI*2);
-  ctx.stroke();
-
-  // MOUTH — goes unhinged during stim
-  const mouthY = lerp(32, 34, t) + si * 3;
-  const mouthW = lerp(12, 10, t) + si * 6;
-  const mouthOpen = si * 12; // how far mouth opens
-  const lipFullness = lerp(2, 3, t);
-  const mouthVibX = si > 0.5 ? Math.sin(time*28) * si * 2 : 0;
-
-  if(si > 0.3) {
-    // OPEN MOUTH - dark cavity
-    ctx.fillStyle = `rgb(${Math.floor(40-si*30)},${Math.floor(15-si*10)},${Math.floor(20-si*15)})`;
-    ctx.beginPath();
-    ctx.ellipse(mouthVibX, mouthY + mouthOpen*0.3, mouthW, lipFullness + mouthOpen, 0, 0, Math.PI*2);
-    ctx.fill();
-
-    // teeth at high stim
-    if(si > 0.5) {
-      ctx.fillStyle = "#f0ece0";
-      const teethCount = 6;
-      for(let i=0;i<teethCount;i++) {
-        const tx = mouthVibX + lerp(-mouthW+3, mouthW-3, i/(teethCount-1));
-        // top teeth
-        ctx.fillRect(tx-1.5, mouthY - mouthOpen*0.1, 3, 3 + si*2);
-        // bottom teeth
-        ctx.fillRect(tx-1.5, mouthY + mouthOpen*0.5 - si*2, 3, 3 + si*1.5);
-      }
-    }
-  }
-
-  // lips
-  ctx.fillStyle = `rgb(${Math.floor(lerp(180,190,t))},${Math.floor(lerp(110,120,t))},${Math.floor(lerp(100,110,t))})`;
-  ctx.beginPath(); ctx.ellipse(mouthVibX, mouthY - mouthOpen*0.2, mouthW, lipFullness, 0, Math.PI, Math.PI*2); ctx.fill();
-  ctx.beginPath(); ctx.ellipse(mouthVibX, mouthY + mouthOpen*0.6, mouthW, lipFullness, 0, 0, Math.PI); ctx.fill();
-
-  if(t > 0.5 && si < 0.3) {
-    ctx.strokeStyle = `rgba(140,80,70,${lerp(0,0.4,(t-0.5)*2)})`;
-    ctx.lineWidth = 1;
-    ctx.beginPath(); ctx.arc(mouthW+2, mouthY-1, 3, 0.5, 1.2); ctx.stroke();
-  }
-
-  // HAIR
-  const hairColor = `rgb(${Math.floor(lerp(50,30,t))},${Math.floor(lerp(35,22,t))},${Math.floor(lerp(25,18,t))})`;
-  ctx.fillStyle = hairColor;
-  ctx.beginPath();
-  ctx.moveTo(-headW-2, -headH*0.25);
-  ctx.quadraticCurveTo(-headW*0.8, -headH-lerp(8,18,t), 0, -headH-lerp(6,16,t));
-  ctx.quadraticCurveTo(headW*0.8, -headH-lerp(8,18,t), headW+2, -headH*0.25);
-  ctx.quadraticCurveTo(headW, -headH, 0, -headH);
-  ctx.quadraticCurveTo(-headW, -headH, -headW-2, -headH*0.25);
-  ctx.fill();
-  if(t > 0.3) {
-    ctx.fillStyle = hairColor;
-    for(let i=-3;i<=3;i++) {
-      const hx = i*7, hy = -headH - lerp(4,14,t) + Math.sin(i+time*2)*2;
-      ctx.beginPath(); ctx.ellipse(hx, hy, 6, lerp(3,6,t), i*0.1, 0, Math.PI*2); ctx.fill();
-    }
-  }
-
-  // EARS
-  ctx.fillStyle = `rgb(${skinR-10},${skinG-10},${skinB-10})`;
-  for(let side of [-1,1]) {
-    ctx.beginPath(); ctx.ellipse(side*(headW+3), -2, 4, 7, side*0.2, 0, Math.PI*2); ctx.fill();
-  }
-
-  // NECK
-  const neckW = lerp(14, 16, t);
-  ctx.fillStyle = `rgb(${skinR-5},${skinG-5},${skinB-5})`;
-  ctx.fillRect(-neckW, jawDrop+lerp(6,10,t)-2, neckW*2, 30);
-  if(t > 0.6) {
-    ctx.strokeStyle = `rgba(0,0,0,${lerp(0,0.08,(t-0.6)*2.5)})`;
-    ctx.lineWidth = 1;
-    ctx.beginPath(); ctx.moveTo(-6, jawDrop+12); ctx.lineTo(-10, jawDrop+30); ctx.stroke();
-    ctx.beginPath(); ctx.moveTo(6, jawDrop+12); ctx.lineTo(10, jawDrop+30); ctx.stroke();
-  }
-
-  ctx.restore();
-
-  // STIM FACE REDDENING — goes red/purple at high stim
-  if(si > 0.3) {
-    ctx.save();
-    ctx.globalCompositeOperation = "multiply";
-    const redIntensity = (si - 0.3) / 0.7;
-    ctx.fillStyle = `rgba(255,${Math.floor(80-redIntensity*60)},${Math.floor(80-redIntensity*70)},${redIntensity*0.35})`;
-    ctx.beginPath();
-    ctx.ellipse(W/2, H/2 - 10, 50, 60, 0, 0, Math.PI*2);
-    ctx.fill();
-    ctx.globalCompositeOperation = "source-over";
-    ctx.restore();
-  }
-
-  // SWEAT DROPS at high stim
-  if(si > 0.5) {
-    ctx.fillStyle = `rgba(120,180,255,${si*0.6})`;
-    const sweatCount = Math.floor(si * 5);
-    for(let i=0;i<sweatCount;i++) {
-      const sx = W/2 + Math.sin(time*3+i*7)*25 + (i%2?15:-15);
-      const sy = H/2 - 25 + ((time*40 + i*50) % 60);
-      ctx.beginPath();
-      ctx.ellipse(sx, sy, 1.5, 2.5, 0, 0, Math.PI*2);
-      ctx.fill();
-    }
-  }
-
-  // GLITCH LINES during extreme stim
-  if(si > 0.7) {
-    const glitchCount = Math.floor((si-0.7)*20);
-    for(let i=0;i<glitchCount;i++) {
-      const gy = Math.random() * H;
-      const gw = 20 + Math.random() * 60;
-      const gx = W/2 - gw/2 + (Math.random()-0.5)*40;
-      ctx.fillStyle = `rgba(${Math.random()>0.5?'57,255,20':'255,42,109'},${0.1+Math.random()*0.15})`;
-      ctx.fillRect(gx, gy, gw, 1 + Math.random()*2);
-    }
-  }
-
-  // GLOW AURA
-  if(t > 0.7) {
-    const glowAlpha = lerp(0, 0.15, (t-0.7)/0.3);
-    const grad = ctx.createRadialGradient(W/2, H/2, 30, W/2, H/2, 110);
-    grad.addColorStop(0, `rgba(57,255,20,${glowAlpha})`);
-    grad.addColorStop(1, "rgba(57,255,20,0)");
-    ctx.fillStyle = grad;
-    ctx.fillRect(0,0,W,H);
-  }
+function getFaceEmoji(p) {
+  let f = FACE_STAGES[0];
+  for(const s of FACE_STAGES) if(p >= s.min) f = s;
+  return f;
 }
 
-// ============ STIMMING HANDS ============
-// stimIntensity: 0-1, time: continuous, doingEmote67: bool
 let stimIntensity = 0;
 let emote67Timer = 0;
 let emote67Active = false;
 
-function drawStimHands(time) {
-  const W = 200, H = 240;
-  if(stimIntensity <= 0.01 && !emote67Active) return;
+function drawFace(t, time) {
+  const W = 200, H = 280;
+  ctx.clearRect(0, 0, W, H);
+
+  const si = stimIntensity;
+  const face = getFaceEmoji(t * 10);
+
+  // stim shake offset
+  const shakeX = si > 0.1 ? Math.sin(time * 25) * si * 12 : 0;
+  const shakeY = si > 0.1 ? Math.cos(time * 30) * si * 8 : 0;
+  const rot = si > 0.2 ? Math.sin(time * 18) * si * 0.15 : Math.sin(time * 0.8) * 0.02;
+  const scale = 1 + si * 0.12 * Math.sin(time * 15);
 
   ctx.save();
+  ctx.translate(W/2 + shakeX, H/2 - 20 + shakeY);
+  ctx.rotate(rot);
+  ctx.scale(scale, scale);
 
-  const skinR = 220, skinG = 190, skinB = 165;
-  const handColor = `rgb(${skinR},${skinG},${skinB})`;
+  // main emoji
+  const emojiSize = 80 + si * 20;
+  ctx.font = emojiSize + "px serif";
+  ctx.textAlign = "center";
+  ctx.textBaseline = "middle";
+  ctx.fillText(face.emoji, 0, 0);
 
+  // emote 67
   if(emote67Active) {
-    // === EMOTE 67: hands come together, fingers spread, wiggle ===
-    const ep = emote67Timer; // 0 to 1 progress
-    const baseY = H * 0.75;
-
-    for(let side of [-1, 1]) {
-      ctx.save();
-      // hands move from sides to center
-      const handX = lerp(side * 90, side * 25, Math.min(1, ep * 2));
-      const handY = lerp(baseY + 20, baseY - 10, Math.min(1, ep * 2));
-      // wiggle once centered
-      const wiggle = ep > 0.4 ? Math.sin(time * 25) * 8 * (1 - Math.abs(ep - 0.7) * 2) : 0;
-      const fingerSpread = ep > 0.3 ? lerp(0, 1, (ep - 0.3) * 3) : 0;
-
-      ctx.translate(W/2 + handX + wiggle, handY);
-      ctx.rotate(side * lerp(0.3, -0.1, Math.min(1, ep * 2)));
-
-      // palm
-      ctx.fillStyle = handColor;
-      ctx.beginPath();
-      ctx.ellipse(0, 0, 10, 12, 0, 0, Math.PI * 2);
-      ctx.fill();
-
-      // fingers — spread out during emote
-      for(let f = 0; f < 5; f++) {
-        const baseAngle = lerp(-0.5, 0.5, f / 4) * side;
-        const spreadAngle = baseAngle * (1 + fingerSpread * 1.5);
-        const fingerLen = f === 2 ? 14 : (f === 1 || f === 3) ? 12 : 9;
-        const fWiggle = ep > 0.4 ? Math.sin(time * 20 + f * 1.5) * 3 : 0;
-
-        ctx.save();
-        ctx.rotate(spreadAngle + fWiggle * 0.05);
-        ctx.fillStyle = handColor;
-        ctx.beginPath();
-        ctx.ellipse(0, -12 - fingerLen/2, 2.5, fingerLen/2, 0, 0, Math.PI * 2);
-        ctx.fill();
-        ctx.restore();
-      }
-      ctx.restore();
-    }
-
-    // 67 text flash
-    if(ep > 0.3 && ep < 0.85) {
-      ctx.save();
-      ctx.font = "bold 16px 'VT323', sans-serif";
-      ctx.textAlign = "center";
-      ctx.fillStyle = `rgba(255,0,255,${Math.sin(time*15)*0.3+0.7})`;
-      ctx.fillText("67", W/2, H * 0.55);
-      ctx.restore();
-    }
-
-  } else {
-    // === NORMAL STIMMING: hand flapping ===
-    const intensity = stimIntensity;
-    const baseY = H * 0.78;
-    const flapSpeed = lerp(8, 22, intensity);
-    const flapAmount = lerp(2, 18, intensity);
-    const armVisible = Math.min(1, intensity * 3); // fade in
-
-    for(let side of [-1, 1]) {
-      ctx.save();
-      ctx.globalAlpha = armVisible;
-
-      const handX = W/2 + side * 55;
-      const flapAngle = Math.sin(time * flapSpeed + side * 0.5) * flapAmount;
-      const handY = baseY + Math.abs(flapAngle) * 0.3;
-
-      ctx.translate(handX, handY);
-      ctx.rotate((flapAngle * Math.PI / 180) * side * -1);
-
-      // wrist/arm stub
-      ctx.fillStyle = handColor;
-      ctx.beginPath();
-      ctx.ellipse(0, 12, 5, 10, 0, 0, Math.PI * 2);
-      ctx.fill();
-
-      // palm
-      ctx.beginPath();
-      ctx.ellipse(0, 0, 8, 10, 0, 0, Math.PI * 2);
-      ctx.fill();
-
-      // fingers — slightly spread, vibrating at high intensity
-      for(let f = 0; f < 5; f++) {
-        const angle = lerp(-0.4, 0.4, f / 4);
-        const fingerLen = f === 2 ? 12 : (f === 1 || f === 3) ? 10 : 7;
-        const vibrate = intensity > 0.5 ? Math.sin(time * 30 + f * 2) * lerp(0, 2, (intensity - 0.5) * 2) : 0;
-
-        ctx.save();
-        ctx.rotate(angle);
-        ctx.translate(vibrate, 0);
-        ctx.fillStyle = handColor;
-        ctx.beginPath();
-        ctx.ellipse(0, -10 - fingerLen/2, 2, fingerLen/2, 0, 0, Math.PI * 2);
-        ctx.fill();
-        ctx.restore();
-      }
-
-      ctx.restore();
-    }
+    const ep = emote67Timer;
+    ctx.font = "bold 40px 'JetBrains Mono', monospace";
+    ctx.fillStyle = `rgba(255,42,109,${0.5+Math.sin(time*15)*0.5})`;
+    ctx.fillText("67", Math.sin(time*20)*20, -60);
+    // hand emojis flying in
+    ctx.font = "40px serif";
+    const handX = lerp(80, 15, Math.min(1, ep*3));
+    const wiggle = ep > 0.3 ? Math.sin(time*25)*10 : 0;
+    ctx.fillText("🫳", -handX + wiggle, 50);
+    ctx.fillText("🫳", handX - wiggle, 50);
   }
 
   ctx.restore();
+
+  // stim visual effects on canvas
+  if(si > 0.4) {
+    // red overlay pulse
+    ctx.fillStyle = `rgba(255,42,109,${(si-0.4)*0.15})`;
+    ctx.fillRect(0, 0, W, H);
+  }
+  if(si > 0.6) {
+    // glitch lines
+    const n = Math.floor((si-0.6)*15);
+    for(let i=0;i<n;i++) {
+      const y = Math.random()*H;
+      ctx.fillStyle = `rgba(57,255,20,${0.1+Math.random()*0.1})`;
+      ctx.fillRect(0, y, W, 1+Math.random()*2);
+    }
+  }
+  if(si > 0.8) {
+    // chromatic split - draw emoji again offset
+    ctx.globalAlpha = 0.15;
+    ctx.font = (80+si*20)+"px serif";
+    ctx.textAlign = "center"; ctx.textBaseline = "middle";
+    ctx.fillText(face.emoji, W/2 - 4 + shakeX, H/2 - 20 + shakeY);
+    ctx.fillText(face.emoji, W/2 + 4 + shakeX, H/2 - 20 + shakeY);
+    ctx.globalAlpha = 1;
+  }
+
+  // aura glow at high PSL
+  if(t > 0.7) {
+    const glowAlpha = lerp(0, 0.12, (t-0.7)/0.3);
+    const grad = ctx.createRadialGradient(W/2, H/2-20, 20, W/2, H/2-20, 100);
+    grad.addColorStop(0, `rgba(255,159,28,${glowAlpha})`);
+    grad.addColorStop(1, "rgba(255,159,28,0)");
+    ctx.fillStyle = grad;
+    ctx.fillRect(0,0,W,H);
+  }
+
+  // label text
+  if(face.label) {
+    ctx.font = "16px 'Outfit', sans-serif";
+    ctx.fillStyle = "rgba(180,180,180,0.4)";
+    ctx.textAlign = "center";
+    ctx.fillText(face.label, W/2, H - 40);
+  }
+
+  // stim hands at bottom - just emojis, not drawn shapes
+  if(si > 0.15 && !emote67Active) {
+    const flapSpeed = lerp(5, 25, si);
+    const flapAmt = lerp(3, 25, si);
+    ctx.font = (28 + si*12) + "px serif";
+    ctx.textAlign = "center";
+    ctx.globalAlpha = Math.min(1, si * 2.5);
+    const lRot = Math.sin(time * flapSpeed) * flapAmt;
+    const rRot = Math.sin(time * flapSpeed + 0.5) * flapAmt;
+    ctx.save(); ctx.translate(W/2 - 50, H - 50); ctx.rotate(lRot * Math.PI/180);
+    ctx.fillText("🤚", 0, 0); ctx.restore();
+    ctx.save(); ctx.translate(W/2 + 50, H - 50); ctx.rotate(rRot * Math.PI/180);
+    ctx.fillText("🤚", 0, 0); ctx.restore();
+    ctx.globalAlpha = 1;
+  }
 }
+
+// keep drawStimHands as no-op since it's called from game.js
+function drawStimHands(time) {}
 
 // ============ MIC DETECTION ============
 let micActive = false;
@@ -1156,15 +863,15 @@ function drawBird(time) {
     for(let i = 0; i < 3; i++) {
       const y = Math.random() * H;
       const h = 1 + Math.random() * 3;
-      ctx.fillStyle = "rgba(57,255,20," + (micSmooth * 0.3) + ")";
+      ctx.fillStyle = "rgba(255,92,53," + (micSmooth * 0.3) + ")";
       ctx.fillRect(Math.random() * 20 - 10, y, W, h);
     }
   }
 
   ctx.save();
-  ctx.font = "bold 14px 'VT323', sans-serif";
+  ctx.font = "bold 14px 'JetBrains Mono', monospace";
   ctx.textAlign = "center";
-  ctx.fillStyle = "rgba(57,255,20," + (0.5 + Math.sin(time * 8) * 0.5) + ")";
+  ctx.fillStyle = "rgba(255,92,53," + (0.5 + Math.sin(time * 8) * 0.5) + ")";
   ctx.fillText("🎤 LISTENING", W/2, H - 8);
   ctx.restore();
 }
@@ -1184,10 +891,10 @@ document.getElementById("click-area").addEventListener("click", (e) => {
   wobble(); screenShake(intensity);
   if(p >= 2) flash("rgba(255,255,255,0.08)");
   if(p >= 4) chromatic();
-  if(p >= 6) flash(`rgba(${Math.random()>0.5?'57,255,20':'255,42,109'},0.12)`);
+  if(p >= 6) flash(`rgba(${Math.random()>0.5?'255,92,53':'192,132,252'},0.12)`);
 
   particles(e.clientX, e.clientY, Math.min(15, 2 + Math.floor(p * 1.2)));
-  const colors = ["#39ff14","#ff2a6d","#ff9f1c","#c0a0ff","#fff"];
+  const colors = ["#ff5c35","#ff9f1c","#c084fc","#4ade80","#fff"];
   const ftColor = S.combo >= 50 ? "#ff00ff" : S.combo >= 20 ? "#00ffc8" : S.combo >= 10 ? "#ffd600" : colors[Math.floor(Math.random()*colors.length)];
   floatText(e.clientX, e.clientY, "+"+fmt(clickVal) + (S.combo>=5 ? " x"+S.combo : ""), ftColor);
 
@@ -1204,7 +911,7 @@ function buy(id) {
   S.upg[id] = (S.upg[id]||0)+1;
   recalc();
   log("Purchased "+u.nm+" (x"+own(u.id)+")");
-  screenShake(1); flash("rgba(57,255,20,0.1)");
+  screenShake(1); flash("rgba(255,92,53,0.1)");
   checkAch(); render();
 }
 
@@ -1215,7 +922,7 @@ function checkAch() {
       S.ach[a.id] = true;
       toast("🏆 "+a.nm+" — "+a.ds);
       log("Achievement: "+a.nm, true);
-      screenShake(2); flash("rgba(57,255,20,0.2)"); chromatic();
+      screenShake(2); flash("rgba(255,92,53,0.2)"); chromatic();
     }
   }
 }
@@ -1246,7 +953,7 @@ function render() {
     if(S.combo >= 3) {
       comboEl.style.display = "block";
       comboEl.textContent = S.combo + "x COMBO (x" + comboMult().toFixed(1) + ")";
-      comboEl.style.color = S.combo>=50?"#c0a0ff":S.combo>=20?"#39ff14":S.combo>=10?"#ff9f1c":"var(--accent)";
+      comboEl.style.color = S.combo>=50?"#c084fc":S.combo>=20?"#4ade80":S.combo>=10?"#ff9f1c":"var(--accent)";
     } else {
       comboEl.style.display = "none";
     }
