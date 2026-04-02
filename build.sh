@@ -61,7 +61,7 @@ sed -i "s|<body>|<body><script>!function(){var B=\"$BUILD_TS\",K=\"owen_bts\",s=
 
 echo "✅ Built → $OUT ($(wc -c < "$OUT") bytes) [build $BUILD_TS]"
 
-# Syntax check
+# Syntax check (before cache-bust injection)
 JSONLY=$(mktemp /tmp/check_XXXXX.js)
 sed -n '/<script>/,/<\/script>/p' "$OUT" | sed '1d;$d' > "$JSONLY"
 if node --check "$JSONLY" 2>/dev/null; then
@@ -71,3 +71,8 @@ else
   node --check "$JSONLY" 2>&1 | head -5
 fi
 rm "$JSONLY"
+
+# Inject cache-bust auto-reload script (after syntax check)
+BUILD_TS=$(date +%s)
+sed -i "s|<body>|<body><script>!function(){var B=\"$BUILD_TS\",K=\"owen_bts\",s=localStorage.getItem(K);localStorage.setItem(K,B);if(s\&\&s!==B\&\&location.search.indexOf(B)<0){location.replace(location.pathname+\"?_=\"+B)}}()</script>|" "$OUT"
+echo "Build timestamp: $BUILD_TS"
