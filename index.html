@@ -219,7 +219,7 @@ body{background:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg
 </div>
 <div class="news-ticker"><div class="news-inner"><span>BREAKING:</span> man achieves PSL 7.2 <span>|</span> <span>ALERT:</span> zorgo sightings <span>|</span> <span>URGENT:</span> 200 currencies detected <span>|</span> <span>WEATHER:</span> cold showers <span>|</span> <span>BREAKING:</span> 35th tooth <span>|</span> <span>AGARTHA:</span> signal at 847km <span>|</span></div></div>
 <div class="toast" id="toast"></div>
-<footer>owen looksmax simulator v1.1 | 200 currencies | <span class="blink" style="color:red">UNDER CONSTRUCTION</span></footer>
+<footer>owen looksmax simulator v1.2 | 200 currencies | <span class="blink" style="color:red">UNDER CONSTRUCTION</span></footer>
 <script>
 var UPG=[{id:"mew",ic:"👅",nm:"Mewing Practice",ds:"+1/click",b:15,m:1.35,pc:1,ps:0,type:"mew"},{id:"jaw",ic:"🦴",nm:"Jawline Exerciser",ds:"+3/click",b:100,m:1.45,pc:3,ps:0,type:"mew"},{id:"gum",ic:"🍖",nm:"Falim Gum Pack",ds:"+8/click",b:500,m:1.5,pc:8,ps:0,type:"mew"},{id:"bone",ic:"💀",nm:"Bonesmashing",ds:"+25/click",b:4000,m:1.55,pc:25,ps:0,type:"mew"},{id:"cant",ic:"👁️",nm:"Canthal Tilt",ds:"+100/click",b:80000,m:1.75,pc:100,ps:0,type:"mew"},{id:"domain",ic:"🟣",nm:"Domain Expansion",ds:"+400/click",b:500000,m:1.8,pc:400,ps:0,type:"mew"},{id:"mirror",ic:"🪞",nm:"Mirror Spoke Back",ds:"+1500/click",b:3e6,m:1.85,pc:1500,ps:0,type:"mew"},{id:"cold",ic:"🥶",nm:"Cold Shower",ds:"+1/sec",b:50,m:1.4,pc:0,ps:1,type:"mew"},{id:"gym",ic:"🏋️",nm:"Gym Membership",ds:"+4/sec",b:250,m:1.5,pc:0,ps:4,type:"mew"},{id:"skin",ic:"🧴",nm:"Skincare",ds:"+12/sec",b:1200,m:1.55,pc:0,ps:12,type:"mew"},{id:"rhino",ic:"🔪",nm:"Rhinoplasty",ds:"+40/sec",b:6000,m:1.6,pc:0,ps:40,type:"mew"},{id:"hgh",ic:"💉",nm:"HGH Protocol",ds:"+120/sec",b:25000,m:1.65,pc:0,ps:120,type:"mew"},{id:"model",ic:"📸",nm:"Model Agency",ds:"+500/sec",b:120000,m:1.7,pc:0,ps:500,type:"mew"},{id:"god",ic:"⚡",nm:"Genetic Recombination",ds:"+2000/sec",b:800000,m:1.8,pc:0,ps:2000,type:"mew"},{id:"agartha",ic:"🕳️",nm:"Agartha Expedition",ds:"+8K/sec",b:4e6,m:1.85,pc:0,ps:8000,type:"mew"},{id:"sukuna",ic:"👹",nm:"Sukuna Blessing",ds:"+25K/sec",b:20e6,m:1.9,pc:0,ps:25000,type:"mew"},{id:"gojo",ic:"♾️",nm:"Six Eyes",ds:"+100K/sec",b:100e6,m:2.0,pc:0,ps:100000,type:"mew"},{id:"teeth",ic:"🦷",nm:"The Third Row",ds:"+400K/sec",b:500e6,m:2.1,pc:0,ps:400000,type:"mew"},{id:"skin2",ic:"🫠",nm:"New Skin",ds:"+2M/sec",b:5e9,m:2.2,pc:0,ps:2e6,type:"mew"},{id:"zorgo1",ic:"🟣",nm:"Zorgo Converter",ds:"+5K/sec",b:3,m:1.5,pc:0,ps:5000,type:"zorgo"},{id:"zorgo2",ic:"🔮",nm:"Zorgo Amplifier",ds:"+50K/sec",b:10,m:1.6,pc:0,ps:50000,type:"zorgo"},{id:"zorgo3",ic:"🌀",nm:"Zorgo Singularity",ds:"+500K/sec",b:25,m:1.8,pc:0,ps:500000,type:"zorgo"},{id:"wet",ic:"⚠️",nm:"Wet Floor Sign",ds:"???",b:1e6,m:1,pc:0,ps:0,type:"mew",max:1,secret:true},{id:"what",ic:"❓",nm:"???",ds:"",b:7,m:1.3,pc:0,ps:7777,type:"zorgo",secret:true}];
 
@@ -1704,5 +1704,126 @@ buy=function(id){var before=own(id);_origBuy(id);if(own(id)>before)sndBuy()};
 // ============ POLISH: zorgo spawn sound ============
 var _origSpawnZorgo=spawnZorgo;
 spawnZorgo=function(){_origSpawnZorgo();sndZorgo()};
+
+// ============ OTAMATONE BACKGROUND MUSIC ============
+var _musicPlaying=false;var _musicOsc=null;var _musicGain=null;var _musicLFO=null;var _hornOsc=null;var _hornGain=null;
+var _musicNotes=[220,247,294,330,392,440,494,587,660]; // A minor pentatonic + extras
+var _musicIdx=0;var _musicTimer=null;
+
+function startMusic(){
+  var ctx=getAudio();if(!ctx)return;
+  if(_musicPlaying)return;
+  _musicPlaying=true;
+
+  // otamatone = sawtooth with heavy vibrato
+  _musicOsc=ctx.createOscillator();
+  _musicOsc.type="sawtooth";
+  _musicOsc.frequency.value=220;
+
+  // vibrato LFO
+  _musicLFO=ctx.createOscillator();
+  _musicLFO.type="sine";
+  _musicLFO.frequency.value=5; // 5hz wobble
+  var lfoGain=ctx.createGain();
+  lfoGain.gain.value=8; // wobble depth
+  _musicLFO.connect(lfoGain);
+  lfoGain.connect(_musicOsc.frequency);
+
+  // main gain (quiet)
+  _musicGain=ctx.createGain();
+  _musicGain.gain.value=0.04;
+
+  // lo-fi filter
+  var filter=ctx.createBiquadFilter();
+  filter.type="lowpass";
+  filter.frequency.value=1200;
+  filter.Q.value=5;
+
+  _musicOsc.connect(filter);
+  filter.connect(_musicGain);
+  _musicGain.connect(ctx.destination);
+  _musicOsc.start();
+  _musicLFO.start();
+
+  // horn = square wave, lower, slower
+  _hornOsc=ctx.createOscillator();
+  _hornOsc.type="square";
+  _hornOsc.frequency.value=110;
+  _hornGain=ctx.createGain();
+  _hornGain.gain.value=0;
+  var hornFilter=ctx.createBiquadFilter();
+  hornFilter.type="lowpass";
+  hornFilter.frequency.value=600;
+  _hornOsc.connect(hornFilter);
+  hornFilter.connect(_hornGain);
+  _hornGain.connect(ctx.destination);
+  _hornOsc.start();
+
+  // melody loop
+  _musicTimer=setInterval(function(){
+    var ctx2=getAudio();if(!ctx2||!_musicOsc)return;
+    var p=psl();
+    // pick next note - mostly stepwise, sometimes jump
+    if(Math.random()<0.7){
+      _musicIdx+=Math.random()<0.5?1:-1;
+    }else{
+      _musicIdx=Math.floor(Math.random()*_musicNotes.length);
+    }
+    _musicIdx=Math.max(0,Math.min(_musicIdx,_musicNotes.length-1));
+
+    var note=_musicNotes[_musicIdx];
+    // detune slightly for that wobbly otamatone feel
+    note+=Math.random()*6-3;
+    // at high PSL notes get more chaotic
+    if(p>=5)note*=(1+(Math.random()-0.5)*0.05*p/5);
+    if(p>=8)note*=(Math.random()<0.1?0.5:1); // occasional octave drop
+
+    // portamento (slide to note)
+    _musicOsc.frequency.linearRampToValueAtTime(note,ctx2.currentTime+0.15);
+
+    // vibrato speed increases with PSL
+    _musicLFO.frequency.value=4+p*0.8;
+
+    // horn blasts occasionally
+    if(Math.random()<0.08+p*0.01){
+      _hornGain.gain.setValueAtTime(0.03,ctx2.currentTime);
+      _hornOsc.frequency.setValueAtTime(note*0.5,ctx2.currentTime);
+      _hornGain.gain.exponentialRampToValueAtTime(0.001,ctx2.currentTime+0.4);
+    }
+
+    // volume swells (waaaah waaaah)
+    var vol=0.03+Math.sin(Date.now()/800)*0.015;
+    if(p>=7)vol+=0.01;
+    _musicGain.gain.value=Math.min(0.06,vol);
+
+  },300+Math.random()*200); // slightly irregular timing
+
+  toast("🎵 music on (why)");
+}
+
+function stopMusic(){
+  _musicPlaying=false;
+  if(_musicOsc){try{_musicOsc.stop()}catch(e){}_musicOsc=null}
+  if(_musicLFO){try{_musicLFO.stop()}catch(e){}_musicLFO=null}
+  if(_hornOsc){try{_hornOsc.stop()}catch(e){}_hornOsc=null}
+  if(_musicTimer){clearInterval(_musicTimer);_musicTimer=null}
+  _musicGain=null;_hornGain=null;
+  toast("🔇 music off");
+}
+
+function toggleMusic(){if(_musicPlaying)stopMusic();else startMusic()}
+
+// music button - add to header
+var _musicBtn=document.createElement("div");
+_musicBtn.style.cssText="position:fixed;top:4px;right:4px;z-index:400;background:#fff;border:2px solid red;padding:3px 8px;font-size:.5rem;cursor:pointer;font-family:'Comic Neue',cursive;font-weight:700";
+_musicBtn.textContent="🎵 MUSIC";
+_musicBtn.onclick=toggleMusic;
+document.body.appendChild(_musicBtn);
+
+// auto-start music on first click (needs user interaction for AudioContext)
+var _musicAutoStart=false;
+document.addEventListener("click",function(){
+  if(!_musicAutoStart){_musicAutoStart=true;startMusic()}
+},{once:true});
 </script>
 </body></html>

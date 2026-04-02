@@ -181,3 +181,124 @@ buy=function(id){var before=own(id);_origBuy(id);if(own(id)>before)sndBuy()};
 // ============ POLISH: zorgo spawn sound ============
 var _origSpawnZorgo=spawnZorgo;
 spawnZorgo=function(){_origSpawnZorgo();sndZorgo()};
+
+// ============ OTAMATONE BACKGROUND MUSIC ============
+var _musicPlaying=false;var _musicOsc=null;var _musicGain=null;var _musicLFO=null;var _hornOsc=null;var _hornGain=null;
+var _musicNotes=[220,247,294,330,392,440,494,587,660]; // A minor pentatonic + extras
+var _musicIdx=0;var _musicTimer=null;
+
+function startMusic(){
+  var ctx=getAudio();if(!ctx)return;
+  if(_musicPlaying)return;
+  _musicPlaying=true;
+
+  // otamatone = sawtooth with heavy vibrato
+  _musicOsc=ctx.createOscillator();
+  _musicOsc.type="sawtooth";
+  _musicOsc.frequency.value=220;
+
+  // vibrato LFO
+  _musicLFO=ctx.createOscillator();
+  _musicLFO.type="sine";
+  _musicLFO.frequency.value=5; // 5hz wobble
+  var lfoGain=ctx.createGain();
+  lfoGain.gain.value=8; // wobble depth
+  _musicLFO.connect(lfoGain);
+  lfoGain.connect(_musicOsc.frequency);
+
+  // main gain (quiet)
+  _musicGain=ctx.createGain();
+  _musicGain.gain.value=0.04;
+
+  // lo-fi filter
+  var filter=ctx.createBiquadFilter();
+  filter.type="lowpass";
+  filter.frequency.value=1200;
+  filter.Q.value=5;
+
+  _musicOsc.connect(filter);
+  filter.connect(_musicGain);
+  _musicGain.connect(ctx.destination);
+  _musicOsc.start();
+  _musicLFO.start();
+
+  // horn = square wave, lower, slower
+  _hornOsc=ctx.createOscillator();
+  _hornOsc.type="square";
+  _hornOsc.frequency.value=110;
+  _hornGain=ctx.createGain();
+  _hornGain.gain.value=0;
+  var hornFilter=ctx.createBiquadFilter();
+  hornFilter.type="lowpass";
+  hornFilter.frequency.value=600;
+  _hornOsc.connect(hornFilter);
+  hornFilter.connect(_hornGain);
+  _hornGain.connect(ctx.destination);
+  _hornOsc.start();
+
+  // melody loop
+  _musicTimer=setInterval(function(){
+    var ctx2=getAudio();if(!ctx2||!_musicOsc)return;
+    var p=psl();
+    // pick next note - mostly stepwise, sometimes jump
+    if(Math.random()<0.7){
+      _musicIdx+=Math.random()<0.5?1:-1;
+    }else{
+      _musicIdx=Math.floor(Math.random()*_musicNotes.length);
+    }
+    _musicIdx=Math.max(0,Math.min(_musicIdx,_musicNotes.length-1));
+
+    var note=_musicNotes[_musicIdx];
+    // detune slightly for that wobbly otamatone feel
+    note+=Math.random()*6-3;
+    // at high PSL notes get more chaotic
+    if(p>=5)note*=(1+(Math.random()-0.5)*0.05*p/5);
+    if(p>=8)note*=(Math.random()<0.1?0.5:1); // occasional octave drop
+
+    // portamento (slide to note)
+    _musicOsc.frequency.linearRampToValueAtTime(note,ctx2.currentTime+0.15);
+
+    // vibrato speed increases with PSL
+    _musicLFO.frequency.value=4+p*0.8;
+
+    // horn blasts occasionally
+    if(Math.random()<0.08+p*0.01){
+      _hornGain.gain.setValueAtTime(0.03,ctx2.currentTime);
+      _hornOsc.frequency.setValueAtTime(note*0.5,ctx2.currentTime);
+      _hornGain.gain.exponentialRampToValueAtTime(0.001,ctx2.currentTime+0.4);
+    }
+
+    // volume swells (waaaah waaaah)
+    var vol=0.03+Math.sin(Date.now()/800)*0.015;
+    if(p>=7)vol+=0.01;
+    _musicGain.gain.value=Math.min(0.06,vol);
+
+  },300+Math.random()*200); // slightly irregular timing
+
+  toast("🎵 music on (why)");
+}
+
+function stopMusic(){
+  _musicPlaying=false;
+  if(_musicOsc){try{_musicOsc.stop()}catch(e){}_musicOsc=null}
+  if(_musicLFO){try{_musicLFO.stop()}catch(e){}_musicLFO=null}
+  if(_hornOsc){try{_hornOsc.stop()}catch(e){}_hornOsc=null}
+  if(_musicTimer){clearInterval(_musicTimer);_musicTimer=null}
+  _musicGain=null;_hornGain=null;
+  toast("🔇 music off");
+}
+
+function toggleMusic(){if(_musicPlaying)stopMusic();else startMusic()}
+
+// music button - add to header
+var _musicBtn=document.createElement("div");
+_musicBtn.style.cssText="position:fixed;top:4px;right:4px;z-index:400;background:#fff;border:2px solid red;padding:3px 8px;font-size:.5rem;cursor:pointer;font-family:'Comic Neue',cursive;font-weight:700";
+_musicBtn.textContent="🎵 MUSIC";
+_musicBtn.onclick=toggleMusic;
+document.body.appendChild(_musicBtn);
+
+// auto-start music on first click (needs user interaction for AudioContext)
+var _musicAutoStart=false;
+document.addEventListener("click",function(){
+  if(!_musicAutoStart){_musicAutoStart=true;startMusic()}
+},{once:true});
