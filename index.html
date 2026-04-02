@@ -978,5 +978,166 @@ document.addEventListener("click",function(e){
   ];
   for(var i=0;i<btns.length;i++){if(btns[i]===e.target&&fns[i]){fns[i]();break}}
 });
+
+// ============ ANTI-AUTOCLICK DETECTION ============
+var _clickTimes=[];var _acTriggered=false;var _acWarned=false;
+function detectAutoClick(){
+  var now=Date.now();
+  _clickTimes.push(now);
+  if(_clickTimes.length>30)_clickTimes.shift();
+  if(_clickTimes.length<15)return false;
+  // check clicks per second over last 30 clicks
+  var span=_clickTimes[_clickTimes.length-1]-_clickTimes[0];
+  var cps=_clickTimes.length/(span/1000);
+  if(cps<18)return false; // humans can click fast, need >18/sec sustained
+  // check interval variance - bots have very low variance
+  var intervals=[];
+  for(var i=1;i<_clickTimes.length;i++)intervals.push(_clickTimes[i]-_clickTimes[i-1]);
+  var avg=0;for(var i=0;i<intervals.length;i++)avg+=intervals[i];avg/=intervals.length;
+  var variance=0;for(var i=0;i<intervals.length;i++)variance+=Math.pow(intervals[i]-avg,2);
+  variance/=intervals.length;
+  // humans have high variance (>200), bots have very low (<50)
+  if(variance<80&&cps>15)return true;
+  return false;
+}
+
+// hook into click handler
+var _origClick=document.getElementById("click-area").onclick;
+document.getElementById("click-area").addEventListener("click",function(){
+  if(_acTriggered)return;
+  if(detectAutoClick()){
+    if(!_acWarned){_acWarned=true;toast("⚠️ ...what are you doing?");return}
+    _acTriggered=true;
+    antiPiracyScreen();
+  }
+},true);
+
+function antiPiracyScreen(){
+  // kill all game audio and intervals
+  var overlay=document.createElement("div");
+  overlay.id="ap-screen";
+  overlay.style.cssText="position:fixed;inset:0;background:#000;z-index:99999;display:flex;flex-direction:column;align-items:center;justify-content:center;cursor:none;overflow:hidden";
+  document.body.appendChild(overlay);
+  document.body.style.overflow="hidden";
+
+  // phase 1: static
+  var phase=0;
+  var canvas2=document.createElement("canvas");
+  canvas2.width=window.innerWidth;canvas2.height=window.innerHeight;
+  canvas2.style.cssText="position:absolute;inset:0;z-index:1";
+  overlay.appendChild(canvas2);
+  var c2=canvas2.getContext("2d");
+
+  function drawStatic(){
+    var d=c2.createImageData(canvas2.width,canvas2.height);
+    for(var i=0;i<d.data.length;i+=4){
+      var v=Math.random()*30;
+      d.data[i]=d.data[i+1]=d.data[i+2]=v;d.data[i+3]=255;
+    }
+    c2.putImageData(d,0,0);
+  }
+
+  var staticInterval=setInterval(drawStatic,50);
+
+  // text container
+  var textDiv=document.createElement("div");
+  textDiv.style.cssText="position:relative;z-index:2;text-align:center;color:red;font-family:'Times New Roman',serif;max-width:80vw";
+  overlay.appendChild(textDiv);
+
+  var msgs=[
+    {t:2000,text:"UNAUTHORIZED INPUT DETECTED",size:"1.5rem",color:"red"},
+    {t:4500,text:"This copy of Owen Looksmax Simulator is not licensed for automated use.",size:"0.8rem",color:"#888"},
+    {t:7000,text:"Your click pattern has been logged.",size:"0.8rem",color:"#888"},
+    {t:9000,text:"Session ID: "+Math.random().toString(36).substr(2,12).toUpperCase(),size:"0.6rem",color:"#444"},
+    {t:10500,text:"IP: "+Math.floor(Math.random()*255)+"."+Math.floor(Math.random()*255)+"."+Math.floor(Math.random()*255)+"."+Math.floor(Math.random()*255),size:"0.6rem",color:"#444"},
+    {t:12000,text:"...",size:"1rem",color:"red"},
+    {t:14000,text:"We can see your screen.",size:"1rem",color:"red"},
+    {t:17000,text:"We know you're reading this.",size:"0.9rem",color:"#ff3333"},
+    {t:20000,text:"The zorgos told us.",size:"0.8rem",color:"purple"},
+    {t:23000,text:"Your teeth count has been reported.",size:"0.7rem",color:"#666"},
+    {t:25000,text:"Teeth at time of violation: "+S.teeth,size:"0.7rem",color:"#666"},
+    {t:27000,text:"Do not close this tab.",size:"1.2rem",color:"red"},
+    {t:30000,text:"...",size:"1rem",color:"#333"},
+    {t:33000,text:"We're inside the mirror now.",size:"0.9rem",color:"red"},
+    {t:36000,text:"PSL has been recalculated.",size:"0.8rem",color:"#888"},
+    {t:38000,text:"New PSL: -"+((Math.random()*5+2).toFixed(1)),size:"1.1rem",color:"red"},
+    {t:41000,text:"Owen is disappointed.",size:"0.8rem",color:"#888"},
+    {t:43000,text:"Owen is watching.",size:"0.8rem",color:"#666"},
+    {t:45000,text:"Owen.",size:"1.5rem",color:"red"},
+  ];
+
+  for(var i=0;i<msgs.length;i++){
+    (function(msg){
+      setTimeout(function(){
+        var p=document.createElement("div");
+        p.style.cssText="font-size:"+msg.size+";color:"+msg.color+";margin:6px 0;opacity:0;transition:opacity 0.5s";
+        p.textContent=msg.text;
+        textDiv.appendChild(p);
+        setTimeout(function(){p.style.opacity="1"},50);
+        // glitch effect on some
+        if(Math.random()<0.3){
+          overlay.style.background="#200";
+          setTimeout(function(){overlay.style.background="#000"},100);
+        }
+      },msg.t);
+    })(msgs[i]);
+  }
+
+  // phase 2: face appears (48 seconds)
+  setTimeout(function(){
+    clearInterval(staticInterval);
+    c2.fillStyle="#000";
+    c2.fillRect(0,0,canvas2.width,canvas2.height);
+    // draw the highest PSL face in the center, huge
+    if(faceImgs.length>0){
+      var img=faceImgs[faceImgs.length-1];
+      if(img&&img.complete){
+        var scale=3;
+        var w=200*scale,h=240*scale;
+        c2.drawImage(img,(canvas2.width-w)/2,(canvas2.height-h)/2-50,w,h);
+        // red tint
+        c2.fillStyle="rgba(255,0,0,0.15)";
+        c2.fillRect(0,0,canvas2.width,canvas2.height);
+      }
+    }
+    var p=document.createElement("div");
+    p.style.cssText="font-size:2rem;color:red;margin-top:20px;opacity:0;transition:opacity 1s";
+    p.textContent="You look perfect.";
+    textDiv.appendChild(p);
+    setTimeout(function(){p.style.opacity="1"},100);
+  },48000);
+
+  // phase 3: "crash" (55 seconds)
+  setTimeout(function(){
+    textDiv.innerHTML="";
+    c2.fillStyle="#000";c2.fillRect(0,0,canvas2.width,canvas2.height);
+    var p=document.createElement("div");
+    p.style.cssText="font-size:0.7rem;color:#333;font-family:monospace";
+    p.textContent="FATAL ERROR: mew_overflow at 0x00000067\nProcess terminated.\n\nRestarting in 5...";
+    p.style.whiteSpace="pre";
+    textDiv.appendChild(p);
+    var count=5;
+    var countDown=setInterval(function(){
+      count--;
+      if(count>0){
+        p.textContent="FATAL ERROR: mew_overflow at 0x00000067\nProcess terminated.\n\nRestarting in "+count+"...";
+      } else {
+        clearInterval(countDown);
+        // remove overlay, reset detection, take 50% of points as punishment
+        document.body.removeChild(overlay);
+        document.body.style.overflow="";
+        _acTriggered=false;
+        _acWarned=false;
+        _clickTimes=[];
+        var loss=Math.floor(S.pts*0.5);
+        S.pts=Math.max(0,S.pts-loss);
+        toast("You lost "+fmt(loss)+" mew points.");
+        log("ANTI-PIRACY: -"+fmt(loss)+" mew points",true);
+        screenShake(3);
+        render();
+      }
+    },1000);
+  },55000);
+}
 </script>
 </body></html>
