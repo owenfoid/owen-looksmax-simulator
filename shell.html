@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Owen Looksmax Simulator</title>
-<link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;600;800&family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Comic+Neue:wght@400;700&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="style.css">
 </head>
 <body>
@@ -16,6 +16,7 @@
 <header>
   <h1>Owen <span>Looksmax</span> Simulator</h1>
   <div class="sub">the grind never stops</div>
+  <div class="sub2">visitors: <span id="visitor-count">???</span> | est. 2024 | not affiliated with owen</div>
 </header>
 
 <div class="game" id="game">
@@ -24,12 +25,15 @@
     <div class="st"><div class="v" id="s-pc">1</div><div class="l">Per Click</div></div>
     <div class="st"><div class="v" id="s-ps">0</div><div class="l">Per Sec</div></div>
     <div class="st"><div class="v" id="s-total">0</div><div class="l">Lifetime</div></div>
+    <div class="st zorgo"><div class="v" id="s-zorgos">0</div><div class="l">Zorgos</div></div>
+    <div class="st teeth" id="teeth-display" style="display:none"><div class="v" id="s-teeth">32</div><div class="l">Teeth</div></div>
+    <div class="st sus" id="sus-display" style="display:none"><div class="v" id="s-sus">0%</div><div class="l">Suspicion</div></div>
   </div>
 
   <div class="p full">
     <div class="psl-row"><span>PSL Rating</span><span id="psl-num">0.0 / 10.0</span></div>
     <div class="psl-bar"><div class="psl-fill" id="psl-fill"><span class="psl-inner" id="psl-in"></span></div></div>
-    <div class="rank" id="rank" style="color:var(--accent)">Subhuman</div>
+    <div class="rank" id="rank" style="color:#0f0">Subhuman</div>
     <div class="stim-wrap">
       <div class="stim-label"><span>Stimming</span><span id="stim-pct">0%</span></div>
       <div class="stim-bar"><div class="stim-fill" id="stim-fill"></div></div>
@@ -37,7 +41,7 @@
   </div>
 
   <div class="p click-area" id="click-area">
-    <div id="golden-indicator" class="golden-indicator" style="display:none">✨ GOLDEN MEW — CLICK NOW! ✨</div>
+    <div id="golden-indicator" class="golden-indicator" style="display:none">!! GOLDEN MEW - CLICK !!</div>
     <div id="combo-display" class="combo-display" style="display:none"></div>
     <canvas id="face" width="200" height="280"></canvas>
     <div class="click-hint">tap to mew</div>
@@ -60,9 +64,10 @@
 </div>
 
 <div class="toast" id="toast"></div>
-<footer>owen looksmax simulator v0.5</footer>
+<footer>owen looksmax simulator v0.6 | do NOT redistribute | hosted on github pages (free)</footer>
 
 <script src="js/config.js"></script>
+<script src="js/faces_data.js"></script>
 <script src="js/engine.js"></script>
 <script src="js/effects.js"></script>
 <script src="js/face.js"></script>

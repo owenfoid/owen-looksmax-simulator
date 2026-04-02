@@ -30,7 +30,7 @@ function wobble() {
 
 // ============ PARTICLES ============
 function particles(x, y, count) {
-  const colors = ["#ff5c35","#ff9f1c","#c084fc","#4ade80","#fff"];
+  const colors = ["#0f0","#c840ff","#ff0","#f00","#fff"];
   for(let i=0;i<count;i++) {
     const p = document.createElement("div");
     p.className = "particle";
@@ -82,9 +82,9 @@ function addStim(amount) {
 
 function stimBurst() {
   screenShake(3);
-  flash("rgba(255,92,53,0.25)");
+  flash("rgba(200,64,255,0.25)");
   chromatic(); wobble();
-  setTimeout(()=>{ flash("rgba(192,132,252,0.2)"); screenShake(2); }, 150);
+  setTimeout(()=>{ flash("rgba(0,255,0,0.2)"); screenShake(2); }, 150);
   setTimeout(()=>{ flash("rgba(255,159,28,0.2)"); chromatic(); }, 300);
 
   const rect = document.getElementById("face").getBoundingClientRect();
@@ -93,7 +93,7 @@ function stimBurst() {
 
   const bonus = Math.floor(S.pc * 10);
   S.pts += bonus; S.total += bonus;
-  floatText(cx, cy-30, "STIMMED! +" + fmt(bonus), "#ff5c35");
+  floatText(cx, cy-30, "STIMMED! +" + fmt(bonus), "#c840ff");
   toast("🌀 STIM BURST! +" + fmt(bonus) + " bonus!");
   log("STIM BURST — +" + fmt(bonus) + " bonus mew points!", true);
 
@@ -105,6 +105,6 @@ function stimBurst() {
     toast("🫳🫳 EMOTE 67 ACTIVATED 🫳🫳");
     log("RARE: Emote 67 triggered!", true);
     screenShake(3);
-    flash("rgba(255,92,53,0.3)");
+    flash("rgba(200,64,255,0.3)");
   }
 }

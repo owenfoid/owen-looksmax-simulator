@@ -63,12 +63,12 @@ function drawFace(t, time) {
 
   // stim screen effects
   if(si > 0.5) {
-    ctx.fillStyle = `rgba(255,42,80,${(si-0.5)*0.12})`;
+    ctx.fillStyle = `rgba(200,64,255,${(si-0.5)*0.12})`;
     ctx.fillRect(0, 0, W, H);
   }
   if(si > 0.7) {
     for(let i = 0; i < (si-0.7)*12; i++) {
-      ctx.fillStyle = `rgba(255,92,53,${0.08+Math.random()*0.08})`;
+      ctx.fillStyle = `rgba(200,64,255,${0.08+Math.random()*0.08})`;
       ctx.fillRect(0, Math.random()*H, W, 1+Math.random()*2);
     }
   }
@@ -93,9 +93,9 @@ function drawFace(t, time) {
   // emote 67
   if(emote67Active) {
     const ep = emote67Timer;
-    ctx.font = "bold 28px 'JetBrains Mono', monospace";
+    ctx.font = "bold 28px 'Times New Roman', serif";
     ctx.textAlign = "center";
-    ctx.fillStyle = `rgba(255,92,53,${0.5+Math.sin(time*15)*0.5})`;
+    ctx.fillStyle = `rgba(200,64,255,${0.5+Math.sin(time*15)*0.5})`;
     ctx.fillText("67", W/2 + Math.sin(time*20)*15, 50);
   }
 

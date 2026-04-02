@@ -95,15 +95,15 @@ function drawBird(time) {
     for(let i = 0; i < 3; i++) {
       const y = Math.random() * H;
       const h = 1 + Math.random() * 3;
-      ctx.fillStyle = "rgba(255,92,53," + (micSmooth * 0.3) + ")";
+      ctx.fillStyle = "rgba(200,64,255," + (micSmooth * 0.3) + ")";
       ctx.fillRect(Math.random() * 20 - 10, y, W, h);
     }
   }
 
   ctx.save();
-  ctx.font = "bold 14px 'JetBrains Mono', monospace";
+  ctx.font = "bold 14px 'Times New Roman', serif";
   ctx.textAlign = "center";
-  ctx.fillStyle = "rgba(255,92,53," + (0.5 + Math.sin(time * 8) * 0.5) + ")";
+  ctx.fillStyle = "rgba(200,64,255," + (0.5 + Math.sin(time * 8) * 0.5) + ")";
   ctx.fillText("🎤 LISTENING", W/2, H - 8);
   ctx.restore();
 }
