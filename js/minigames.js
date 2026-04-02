@@ -320,3 +320,89 @@ recalc=function(){
   S.ps=Math.floor(S.ps*(1+craftBonuses.ps+craftBonuses.everything));
 };
 initCasino();
+
+// ============ BOSS VARIETY ============
+var BOSS_TYPES=[
+  {nm:"PSL Challenger",color:"red",weakness:-1,special:null},
+  {nm:"Zorgo Devourer",color:"purple",weakness:5,special:"eats 1 zorgo every 2 seconds"},
+  {nm:"The Mirror",color:"silver",weakness:6,special:"reflects damage (hurts your currencies)"},
+  {nm:"Tooth Fairy (evil)",color:"pink",weakness:38,special:"steals teeth on hit"},
+  {nm:"Owen's Shadow",color:"black",weakness:0,special:"gets stronger over time"},
+  {nm:"Agartha Guardian",color:"teal",weakness:48,special:"immune for first 3 seconds"},
+  {nm:"Currency Vampire",color:"darkred",weakness:17,special:"drains random currency on hit"},
+  {nm:"Combo Breaker",color:"orange",weakness:-1,special:"resets your combo on hit"},
+  {nm:"The 67th",color:"#670000",weakness:-1,special:"has exactly 67 HP"},
+];
+var _bossType=null;
+var _origSpawnBoss=spawnBoss;
+spawnBoss=function(){
+  if(bossActive||psl()<2)return;
+  _bossType=BOSS_TYPES[Math.floor(Math.random()*BOSS_TYPES.length)];
+  bossActive=true;
+  var p=psl();
+  bossMaxHP=_bossType.nm==="The 67th"?67:Math.floor(50+p*30+S.prestige*20);
+  bossHP=bossMaxHP;
+  bossTimer=100;
+  bossReward=Math.floor(S.ps*20+p*10000);
+  var panel=document.getElementById("boss-panel");if(panel)panel.style.display="block";
+  var area=document.getElementById("boss-area");
+  var specText=_bossType.special?"<div style='font-size:.4rem;color:"+_bossType.color+"'>Special: "+_bossType.special+"</div>":"";
+  var weakText=_bossType.weakness>=0&&_bossType.weakness<CURRENCIES.length?"<div style='font-size:.4rem;color:green'>Weakness: "+CURRENCIES[_bossType.weakness].ic+" "+CURRENCIES[_bossType.weakness].nm+" (high = bonus dmg)</div>":"";
+  area.innerHTML='<div style="font-size:.6rem;margin:4px 0;color:'+_bossType.color+'">⚔️ '+_bossType.nm+' appeared!</div>'+specText+weakText+
+    '<div class="boss-hp"><div class="boss-hp-fill" id="boss-hp-fill" style="width:100%;background:'+_bossType.color+'"></div><div class="boss-hp-text" id="boss-hp-text">'+bossHP+'/'+bossMaxHP+'</div></div>'+
+    '<div style="text-align:center"><button class="boss-btn" id="boss-atk" onclick="bossAttack()">⚔️ ATTACK ⚔️</button></div>';
+  toast("⚔️ "+_bossType.nm+" appeared!");screenShake(2);sndBoss();
+  bossInterval=setInterval(function(){
+    bossTimer--;
+    // boss specials
+    if(_bossType){
+      if(_bossType.nm==="Zorgo Devourer"&&bossTimer%20===0){S.zorgos=Math.max(0,S.zorgos-1);pushNotif("🟣 -1 zorgo eaten")}
+      if(_bossType.nm==="Owen's Shadow"&&bossTimer%30===0){bossMaxHP+=5;bossHP+=5}
+    }
+    if(bossTimer<=0){
+      clearInterval(bossInterval);bossActive=false;
+      var loss=Math.floor(S.pts*0.08);S.pts=Math.max(0,S.pts-loss);
+      toast("💀 "+(_bossType?_bossType.nm:"Boss")+" won! -"+fmt(loss));addSuspicion(10);
+      var panel=document.getElementById("boss-panel");if(panel)panel.style.display="none";
+      _bossType=null;render();
+    }
+    var ht=document.getElementById("boss-hp-text");if(ht)ht.textContent=bossHP+"/"+bossMaxHP+" ("+Math.ceil(bossTimer/10)+"s)";
+  },100);
+};
+
+var _origBossAttack2=bossAttack;
+bossAttack=function(){
+  if(!bossActive)return;
+  var dmg=1;
+  if(CURRENCIES[0]&&CURRENCIES[0].val>30)dmg+=CURRENCIES[0].val/30;
+  if(CURRENCIES[21]&&CURRENCIES[21].val>20)dmg+=CURRENCIES[21].val/30;
+  // weakness bonus
+  if(_bossType&&_bossType.weakness>=0&&_bossType.weakness<CURRENCIES.length){
+    dmg+=CURRENCIES[_bossType.weakness].val/15;
+  }
+  if(typeof craftBonuses!=="undefined"&&craftBonuses.bossbonus)dmg*=2;
+  dmg=Math.floor(dmg*comboMult());
+  // boss specials on attack
+  if(_bossType){
+    if(_bossType.nm==="The Mirror"){var ri=Math.floor(Math.random()*CURRENCIES.length);if(psl()>=CURRENCIES[ri].unlockPSL)CURRENCIES[ri].val=Math.max(0,CURRENCIES[ri].val-2)}
+    if(_bossType.nm==="Tooth Fairy (evil)"&&Math.random()<0.1){S.teeth=Math.max(28,S.teeth-1);pushNotif("🦷 tooth stolen!")}
+    if(_bossType.nm==="Currency Vampire"){var ri=Math.floor(Math.random()*CURRENCIES.length);if(psl()>=CURRENCIES[ri].unlockPSL)CURRENCIES[ri].val=Math.max(0,CURRENCIES[ri].val-1)}
+    if(_bossType.nm==="Combo Breaker"&&Math.random()<0.15){S.combo=0;pushNotif("combo broken!")}
+    if(_bossType.nm==="Agartha Guardian"&&bossTimer>70)dmg=0; // immune first 3s
+  }
+  bossHP=Math.max(0,bossHP-dmg);
+  var fill=document.getElementById("boss-hp-fill");if(fill)fill.style.width=(bossHP/bossMaxHP*100)+"%";
+  var ht=document.getElementById("boss-hp-text");if(ht)ht.textContent=bossHP+"/"+bossMaxHP;
+  screenShake(1);
+  if(bossHP<=0){
+    clearInterval(bossInterval);bossActive=false;
+    S.pts+=bossReward;S.total+=bossReward;
+    var zr=Math.floor(Math.random()*3)+1+(_bossType&&_bossType.nm==="The 67th"?67:0);
+    S.zorgos+=zr;S.totalZorgos+=zr;
+    for(var i=0;i<8;i++){var ri=Math.floor(Math.random()*CURRENCIES.length);if(psl()>=CURRENCIES[ri].unlockPSL)CURRENCIES[ri].val+=10}
+    toast("⚔️ "+(_bossType?_bossType.nm:"Boss")+" defeated! +"+fmt(bossReward)+" +"+zr+"🟣");
+    screenShake(3);chromatic();sndAch();
+    var panel=document.getElementById("boss-panel");if(panel)panel.style.display="none";
+    _bossType=null;checkAch();render();
+  }
+};

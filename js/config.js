@@ -78,3 +78,36 @@ UPG.push({id:"sburst",ic:"💥",nm:"Super Stim Burst",ds:"Burst gives 5x more",b
 UPG.push({id:"w67",ic:"6️⃣",nm:"Channel 67",ds:"Emote 67 chance x3",b:67,m:1,pc:0,ps:6700,type:"zorgo",max:1,secret:true,req:function(){return S.ach&&S.ach["e67"]}});
 UPG.push({id:"wvoid",ic:"🕳️",nm:"Peer Into Void",ds:"All currencies x1.5 but vision gets worse",b:100e6,m:1,pc:0,ps:0,type:"mew",max:1,trap:"blur",req:function(){return psl()>=7}});
 UPG.push({id:"wowen",ic:"🗿",nm:"Become Owen",ds:"Everything x10. No going back.",b:1e12,m:1,pc:0,ps:0,type:"mew",max:1,secret:true,req:function(){return psl()>=9.5}});
+
+// MORE ACHIEVEMENTS
+ACH.push({id:"c5k",ic:"🦾",nm:"5000 Clicks",ds:"carpal tunnel",ck:function(){return S.clicks>=5000}});
+ACH.push({id:"c20k",ic:"💀",nm:"20000 Clicks",ds:"your fingers",ck:function(){return S.clicks>=20000}});
+ACH.push({id:"p100",ic:"💵",nm:"100 Points",ds:"baby steps",ck:function(){return S.total>=100}});
+ACH.push({id:"p10b",ic:"💎",nm:"10 Billion",ds:"10B",ck:function(){return S.total>=1e10}});
+ACH.push({id:"p1t",ic:"🏔️",nm:"Trillionaire",ds:"1T",ck:function(){return S.total+S.totalPrestigeEarnings>=1e12}});
+ACH.push({id:"cmb25",ic:"🔥",nm:"Combo 25",ds:"getting warm",ck:function(){return S.maxCombo>=25}});
+ACH.push({id:"cmb100",ic:"💥",nm:"Combo 100",ds:"inhuman",ck:function(){return S.maxCombo>=100}});
+ACH.push({id:"z10",ic:"🟣",nm:"10 Zorgos",ds:"collector",ck:function(){return S.totalZorgos>=10}});
+ACH.push({id:"z100",ic:"🔮",nm:"100 Zorgos",ds:"hoarder",ck:function(){return S.totalZorgos>=100}});
+ACH.push({id:"pr3",ic:"🔄",nm:"Prestige 3",ds:"again",ck:function(){return S.prestige>=3}});
+ACH.push({id:"pr10",ic:"♻️",nm:"Prestige 10",ds:"why",ck:function(){return S.prestige>=10}});
+ACH.push({id:"t40",ic:"🦷",nm:"40 Teeth",ds:"dentist concerned",ck:function(){return S.teeth>=40}});
+ACH.push({id:"t60",ic:"🦷",nm:"60 Teeth",ds:"dentist fled",ck:function(){return S.teeth>=60}});
+ACH.push({id:"t100",ic:"🦷",nm:"100 Teeth",ds:"you are teeth",ck:function(){return S.teeth>=100}});
+ACH.push({id:"sus50",ic:"👁️",nm:"50% Suspicion",ds:"they're watching",ck:function(){return S.suspicion>=50}});
+ACH.push({id:"sus100",ic:"👁️",nm:"Caught",ds:"they caught you",ck:function(){return S.suspicion>=100}});
+ACH.push({id:"psl1",ic:"📊",nm:"PSL 1",ds:"it begins",ck:function(){return psl()>=1}});
+ACH.push({id:"psl3",ic:"📊",nm:"PSL 3",ds:"getting somewhere",ck:function(){return psl()>=3}});
+ACH.push({id:"psl7",ic:"📊",nm:"PSL 7",ds:"foid territory",ck:function(){return psl()>=7}});
+ACH.push({id:"psl10",ic:"📊",nm:"PSL 10",ds:"impossible",ck:function(){return psl()>=9.99}});
+ACH.push({id:"cur100",ic:"📈",nm:"100 Currencies",ds:"diversified",ck:function(){var n=0;for(var i=0;i<CURRENCIES.length;i++)if(psl()>=CURRENCIES[i].unlockPSL)n++;return n>=100}});
+ACH.push({id:"cur200",ic:"📈",nm:"All Currencies",ds:"everything",ck:function(){var n=0;for(var i=0;i<CURRENCIES.length;i++)if(psl()>=CURRENCIES[i].unlockPSL)n++;return n>=200}});
+ACH.push({id:"gold5",ic:"✨",nm:"5 Golden",ds:"lucky",ck:function(){return S.goldenClicks>=5}});
+ACH.push({id:"gold25",ic:"✨",nm:"25 Golden",ds:"blessed",ck:function(){return S.goldenClicks>=25}});
+ACH.push({id:"asc1",ic:"🌟",nm:"First Ascension",ds:"beyond",ck:function(){return typeof ascension!=="undefined"&&ascension>=1}});
+ACH.push({id:"asc3",ic:"🌟",nm:"Triple Ascension",ds:"transcendent",ck:function(){return typeof ascension!=="undefined"&&ascension>=3}});
+ACH.push({id:"buy50",ic:"🛒",nm:"50 Upgrades",ds:"shopping spree",ck:function(){var n=0;for(var k in S.upg)n+=S.upg[k];return n>=50}});
+ACH.push({id:"buy100",ic:"🛒",nm:"100 Upgrades",ds:"addicted",ck:function(){var n=0;for(var k in S.upg)n+=S.upg[k];return n>=100}});
+ACH.push({id:"trap1a",ic:"🎁",nm:"Fool",ds:"bought a trap upgrade",ck:function(){return own("trap1")>=1||own("trap2")>=1||own("trap3")>=1}});
+ACH.push({id:"trap3a",ic:"💀",nm:"Masochist",ds:"bought 3 trap upgrades",ck:function(){return (own("trap1")>0?1:0)+(own("trap2")>0?1:0)+(own("trap3")>0?1:0)+(own("trap4")>0?1:0)+(own("trap5")>0?1:0)>=3}});
+ACH.push({id:"owen1",ic:"🗿",nm:"Became Owen",ds:"no going back",ck:function(){return own("wowen")>=1}});

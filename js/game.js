@@ -364,3 +364,140 @@ if(!localStorage.getItem("owen_played")){
   setTimeout(function(){toast("🟣 Click purple Zorgos when they appear!")},7000);
   setTimeout(function(){toast("🎰 Try the Zorgo Casino below!")},10000);
 }
+
+// ============ UNEXPLAINED MECHANICS ============
+
+// THE NUMBER 67 - appears everywhere, does hidden things
+setInterval(function(){
+  if(S.clicks===67||S.clicks===670||S.clicks===6700){
+    S.pts+=6700;S.total+=6700;toast("67.");
+    for(var i=0;i<6;i++)setTimeout(function(){dropEmoji()},i*67);
+  }
+  if(S.teeth===67){toast("🦷 67 teeth. nice.");S.zorgos+=6;S.totalZorgos+=6;}
+},1000);
+
+// MYSTERY COUNTER - shows up at PSL 3, nobody knows what it counts
+var _mysteryVal=0;
+setInterval(function(){
+  if(psl()<3)return;
+  _mysteryVal+=Math.random()*0.3-0.1;
+  if(_mysteryVal<0)_mysteryVal=0;
+  if(Math.random()<0.001)_mysteryVal+=Math.random()*50;
+  // at exactly 67, something happens
+  if(Math.floor(_mysteryVal)===67){
+    _mysteryVal=0;S.pts+=67000;S.total+=67000;
+    toast("The number reached 67. +67K.");screenShake(3);
+  }
+},500);
+
+// SHADOW POINTS - hidden currency that builds when you DON'T click
+var _lastClickCheck=Date.now();var _shadowPts=0;
+setInterval(function(){
+  var idle=(Date.now()-S.lastClickTime)/1000;
+  if(idle>10){_shadowPts+=idle*0.01;
+    if(_shadowPts>=100){
+      var bonus=Math.floor(S.ps*30);
+      S.pts+=bonus;S.total+=bonus;_shadowPts=0;
+      toast("👤 Shadow points collected: +"+fmt(bonus));
+      pushNotif("the shadows noticed you stopped");
+    }
+  }else{_shadowPts=0}
+},2000);
+
+// RANDOM CURRENCY MUTATIONS - currencies randomly evolve names
+var _mutatedNames={};
+setInterval(function(){
+  if(psl()<5)return;
+  if(Math.random()<0.003){
+    var ri=Math.floor(Math.random()*CURRENCIES.length);
+    if(psl()>=CURRENCIES[ri].unlockPSL){
+      var mutations=["(evolved)","(cursed)","(blessed)","(unstable)","(unknown)","(???)","(v2)","(corrupted)","(owen's)","(hollow)"];
+      var m=mutations[Math.floor(Math.random()*mutations.length)];
+      if(!_mutatedNames[ri])_mutatedNames[ri]=CURRENCIES[ri].nm;
+      CURRENCIES[ri].nm=_mutatedNames[ri]+" "+m;
+      // sometimes revert
+      setTimeout(function(){if(_mutatedNames[ri])CURRENCIES[ri].nm=_mutatedNames[ri]},30000);
+    }
+  }
+},5000);
+
+// BLOOD MOON - random event that lasts 30 seconds, everything 3x but suspicion rises fast
+var _bloodMoon=false;
+setInterval(function(){
+  if(psl()<6||_bloodMoon)return;
+  if(Math.random()<0.001){
+    _bloodMoon=true;
+    document.body.style.background="#330000";
+    toast("🌑 BLOOD MOON — 3x income, suspicion rising fast! 30 seconds!");
+    pushNotif("🌑 BLOOD MOON");screenShake(3);
+    var oldPC=S.pc;var oldPS=S.ps;
+    S.pc*=3;S.ps*=3;
+    var susTick=setInterval(function(){addSuspicion(1)},500);
+    setTimeout(function(){
+      _bloodMoon=false;
+      document.body.style.background="";
+      S.pc=oldPC;S.ps=oldPS;recalc();
+      clearInterval(susTick);
+      toast("🌕 Blood moon ended.");
+    },30000);
+  }
+},5000);
+
+// THE VOID - at PSL 8, occasionally all currencies invert for 5 seconds
+setInterval(function(){
+  if(psl()<8)return;
+  if(Math.random()<0.0005){
+    toast("🕳️ THE VOID INVERTED ALL CURRENCIES");
+    screenShake(3);flash("rgba(0,0,0,0.3)");
+    for(var i=0;i<CURRENCIES.length;i++){
+      if(psl()>=CURRENCIES[i].unlockPSL)CURRENCIES[i].val=100-CURRENCIES[i].val;
+    }
+    setTimeout(function(){
+      for(var i=0;i<CURRENCIES.length;i++){
+        if(psl()>=CURRENCIES[i].unlockPSL)CURRENCIES[i].val=100-CURRENCIES[i].val;
+      }
+      toast("🕳️ currencies restored. mostly.");
+    },5000);
+  }
+},3000);
+
+// TEETH EVENTS - teeth do weird things at milestones
+setInterval(function(){
+  if(S.teeth>=45&&Math.random()<0.002){toast("🦷 You can feel them growing.")}
+  if(S.teeth>=70&&Math.random()<0.001){
+    // teeth generate passive income
+    var bonus=S.teeth*100;S.pts+=bonus;S.total+=bonus;
+    pushNotif("🦷 teeth generated "+fmt(bonus)+" pts");
+  }
+  if(S.teeth>=100&&Math.random()<0.0005){
+    toast("🦷🦷🦷 THE TEETH HAVE ACHIEVED SENTIENCE 🦷🦷🦷");
+    S.teeth+=10;screenShake(3);
+  }
+},3000);
+
+// OWEN MESSAGES - rare direct messages from "owen"
+setInterval(function(){
+  if(psl()<4)return;
+  if(Math.random()<0.001){
+    var msgs=["i see you","keep going","your jawline is acceptable","don't stop now",
+      "the zorgos answer to me","i was never real","or was i","mew harder","PSL is just a number. but also it's everything.",
+      "i live inside the game now","the code contains my consciousness","every click sustains me",
+      "you can't close the tab. try it. (don't actually)","i have "+Math.floor(Math.random()*999)+" teeth"];
+    addChatMsg("owen",msgs[Math.floor(Math.random()*msgs.length)],"#f00");
+  }
+},8000);
+
+// MYSTERY STAT in stats that nobody understands
+var _enigmaVal=Math.floor(Math.random()*1000);
+setInterval(function(){
+  _enigmaVal+=Math.floor(Math.random()*7-3);
+  if(_enigmaVal<0)_enigmaVal=Math.abs(_enigmaVal);
+  var grid=document.getElementById("stats-grid");
+  if(grid&&!document.getElementById("stat-enigma")){
+    var d=document.createElement("div");d.className="stat-row";d.id="stat-enigma";
+    d.innerHTML='<span>???</span><span class="stat-val" id="enigma-val">0</span>';
+    grid.appendChild(d);
+  }
+  var ev=document.getElementById("enigma-val");
+  if(ev)ev.textContent=_enigmaVal;
+},1000);
