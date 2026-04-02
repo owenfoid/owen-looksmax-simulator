@@ -306,14 +306,14 @@ if(!isMobile){
 // --- PAGE TITLE CHAOS ---
 const TITLES=[
   "Owen Looksmax Simulator",
-  "Owen Looksmax Simulator - "+()=>S.teeth+" teeth",
-  "Owen Looksmax Simulator - "+()=>S.zorgos+" zorgos",
+  ()=>"Owen Looksmax Simulator - "+S.teeth+" teeth",
+  ()=>"Owen Looksmax Simulator - "+S.zorgos+" zorgos",
   "(1) new zorgo",
   "stop playing",
   "Owen Looksmax Simulator",
   "Owen Looksmax Simulator (REAL)",
   "are you still here",
-  "PSL "+()=>psl().toFixed(1),
+  ()=>"PSL "+psl().toFixed(1),
   "Owen Looksmax Simulator",
   "🟣🟣🟣",
   "the grind never stops",
@@ -354,20 +354,20 @@ function cssGlitch(){
 
 // --- RANDOM NOTIFICATIONS ---
 const NOTIF_MSGS=[
-  "🟣 zorgo detected","🦷 tooth: "+()=>S.teeth,"👁️ watching","⚠️ wet floor","🗿 mew",
+  "🟣 zorgo detected",()=>"🦷 tooth: "+S.teeth,"👁️ watching","⚠️ wet floor","🗿 mew",
   ()=>Math.floor(Math.random()*99)+" mewing rn","📢 owen posted","🔮 zorgos approve",
   "💀 bonesmash","🧴 skincare","❓","🪞 don't look","♾️ limitless",
   "🟣 zorgo escaped","🦷 tooth incoming","👹 sukuna noticed","🕳️ agartha signal",
-  "📊 PSL "+()=>psl().toFixed(1)+" (trust)","🟣","🟣🟣","🟣🟣🟣",
+  ()=>"📊 PSL "+psl().toFixed(1)+" (trust)","🟣","🟣🟣","🟣🟣🟣",
   "mew","mew mew","✅ form: good","❌ detected",
   ()=>Math.floor(Math.random()*999)+" zorgos in area",
-  "👤 owen online","👤 owen offline","🦷 #"+()=>S.teeth+" growing",
+  "👤 owen online","👤 owen offline",()=>"🦷 #"+S.teeth+" growing",
   "📈 trending","🔔 new achievement (lie)","💀","⚠️","67",
   "mirror saw you","incoming zorgo","teeth update","screenshot detected",
   "cold shower reminder","reflection blinked","🗿 nice jawline",
   "zorgo approaching","owen is typing","owen stopped typing",
   "PSL check passed","PSL check failed","mew form: S tier",
-  "agartha depth: "+()=>Math.floor(Math.random()*999)+"km",
+  ()=>"agartha depth: "+Math.floor(Math.random()*999)+"km",
   "teeth growth: normal","teeth growth: abnormal","teeth growth: ████",
   ()=>S.combo+"x combo recorded","zorgo market: up 12%","zorgo market: crashed",
 ];
@@ -449,7 +449,7 @@ const FAKE_ERRORS=[
   "Exception: too many teeth","Warning: suspicion leak detected",
   "Error: cannot read property 'face' of null","ZORGO_OVERFLOW: stack exceeded",
   "panic: runtime error: mew index out of range","ERR_CONNECTION_AGARTHA",
-  "SyntaxError: unexpected tooth at position "+()=>S.teeth,
+  ()=>"SyntaxError: unexpected tooth at position "+S.teeth,
   "RangeError: Maximum mew stack size exceeded",
 ];
 setInterval(()=>{
@@ -555,7 +555,7 @@ setInterval(()=>{
 const RANDOM_TOASTS=[
   "🗿","🟣 zorgo.","🦷","mew","67","...","👁️","",
   "the grind never stops","check your teeth","zorgo?",
-  "PSL "+()=>psl().toFixed(1),"nice jawline (lie)",
+  ()=>"PSL "+psl().toFixed(1),"nice jawline (lie)",
   ()=>S.teeth+" teeth and counting","don't look up",
   "owen is proud","owen is watching","owen",
 ];

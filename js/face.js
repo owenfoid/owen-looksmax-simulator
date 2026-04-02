@@ -175,7 +175,6 @@ function drawFace(t, time) {
   }
 }
 function drawHand(cx, cy, angle, fingerSpread, scale) {
-  try {
   // skin colors
   const palm = "rgb(220,190,165)";
   const palmShadow = "rgb(195,165,140)";
