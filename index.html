@@ -50,11 +50,10 @@ header h1 span{color:red;font-family:'Comic Neue',cursive;text-decoration:underl
 /* CURRENCIES GRID */
 .curr-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(70px,1fr));gap:2px;max-height:300px;overflow-y:auto;font-size:.4rem}
 .curr-grid::-webkit-scrollbar{width:4px}.curr-grid::-webkit-scrollbar-thumb{background:red}
-.curr-item{border:1px solid #ccc;padding:2px;text-align:center;background:#fff;overflow:hidden}
-.curr-item .cv{font-weight:700;font-size:.55rem;font-family:'Times New Roman',serif}
-.curr-item .cn{font-size:.35rem;color:#666;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-.curr-item.neg .cv{color:red}.curr-item.pos .cv{color:green}.curr-item.weird .cv{color:purple}
-.curr-item.zero .cv{color:#999}
+.cur{border:1px solid #ccc;padding:2px;text-align:center;background:#fff;overflow:hidden}
+.cur .cur-v{font-weight:700;font-size:.55rem;font-family:'Times New Roman',serif}
+.cur .cur-n{font-size:.35rem;color:#666;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.cur .cur-ic{font-size:.7rem}
 
 .ft{position:fixed;pointer-events:none;z-index:200;font-family:'Times New Roman',serif;font-weight:700;font-size:1.3rem;text-shadow:0 0 4px currentColor;animation:ftUp .6s ease-out forwards}
 @keyframes ftUp{0%{opacity:1;transform:translateY(0)}100%{opacity:0;transform:translateY(-50px) scale(1.2)}}
@@ -190,6 +189,9 @@ body{background:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg
     <div class="st"><div class="v" id="s-total">0</div><div class="l">Lifetime</div></div>
     <div class="st" style="color:purple"><div class="v" id="s-zorgos">0</div><div class="l">Zorgos</div></div>
     <div class="st" style="color:green"><div class="v" id="s-cmult">1.0x</div><div class="l">Curr. Mult</div></div>
+    <div class="st" style="color:green"><div class="v" id="s-cmult">1.0x</div><div class="l">Curr. Mult</div></div>
+    <div class="st" id="teeth-display" style="display:none"><div class="v" id="s-teeth" style="color:red">32</div><div class="l">🦷 Teeth</div></div>
+    <div class="st" id="sus-display" style="display:none"><div class="v" id="s-sus" style="color:orange">0%</div><div class="l">👁️ Suspicion</div></div>
     <div class="st" id="crit-display" style="display:none;color:red"><div class="v" id="s-crit">--</div><div class="l">⚠️ CRITICAL</div></div>
   </div>
   <div class="p full">
@@ -205,7 +207,7 @@ body{background:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg
     <div class="click-hint">tap to mew</div>
     <div id="prestige-info" class="prestige-info" style="display:none"></div>
   </div>
-  <div class="p full"><div class="pt">CURRENCIES (<span id="curr-count">0</span>/210)</div><div class="curr-grid" id="curr-grid"></div></div>
+  <div class="p full"><div class="pt">CURRENCIES (<span id="curr-count">0/210</span>)</div><div class="curr-grid" id="curr-grid"></div></div>
   <div class="p full" id="craft-panel"><div class="pt">⚗️ CURRENCY FORGE</div><div id="craft-list"></div></div>
   <div class="p full" id="casino-panel"><div class="pt">🎰 ZORGO CASINO</div><div id="casino-area"></div></div>
   <div class="p full" id="boss-panel" style="display:none"><div class="pt">⚔️ PSL CHALLENGER</div><div id="boss-area"></div></div>
@@ -980,6 +982,8 @@ function render(){
   var crd=document.getElementById("crit-display");var crs=document.getElementById("s-crit");if(crd&&crs){if(critCurrency>=0){crd.style.display="block";crs.textContent=CURRENCIES[critCurrency].ic+" "+Math.floor(critTimer/10)+"s"}else{crd.style.display="none"}}
   var td=document.getElementById("teeth-display");
   if(td){if(psl()>=5||S.teeth>32){td.style.display="block";document.getElementById("s-teeth").textContent=S.teeth}else td.style.display="none"}
+  var sd=document.getElementById("sus-display");
+  if(sd){if(S.suspicion>0||psl()>=4){sd.style.display="block";document.getElementById("s-sus").textContent=Math.floor(S.suspicion)+"%"}else sd.style.display="none"}
   var p=psl(),rk=getRank(p);
   document.getElementById("psl-fill").style.width=Math.min(100,p/10*100)+"%";
   document.getElementById("psl-num").textContent=p.toFixed(1)+" / 10.0";
@@ -1000,7 +1004,7 @@ function render(){
   var ag=document.getElementById("ag");ag.innerHTML="";
   for(var i=0;i<ACH.length;i++){var a=ACH[i];var d=document.createElement("div");d.className="ac"+(S.ach[a.id]?" un":"");d.innerHTML=a.ic+'<div class="tt"><b>'+a.nm+'</b><br>'+a.ds+'</div>';ag.appendChild(d)}
 }
-var curGridEl=document.getElementById("cur-grid");var _curCells=[];
+var curGridEl=document.getElementById("curr-grid");var _curCells=[];
 function initCurrencyGrid(){if(!curGridEl)return;curGridEl.innerHTML="";for(var i=0;i<CURRENCIES.length;i++){var c=CURRENCIES[i];var d=document.createElement("div");d.className="cur";d.innerHTML='<div class="cur-ic">'+c.ic+'</div><div class="cur-v" style="color:'+c.col+'">0</div><div class="cur-n">'+c.nm+'</div>';curGridEl.appendChild(d);_curCells.push(d.querySelector(".cur-v"))}}
 var _lastUnlocked=0;
 function renderCurrencies(){var p=psl();var unlocked=0;for(var i=0;i<CURRENCIES.length;i++){if(!_curCells[i])continue;var c=CURRENCIES[i];var el=_curCells[i];var par=el.parentNode;if(p<c.unlockPSL){if(par)par.style.display="none"}else{unlocked++;if(par)par.style.display="";el.textContent=c.val>=1000?fmt(c.val):c.val.toFixed(1);el.style.color=c.col;

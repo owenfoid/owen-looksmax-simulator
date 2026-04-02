@@ -39,11 +39,10 @@ header h1 span{color:red;font-family:'Comic Neue',cursive;text-decoration:underl
 /* CURRENCIES GRID */
 .curr-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(70px,1fr));gap:2px;max-height:300px;overflow-y:auto;font-size:.4rem}
 .curr-grid::-webkit-scrollbar{width:4px}.curr-grid::-webkit-scrollbar-thumb{background:red}
-.curr-item{border:1px solid #ccc;padding:2px;text-align:center;background:#fff;overflow:hidden}
-.curr-item .cv{font-weight:700;font-size:.55rem;font-family:'Times New Roman',serif}
-.curr-item .cn{font-size:.35rem;color:#666;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-.curr-item.neg .cv{color:red}.curr-item.pos .cv{color:green}.curr-item.weird .cv{color:purple}
-.curr-item.zero .cv{color:#999}
+.cur{border:1px solid #ccc;padding:2px;text-align:center;background:#fff;overflow:hidden}
+.cur .cur-v{font-weight:700;font-size:.55rem;font-family:'Times New Roman',serif}
+.cur .cur-n{font-size:.35rem;color:#666;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.cur .cur-ic{font-size:.7rem}
 
 .ft{position:fixed;pointer-events:none;z-index:200;font-family:'Times New Roman',serif;font-weight:700;font-size:1.3rem;text-shadow:0 0 4px currentColor;animation:ftUp .6s ease-out forwards}
 @keyframes ftUp{0%{opacity:1;transform:translateY(0)}100%{opacity:0;transform:translateY(-50px) scale(1.2)}}

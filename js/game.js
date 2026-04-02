@@ -21,6 +21,8 @@ function render(){
   var crd=document.getElementById("crit-display");var crs=document.getElementById("s-crit");if(crd&&crs){if(critCurrency>=0){crd.style.display="block";crs.textContent=CURRENCIES[critCurrency].ic+" "+Math.floor(critTimer/10)+"s"}else{crd.style.display="none"}}
   var td=document.getElementById("teeth-display");
   if(td){if(psl()>=5||S.teeth>32){td.style.display="block";document.getElementById("s-teeth").textContent=S.teeth}else td.style.display="none"}
+  var sd=document.getElementById("sus-display");
+  if(sd){if(S.suspicion>0||psl()>=4){sd.style.display="block";document.getElementById("s-sus").textContent=Math.floor(S.suspicion)+"%"}else sd.style.display="none"}
   var p=psl(),rk=getRank(p);
   document.getElementById("psl-fill").style.width=Math.min(100,p/10*100)+"%";
   document.getElementById("psl-num").textContent=p.toFixed(1)+" / 10.0";
@@ -41,7 +43,7 @@ function render(){
   var ag=document.getElementById("ag");ag.innerHTML="";
   for(var i=0;i<ACH.length;i++){var a=ACH[i];var d=document.createElement("div");d.className="ac"+(S.ach[a.id]?" un":"");d.innerHTML=a.ic+'<div class="tt"><b>'+a.nm+'</b><br>'+a.ds+'</div>';ag.appendChild(d)}
 }
-var curGridEl=document.getElementById("cur-grid");var _curCells=[];
+var curGridEl=document.getElementById("curr-grid");var _curCells=[];
 function initCurrencyGrid(){if(!curGridEl)return;curGridEl.innerHTML="";for(var i=0;i<CURRENCIES.length;i++){var c=CURRENCIES[i];var d=document.createElement("div");d.className="cur";d.innerHTML='<div class="cur-ic">'+c.ic+'</div><div class="cur-v" style="color:'+c.col+'">0</div><div class="cur-n">'+c.nm+'</div>';curGridEl.appendChild(d);_curCells.push(d.querySelector(".cur-v"))}}
 var _lastUnlocked=0;
 function renderCurrencies(){var p=psl();var unlocked=0;for(var i=0;i<CURRENCIES.length;i++){if(!_curCells[i])continue;var c=CURRENCIES[i];var el=_curCells[i];var par=el.parentNode;if(p<c.unlockPSL){if(par)par.style.display="none"}else{unlocked++;if(par)par.style.display="";el.textContent=c.val>=1000?fmt(c.val):c.val.toFixed(1);el.style.color=c.col;
