@@ -197,7 +197,7 @@ setInterval(()=>{
 // ============ RANDOM EVENTS ============
 setInterval(()=>{
   if(Math.random()<0.15 && S.total>50){
-    const ev=EVENTS[Math.floor(Math.random()*EVENTS.length)];
+    const ev=getEvent();
     log("EVENT: "+ev, true);
     toast("📢 "+ev);
     screenShake(1);
@@ -208,3 +208,37 @@ setInterval(()=>{
 load(); render();
 setInterval(save, 10000);
 window.addEventListener("beforeunload", save);
+
+// ============ SUBTLE WEIRDNESS ============
+// background shifts hue at high PSL
+setInterval(()=>{
+  const p = psl();
+  if(p >= 7) {
+    const shift = Math.sin(Date.now()/8000) * lerp(0, 8, (p-7)/3);
+    document.body.style.background = `hsl(240, 5%, ${6 + shift * 0.3}%)`;
+  }
+  // title glitch at high PSL
+  if(p >= 8 && Math.random() < 0.02) {
+    const h1 = document.querySelector('header h1');
+    const orig = h1.innerHTML;
+    const glitches = [
+      'Owen <span>Looksmax</span> Simulator',
+      'Owen <span>L̸o̴o̵k̶s̷m̶a̵x̸</span> Simulator',
+      'Owen <span>Looksmax</span> S̶i̷m̵u̶l̵a̴t̵o̸r̷',
+      '0wen <span>Looksmax</span> Simulator',
+      'Owen <span>Looksmax</span> Simul4tor',
+      'Owen <span>Looksmax</span> Simulator?',
+    ];
+    h1.innerHTML = glitches[Math.floor(Math.random()*glitches.length)];
+    setTimeout(()=>{ h1.innerHTML = 'Owen <span>Looksmax</span> Simulator'; }, 150);
+  }
+  // click hint changes at high PSL
+  if(p >= 9) {
+    const hint = document.querySelector('.click-hint');
+    if(hint && Math.random() < 0.01) {
+      const hints = ['tap to mew', 'keep going', 'don\'t stop', 'you look perfect', 'close the game', 'it\'s working', 'almost there', 'tap to mew'];
+      hint.textContent = hints[Math.floor(Math.random()*hints.length)];
+      setTimeout(()=>{ hint.textContent = 'tap to mew'; }, 3000);
+    }
+  }
+}, 500);
