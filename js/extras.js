@@ -299,6 +299,7 @@ document.body.appendChild(_musicBtn);
 
 // auto-start music on first click (needs user interaction for AudioContext)
 var _musicAutoStart=false;
+document.addEventListener("touchstart",function(){if(!_musicAutoStart){_musicAutoStart=true;startMusic()}},{once:true});
 document.addEventListener("click",function(){
   if(!_musicAutoStart){_musicAutoStart=true;startMusic()}
 },{once:true});
