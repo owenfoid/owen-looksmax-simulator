@@ -1,3 +1,6 @@
+// URL param reset
+if(location.search.indexOf("reset=1")>=0){localStorage.removeItem("owen_lm_v8");localStorage.removeItem("owen_bts");location.replace(location.pathname);}
+
 var isMobile='ontouchstart' in window||navigator.maxTouchPoints>0;
 var S={pts:0,total:0,pc:1,ps:0,upg:{},ach:{},clicks:0,stim:0,prestige:0,combo:0,maxCombo:0,lastClickTime:0,goldenClicks:0,lastSaveTime:Date.now(),totalPrestigeEarnings:0,zorgos:0,totalZorgos:0,teeth:32,suspicion:0};
 var own=function(id){return S.upg[id]||0};
