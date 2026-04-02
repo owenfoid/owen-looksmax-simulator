@@ -685,3 +685,83 @@ setInterval(function(){
 // Override rock XP for Rock Polish (in feed/pet/talk)
 var _origFeedRock=feedRock;
 feedRock=function(){if(own("rock1")>=1){_rockXP+=10}_origFeedRock()};
+
+// ============ AUTO-CLICKER ============
+setInterval(function(){
+  var autoClicks=own("auto1")+own("auto2")*5;
+  if(autoClicks<=0)return;
+  var cv=Math.floor(S.pc*autoClicks*0.1); // 10% efficiency per auto-click
+  S.pts+=cv;S.total+=cv;S.clicks+=autoClicks;
+  addStim(0.01*autoClicks);
+},1000);
+
+// ============ FRENZY BUTTON ============
+var _frenzyReady=true;var _frenzyActive=false;
+function startFrenzy(){
+  if(!_frenzyReady||_frenzyActive)return;
+  _frenzyReady=false;_frenzyActive=true;
+  toast("⚡ FRENZY! 5x income for 15 seconds!");
+  screenShake(3);chromatic();sndAch();
+  var oldPC=S.pc;var oldPS=S.ps;
+  S.pc*=5;S.ps*=5;
+  setTimeout(function(){
+    _frenzyActive=false;
+    S.pc=oldPC;S.ps=oldPS;recalc();
+    toast("⚡ Frenzy ended.");
+    // 3 minute cooldown
+    setTimeout(function(){_frenzyReady=true;toast("⚡ Frenzy ready!");},180000);
+  },15000);
+  render();
+}
+// Add frenzy button to stats area
+(function(){
+  var statsPanel=document.querySelector(".p.stats.full");
+  if(statsPanel){
+    var btn=document.createElement("div");
+    btn.style.cssText="text-align:center;margin-top:4px";
+    btn.innerHTML='<button class="casino-btn" onclick="startFrenzy()" style="background:#ffe0a0;border-color:orange;color:orange">⚡ FRENZY (3min cooldown)</button>';
+    statsPanel.appendChild(btn);
+  }
+})();
+
+// ============ CURRENCY MILESTONES ============
+var _currMilestones={};
+setInterval(function(){
+  var p=psl();
+  for(var i=0;i<CURRENCIES.length;i++){
+    if(p<CURRENCIES[i].unlockPSL)continue;
+    var v=CURRENCIES[i].val;
+    var key=i+"_"+50;
+    if(v>=50&&!_currMilestones[key]){
+      _currMilestones[key]=true;
+      var bonus=5000*(i+1);S.pts+=bonus;S.total+=bonus;
+      toast(CURRENCIES[i].ic+" "+CURRENCIES[i].nm+" hit 50! +"+fmt(bonus));
+    }
+    var key2=i+"_"+100;
+    if(v>=100&&!_currMilestones[key2]){
+      _currMilestones[key2]=true;
+      var bonus=50000*(i+1);S.pts+=bonus;S.total+=bonus;
+      S.zorgos++;S.totalZorgos++;
+      toast(CURRENCIES[i].ic+" "+CURRENCIES[i].nm+" hit 100! +"+fmt(bonus)+" +1🟣");
+      screenShake(2);
+    }
+  }
+},2000);
+
+// ============ PRESTIGE SCALING ============
+// Each prestige makes the NEXT one cheaper (encourages multiple prestiges)
+var _origCanPrestige=canPrestige;
+canPrestige=function(){
+  var adjustedCost=PRESTIGE_COST/Math.max(1,S.prestige*0.5+1);
+  return S.total>=adjustedCost;
+};
+// Show adjusted cost in UI
+var _origPrestigeRender=null;
+setInterval(function(){
+  var pe=document.getElementById("prestige-btn");
+  if(pe&&pe.style.display!=="none"){
+    var adjustedCost=PRESTIGE_COST/Math.max(1,S.prestige*0.5+1);
+    if(canPrestige()){pe.innerHTML="🔄 PRESTIGE (x"+((S.prestige+1)*PRESTIGE_MULT+1).toFixed(2)+" mult)"}
+    else{pe.innerHTML="🔄 PRESTIGE (need "+fmt(adjustedCost)+")"}
+  }
+},500);

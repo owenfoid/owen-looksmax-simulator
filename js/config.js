@@ -7,7 +7,7 @@ var EVENTS_NORMAL=["Owen caught you with bad posture.","You mewed in class.","Ni
 var EVENTS_WEIRD=["The mirror blinked.","Mewing from inside walls.","Nobody remembers you.","Before photo moved.","Tongue stuck 72 hours.","Tooth in pillow.","Zorgo in fridge.","Currency #67 spiked.","Your Hollow Essence turned negative.","The currencies are watching."];
 var EVENTS_LATE=["The face is yours. You are sure.","You look perfect. Close the game.","PSL ██.█","Bones growing.","The grind never stops.","All 210 currencies moving."];
 function getEvent(){var p=psl();if(p>=9&&Math.random()<0.3)return EVENTS_LATE[Math.floor(Math.random()*EVENTS_LATE.length)];if(p>=5&&Math.random()<0.5)return EVENTS_WEIRD[Math.floor(Math.random()*EVENTS_WEIRD.length)];return EVENTS_NORMAL[Math.floor(Math.random()*EVENTS_NORMAL.length)]}
-var PRESTIGE_COST=1e10;var PRESTIGE_MULT=0.25;var COMBO_DECAY_MS=800;var COMBO_MAX_MULT=5;var GOLDEN_CHANCE=0.003;var GOLDEN_DURATION=5000;var GOLDEN_MULT=10;
+var PRESTIGE_COST=1e9;var PRESTIGE_MULT=0.25;var COMBO_DECAY_MS=800;var COMBO_MAX_MULT=5;var GOLDEN_CHANCE=0.003;var GOLDEN_DURATION=5000;var GOLDEN_MULT=10;
 var ACH=[{id:"c10",ic:"👆",nm:"First Mews",ds:"10 clicks",ck:function(){return S.clicks>=10}},{id:"c1k",ic:"🤖",nm:"Mewbot",ds:"1K clicks",ck:function(){return S.clicks>=1000}},{id:"p1m",ic:"🏆",nm:"Millionaire",ds:"1M",ck:function(){return S.total>=1e6}},{id:"p1b",ic:"👑",nm:"Billionaire",ds:"1B",ck:function(){return S.total>=1e9}},{id:"psl5",ic:"⭐",nm:"Chad",ds:"PSL 5",ck:function(){return psl()>=5}},{id:"psl9",ic:"🗿",nm:"Owen Mode",ds:"PSL 9",ck:function(){return psl()>=9}},{id:"stim",ic:"🌀",nm:"Stimmed",ds:"Max stim",ck:function(){return S.stim>=100}},{id:"e67",ic:"🫳",nm:"Emote 67",ds:"rare",ck:function(){return S.ach&&S.ach["e67"]}},{id:"pr1",ic:"🔄",nm:"Reborn",ds:"Prestige",ck:function(){return S.prestige>=1}},{id:"z1",ic:"🟣",nm:"What",ds:"First zorgo",ck:function(){return S.totalZorgos>=1}},{id:"z50",ic:"🔮",nm:"Zorgo Lord",ds:"50 zorgos",ck:function(){return S.totalZorgos>=50}},{id:"cur50",ic:"📊",nm:"Diversified",ds:"50 currencies",ck:function(){var n=0;for(var i=0;i<CURRENCIES.length;i++)if(CURRENCIES[i].val>0)n++;return n>=50}},{id:"wet1",ic:"⚠️",nm:"Why",ds:"Wet Floor Sign",ck:function(){return own("wet")>=1}},{id:"t50",ic:"🦷",nm:"Too Many",ds:"50 teeth",ck:function(){return S.teeth>=50}}];
 
 // CURRENCY-GATED UPGRADES
@@ -122,3 +122,9 @@ UPG.push({id:"nothing",ic:"⬜",nm:"Absolutely Nothing",ds:"Does absolutely noth
 UPG.push({id:"bigger",ic:"📐",nm:"Bigger Numbers",ds:"Numbers display 10% larger (visual only)",b:500000,m:1,pc:0,ps:0,type:"mew",max:1});
 UPG.push({id:"gravity",ic:"🍎",nm:"Gravity",ds:"Floating text falls instead of rising",b:1e6,m:1,pc:0,ps:0,type:"mew",max:1});
 UPG.push({id:"fourth",ic:"🧱",nm:"The Fourth Wall",ds:"The game becomes aware of itself",b:100e6,m:1,pc:0,ps:0,type:"mew",max:1,secret:true,req:function(){return psl()>=7}});
+
+// PROGRESSION UPGRADES
+UPG.push({id:"auto1",ic:"🤖",nm:"Auto-Mewer",ds:"+1 click/sec automatically",b:50000,m:1.8,pc:0,ps:0,type:"mew",auto:1});
+UPG.push({id:"auto2",ic:"🤖",nm:"Turbo Auto-Mewer",ds:"+5 clicks/sec",b:5e6,m:2,pc:0,ps:0,type:"mew",auto:5,req:function(){return own("auto1")>=3}});
+UPG.push({id:"offline1",ic:"💤",nm:"Better Sleep",ds:"Offline efficiency 50%→75%",b:1e6,m:1,pc:0,ps:0,type:"mew",max:1});
+UPG.push({id:"offline2",ic:"😴",nm:"Lucid Mewing",ds:"Offline efficiency 75%→100%",b:50e6,m:1,pc:0,ps:0,type:"mew",max:1,req:function(){return own("offline1")>=1}});

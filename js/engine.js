@@ -14,7 +14,7 @@ if(own("tfarm")>=1){S.ps+=Math.max(0,(S.teeth-32))*50000}
 if(own("paranoia")>=1){S.ps+=Math.floor(S.suspicion)*100}
 // become owen: x10 everything
 if(own("wowen")>=1){S.pc*=10;S.ps*=10}
-var cm=currencyMult();S.pc=Math.floor(S.pc*cm);S.ps=Math.floor(S.ps*cm)}
+var cm=currencyMult();S.pc=Math.floor(S.pc*cm);S.ps=Math.floor(S.ps*cm);if(typeof weatherEffects!=="undefined"){S.pc=Math.floor(S.pc*weatherEffects.pc);S.ps=Math.floor(S.ps*weatherEffects.ps)}}
 
 function prestigeMult(){var base=1+S.prestige*PRESTIGE_MULT;if(own("pboost")>0)base+=S.prestige*PRESTIGE_MULT*0.5*own("pboost");return base}
 function comboMult(){var max=COMBO_MAX_MULT+own("cmult")*0.5;var rate=0.04+own("cmult")*0.02;return Math.min(max,1+S.combo*rate)}
