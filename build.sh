@@ -46,6 +46,8 @@ echo '' >> "$OUT"
 cat js/mic.js >> "$OUT"
 echo '' >> "$OUT"
 cat js/game.js >> "$OUT"
+echo '' >> "$OUT"
+cat js/minigames.js >> "$OUT"
 echo '</script>' >> "$OUT"
 echo '</body></html>' >> "$OUT"
 

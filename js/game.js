@@ -54,7 +54,7 @@ if(par){
 }}}
 if(unlocked>_lastUnlocked&&_lastUnlocked>0){toast("📊 +"+(unlocked-_lastUnlocked)+" new currencies unlocked!");screenShake(2);for(var j=0;j<5;j++)dropEmoji()}
 _lastUnlocked=unlocked;
-var hdr=document.querySelector(".curr-grid")&&document.querySelector(".curr-grid").previousElementSibling;if(hdr&&hdr.classList.contains("pt"))hdr.textContent="CURRENCIES ("+unlocked+"/"+CURRENCIES.length+")"}
+var cc=document.getElementById("curr-count");if(cc)cc.textContent=unlocked+"/"+CURRENCIES.length}
 function animate(ts){try{var time=ts/1000;tickCombo();if(typeof micActive!=='undefined'&&micActive){drawBird(time)}else{drawFace(psl()/10,time);stimIntensity=lerp(stimIntensity,S.stim/100,0.1);if(emote67Active){emote67Timer+=0.012;if(emote67Timer>=1){emote67Active=false;emote67Timer=0}}}}catch(e){}requestAnimationFrame(animate)}
 requestAnimationFrame(animate);
 var _lastTick=Date.now();

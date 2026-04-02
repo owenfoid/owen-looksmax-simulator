@@ -33,7 +33,7 @@ function currencyMult(){
 }
 
 function currencyTax(){
-  var taxMult=own("cdrain")>=1?0.5:1;
+  var taxMult=(own("cdrain")>=1?0.5:1)*(1-(typeof craftBonuses!=="undefined"?craftBonuses.taxred||0:0));
   // every 17th currency drains mew points if above 80
   var p=psl();
   for(var i=3;i<CURRENCIES.length;i+=17){
@@ -71,7 +71,7 @@ function currencyInteract(){
 
 // critical currency events
 var critCurrency=-1;var critTimer=0;
-function currencyCrisis(){
+function currencyCrisis(){if(typeof craftBonuses!=="undefined"&&craftBonuses.nocrisis)return;
   var p=psl();if(p<3)return;
   if(critCurrency<0&&Math.random()<0.002){
     // pick a random unlocked currency
@@ -117,8 +117,8 @@ function spawnGolden(){if(goldenActive)return;goldenActive=true;toast("GOLDEN ME
 function claimGolden(){if(!goldenActive)return;goldenActive=false;clearTimeout(goldenTimeout);var gm=GOLDEN_MULT*(1+own('gvalue'));var b=Math.floor(S.pc*gm*comboMult());S.pts+=b;S.total+=b;S.goldenClicks=(S.goldenClicks||0)+1;toast("+"+fmt(b)+" GOLDEN");screenShake(3);chromatic();checkAch()}
 function spawnZorgo(){if(document.querySelectorAll(".zorgo-float").length>(isMobile?3:8))return;var el=document.createElement("div");el.className="zorgo-float";el.textContent="\u{1F7E3}";el.style.left=(10+Math.random()*70)+"%";el.style.top=(15+Math.random()*50)+"%";var h=function(e){e.stopPropagation();e.preventDefault();var zamt=own("zdouble")>=1?2:1;S.zorgos+=zamt;S.totalZorgos+=zamt;toast("+1 Zorgo");var cx=e.clientX||(e.changedTouches&&e.changedTouches[0]?e.changedTouches[0].clientX:0);var cy=e.clientY||(e.changedTouches&&e.changedTouches[0]?e.changedTouches[0].clientY:0);if(cx)floatText(cx,cy,"+1","purple");if(cx)particles(cx,cy,8);el.remove();checkAch();render()};el.addEventListener("click",h);el.addEventListener("touchend",h,{passive:false});document.body.appendChild(el);setTimeout(function(){if(el.parentNode)el.remove()},4000)}
 function spawnNegZorgo(){if(document.querySelectorAll(".zorgo-float").length>(isMobile?3:8))return;var el=document.createElement("div");el.className="zorgo-float";el.textContent="\u{26AB}";el.style.left=(10+Math.random()*70)+"%";el.style.top=(15+Math.random()*50)+"%";var h=function(e){e.stopPropagation();e.preventDefault();if(own("zshield")>=1){toast("Shield!");}else{S.zorgos=Math.max(0,S.zorgos-1)};toast("-1 Zorgo");screenShake(2);el.remove();render()};el.addEventListener("click",h);el.addEventListener("touchend",h,{passive:false});document.body.appendChild(el);setTimeout(function(){if(el.parentNode)el.remove()},2000)}
-function teethTick(){var tRate=own('tbrush')>=1?0.0005:0.001;if(psl()>=5&&Math.random()<tRate){S.teeth++;if(S.teeth===33)toast("...33 teeth?");else if(S.teeth===40)toast("stop.");else if(S.teeth===50)toast("too many");checkAch()}}
+function teethTick(){var tRate=own('tbrush')>=1?0.0005:0.001;if(typeof craftBonuses!=="undefined"&&craftBonuses.teethslow)tRate*=0.2;if(psl()>=5&&Math.random()<tRate){S.teeth++;if(S.teeth===33)toast("...33 teeth?");else if(S.teeth===40)toast("stop.");else if(S.teeth===50)toast("too many");checkAch()}}
 function addSuspicion(a){var gain=a*(own("shades")>=1?0.7:1);var cap=own("alias")>=1?150:100;S.suspicion=Math.min(cap,S.suspicion+gain);var susCap=own("alias")>=1?150:100;if(S.suspicion>=susCap){S.suspicion=0;var l=Math.floor(S.pts*0.1);S.pts=Math.max(0,S.pts-l);toast("THEY NOTICED. -"+fmt(l));screenShake(3)}}
 var SAVE_KEY="owen_lm_v8";
-function save(){S.lastSaveTime=Date.now();var d={s:S,cur:[]};for(var i=0;i<CURRENCIES.length;i++)d.cur.push(CURRENCIES[i].val);localStorage.setItem(SAVE_KEY,JSON.stringify(d))}
-function load(){var r=localStorage.getItem(SAVE_KEY);if(r){try{var d=JSON.parse(r);if(d.s){if(!d.s.zorgos)d.s.zorgos=0;if(!d.s.totalZorgos)d.s.totalZorgos=0;if(!d.s.teeth)d.s.teeth=32;if(!d.s.suspicion)d.s.suspicion=0;if(!d.s.prestige)d.s.prestige=0;if(!d.s.combo)d.s.combo=0;if(!d.s.maxCombo)d.s.maxCombo=0;if(!d.s.goldenClicks)d.s.goldenClicks=0;if(!d.s.totalPrestigeEarnings)d.s.totalPrestigeEarnings=0;Object.assign(S,d.s)}if(d.cur){for(var i=0;i<Math.min(d.cur.length,CURRENCIES.length);i++)CURRENCIES[i].val=d.cur[i]||0}recalc();var off=(Date.now()-S.lastSaveTime)/1000;if(off>30&&S.ps>0){var e=Math.floor(S.ps*off*0.5);S.pts+=e;S.total+=e;setTimeout(function(){toast("+"+fmt(e)+" while away")},500)}}catch(e){}}}
+function save(){S.lastSaveTime=Date.now();var d={s:S,cur:[],craft:[],cb:typeof craftBonuses!=="undefined"?craftBonuses:{}};for(var i=0;i<CURRENCIES.length;i++)d.cur.push(CURRENCIES[i].val);if(typeof RECIPES!=="undefined")for(var i=0;i<RECIPES.length;i++)d.craft.push(RECIPES[i].done);localStorage.setItem(SAVE_KEY,JSON.stringify(d))}
+function load(){var r=localStorage.getItem(SAVE_KEY);if(r){try{var d=JSON.parse(r);if(d.s){if(!d.s.zorgos)d.s.zorgos=0;if(!d.s.totalZorgos)d.s.totalZorgos=0;if(!d.s.teeth)d.s.teeth=32;if(!d.s.suspicion)d.s.suspicion=0;if(!d.s.prestige)d.s.prestige=0;if(!d.s.combo)d.s.combo=0;if(!d.s.maxCombo)d.s.maxCombo=0;if(!d.s.goldenClicks)d.s.goldenClicks=0;if(!d.s.totalPrestigeEarnings)d.s.totalPrestigeEarnings=0;Object.assign(S,d.s)}if(d.cur){for(var i=0;i<Math.min(d.cur.length,CURRENCIES.length);i++)CURRENCIES[i].val=d.cur[i]||0}if(d.craft&&typeof RECIPES!=="undefined"){for(var i=0;i<Math.min(d.craft.length,RECIPES.length);i++)RECIPES[i].done=d.craft[i]}if(d.cb&&typeof craftBonuses!=="undefined")Object.assign(craftBonuses,d.cb);recalc();var off=(Date.now()-S.lastSaveTime)/1000;if(off>30&&S.ps>0){var e=Math.floor(S.ps*off*0.5);S.pts+=e;S.total+=e;setTimeout(function(){toast("+"+fmt(e)+" while away")},500)}}catch(e){}}}

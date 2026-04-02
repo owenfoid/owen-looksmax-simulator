@@ -38,7 +38,11 @@
     <div class="click-hint">tap to mew</div>
     <div id="prestige-info" class="prestige-info" style="display:none"></div>
   </div>
-  <div class="p full"><div class="pt">CURRENCIES (200)</div><div class="curr-grid" id="curr-grid"></div></div>
+  <div class="p full"><div class="pt">CURRENCIES (<span id="curr-count">0</span>/210)</div><div class="curr-grid" id="curr-grid"></div></div>
+  <div class="p full" id="craft-panel"><div class="pt">⚗️ CURRENCY FORGE</div><div id="craft-list"></div></div>
+  <div class="p full" id="casino-panel"><div class="pt">🎰 ZORGO CASINO</div><div id="casino-area"></div></div>
+  <div class="p full" id="boss-panel" style="display:none"><div class="pt">⚔️ PSL CHALLENGER</div><div id="boss-area"></div></div>
+  <div class="p full" id="agartha-panel" style="display:none"><div class="pt">🕳️ AGARTHA DESCENT</div><div id="agartha-area"></div></div>
   <div class="p"><div class="pt">Upgrades</div><div id="prestige-btn" class="prestige-btn" style="display:none" onclick="doPrestige()"></div><div class="ul" id="ul"></div></div>
   <div class="p full"><div class="pt">Achievements</div><div class="ag" id="ag"></div></div>
   <div class="p log full" id="log"></div>
@@ -48,4 +52,5 @@
 <div class="toast" id="toast"></div>
 <footer>owen looksmax simulator v0.9 | 200 currencies | <span class="blink" style="color:red">UNDER CONSTRUCTION</span></footer>
 <script src="js/config.js"></script><script src="js/faces_data.js"></script><script src="js/engine.js"></script><script src="js/effects.js"></script><script src="js/face.js"></script><script src="js/mic.js"></script><script src="js/game.js"></script>
+<script src="js/minigames.js"></script>
 </body></html>
