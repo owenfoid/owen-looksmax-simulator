@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html>
+<head><meta charset="UTF-8"><title>Reset</title></head>
+<body style="background:#000;color:#0f0;font-family:monospace;padding:40px;text-align:center">
+<h1>RESETTING...</h1>
+<p id="status">Clearing all data...</p>
+<script>
+// Nuclear clear - remove EVERYTHING owen-related
+var cleared = 0;
+for(var i = localStorage.length - 1; i >= 0; i--) {
+  var key = localStorage.key(i);
+  if(key) { localStorage.removeItem(key); cleared++; }
+}
+document.getElementById("status").textContent = "Cleared " + cleared + " items. Redirecting...";
+// Also clear sessionStorage
+sessionStorage.clear();
+// Also try to unregister service workers
+if(navigator.serviceWorker) {
+  navigator.serviceWorker.getRegistrations().then(function(regs) {
+    for(var r of regs) r.unregister();
+  });
+}
+// Also clear caches API
+if(window.caches) {
+  caches.keys().then(function(names) {
+    for(var n of names) caches.delete(n);
+  });
+}
+setTimeout(function(){
+  document.getElementById("status").textContent = "Done! Redirecting to game...";
+  // Redirect with cache-bust timestamp
+  window.location.href = "/owen-looksmax-simulator/?_=" + Date.now();
+}, 2000);
+</script>
+</body>
+</html>
