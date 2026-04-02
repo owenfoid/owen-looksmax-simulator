@@ -260,3 +260,21 @@ window.addEventListener("pageshow",function(e){
     }
   }
 });
+
+// HARD RESET - resets ALL JS state and immediately saves clean state
+function hardReset(){
+  S={pts:0,total:0,pc:1,ps:0,upg:{},ach:{},clicks:0,stim:0,prestige:0,combo:0,maxCombo:0,lastClickTime:0,goldenClicks:0,lastSaveTime:Date.now(),totalPrestigeEarnings:0,zorgos:0,totalZorgos:0,teeth:32,suspicion:0};
+  for(var i=0;i<CURRENCIES.length;i++)CURRENCIES[i].val=0;
+  if(typeof skillsBought!=="undefined")skillsBought={};
+  if(typeof craftBonuses!=="undefined"){for(var k in craftBonuses)craftBonuses[k]=0}
+  if(typeof RECIPES!=="undefined")for(var i=0;i<RECIPES.length;i++)RECIPES[i].done=false;
+  if(typeof ascension!=="undefined"){ascension=0;ascPoints=0;for(var i=0;i<ASC_UPGRADES.length;i++)ASC_UPGRADES[i].bought=false}
+  if(typeof expeditions!=="undefined")expeditions=[];
+  if(typeof _achRewarded!=="undefined")_achRewarded={};
+  if(typeof _lastPSLMilestone!=="undefined")_lastPSLMilestone=0;
+  if(typeof _loreRead!=="undefined")_loreRead={};
+  // Save the clean state IMMEDIATELY - overwrites any old data
+  recalc();save();
+  // Force page reload to reset all other JS variables
+  location.reload();
+}
