@@ -188,13 +188,13 @@ function detectAutoClick(){
   var variance=0;for(var i=0;i<intervals.length;i++)variance+=Math.pow(intervals[i]-avg,2);
   variance/=intervals.length;
   // humans have high variance (>200), bots have very low (<50)
-  if(variance<80&&cps>15)return true;
+  if(variance<40&&cps>20)return true;
   return false;
 }
 
 // hook into click handler
 var _origClick=document.getElementById("click-area").onclick;
-document.getElementById("click-area").addEventListener("click",function(){
+document.getElementById("click-area").addEventListener("click",function(){if(isMobile)return;
   if(_acTriggered)return;
   if(detectAutoClick()){
     if(!_acWarned){_acWarned=true;toast("⚠️ ...what are you doing?");return}
@@ -329,4 +329,29 @@ function antiPiracyScreen(){
       }
     },1000);
   },55000);
+}
+
+// MOBILE TOUCH FIX: direct touchstart handler on click area
+if(isMobile){
+  document.getElementById("click-area").addEventListener("touchstart",function(e){
+    e.preventDefault();
+    var touch=e.touches[0];
+    var fakeEvent={clientX:touch.clientX,clientY:touch.clientY,preventDefault:function(){},stopPropagation:function(){}};
+    // trigger the click logic directly
+    addCombo();var cm=comboMult();var cv=Math.floor(S.pc*cm);
+    S.pts+=cv;S.total+=cv;S.clicks++;
+    if(goldenActive)claimGolden();
+    var p=psl();wobble();screenShake(Math.min(3,Math.floor(p/3)+1));
+    if(p>=2)flash("rgba(255,0,0,0.06)");if(p>=4)chromatic();
+    particles(touch.clientX,touch.clientY,Math.min(12,2+Math.floor(p)));
+    var c=S.combo>=50?"purple":S.combo>=20?"green":S.combo>=10?"orange":"red";
+    floatText(touch.clientX,touch.clientY,"+"+fmt(cv)+(S.combo>=5?" x"+S.combo:""),c);
+    addStim(lerp(2,0.5,p/10)*(1+own("sboost")));
+    if(S.combo>30)addSuspicion(0.1);
+    var ri=4+Math.floor(Math.random()*(CURRENCIES.length-4));
+    if(ri<CURRENCIES.length)CURRENCIES[ri].val+=(Math.random()-0.3)*0.5;
+    if(typeof clickCurrencies==="function")clickCurrencies();
+    if(typeof sndClick==="function")sndClick();
+    checkAch();render();
+  },{passive:false});
 }
