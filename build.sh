@@ -50,3 +50,14 @@ echo '</script>' >> "$OUT"
 echo '</body></html>' >> "$OUT"
 
 echo "✅ Built → $OUT ($(wc -c < "$OUT") bytes)"
+
+# Syntax check
+JSONLY=$(mktemp)
+sed -n '/<script>/,/<\/script>/p' "$OUT" | sed '1d;$d' > "$JSONLY"
+if node --check "$JSONLY" 2>/dev/null; then
+  echo "✅ JS syntax OK"
+else
+  echo "❌ JS SYNTAX ERROR - DO NOT DEPLOY"
+  node --check "$JSONLY" 2>&1 | head -5
+fi
+rm "$JSONLY"
