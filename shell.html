@@ -1,99 +1,49 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<!DOCTYPE html><html lang="en"><head>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
 <title>Owen Looksmax Simulator</title>
 <link href="https://fonts.googleapis.com/css2?family=Comic+Neue:wght@400;700&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="style.css">
-</head>
-<body>
-
-<div id="flash"></div>
-<div id="scanlines"></div>
-
+</head><body>
+<div id="flash"></div><div id="scanlines"></div>
 <div id="chroma-wrap">
 <header>
   <h1>Owen <span>Looksmax</span> Simulator</h1>
   <div class="sub">the grind never stops</div>
-  <div class="sub2">visitors: <span id="visitor-count">???</span> | est. 2024 | not affiliated with owen | <span class="blink" style="color:#f00">NEW!</span></div>
+  <div class="sub2">visitors: <span id="visitor-count">???</span> | est. 2024 | <span class="blink" style="color:red">NEW!</span></div>
 </header>
-
-<div class="marquee-bar"><div class="marquee-inner" id="marquee-text">
-  🗿 WELCOME TO OWEN LOOKSMAX SIMULATOR 🗿 collect mew points 🗿 collect zorgos (???) 🗿 DO NOT let suspicion reach 100% 🗿 the teeth are normal 🗿 everything is fine 🗿 WELCOME TO OWEN LOOKSMAX SIMULATOR 🗿
-</div></div>
-
-<div class="fake-ad" id="fake-ad" onclick="this.style.display='none';S.pts+=100;toast('ad closed. +100 mew points (why?)');render();">
-  ⚠️ <span class="blink">CLICK HERE</span> to fix your canthal tilt with this ONE WEIRD TRICK (doctors HATE this) ⚠️
-</div>
-
+<div class="marquee-bar"><div class="marquee-inner" id="marquee-text">🗿 WELCOME 🗿 200 CURRENCIES 🗿 COLLECT ZORGOS 🗿 TEETH ARE NORMAL 🗿 EVERYTHING IS FINE 🗿</div></div>
+<div class="fake-ad" id="fake-ad" onclick="this.style.display='none';S.pts+=100;toast('+100 (why?)');render()">⚠️ <span class="blink">CLICK HERE</span> to fix canthal tilt (doctors HATE this) ⚠️</div>
 <div class="notif-stack" id="notif-stack"></div>
-
 <div class="game" id="game">
   <div class="p stats full">
     <div class="st"><div class="v" id="s-pts">0</div><div class="l">Mew Points</div></div>
     <div class="st"><div class="v" id="s-pc">1</div><div class="l">Per Click</div></div>
     <div class="st"><div class="v" id="s-ps">0</div><div class="l">Per Sec</div></div>
     <div class="st"><div class="v" id="s-total">0</div><div class="l">Lifetime</div></div>
-    <div class="st zorgo"><div class="v" id="s-zorgos">0</div><div class="l">Zorgos</div></div>
-    <div class="st teeth" id="teeth-display" style="display:none"><div class="v" id="s-teeth">32</div><div class="l">Teeth</div></div>
-    <div class="st sus" id="sus-display" style="display:none"><div class="v" id="s-sus">0%</div><div class="l">Suspicion</div></div>
+    <div class="st" style="color:purple"><div class="v" id="s-zorgos">0</div><div class="l">Zorgos</div></div>
   </div>
-
   <div class="p full">
     <div class="psl-row"><span>PSL Rating</span><span id="psl-num">0.0 / 10.0</span></div>
-    <div class="psl-bar"><div class="psl-fill" id="psl-fill"><span class="psl-inner" id="psl-in"></span></div></div>
-    <div class="rank" id="rank" style="color:#0f0">Subhuman</div>
-    <div class="stim-wrap">
-      <div class="stim-label"><span>Stimming</span><span id="stim-pct">0%</span></div>
-      <div class="stim-bar"><div class="stim-fill" id="stim-fill"></div></div>
-    </div>
+    <div class="psl-bar" style="position:relative"><div class="psl-fill" id="psl-fill"><span class="psl-inner" id="psl-in"></span></div></div>
+    <div class="rank" id="rank">Subhuman</div>
+    <div class="stim-wrap"><div class="stim-label"><span>Stimming</span><span id="stim-pct">0%</span></div><div class="stim-bar"><div class="stim-fill" id="stim-fill"></div></div></div>
   </div>
-
   <div class="p click-area" id="click-area">
-    <div id="golden-indicator" class="golden-indicator" style="display:none">!! GOLDEN MEW - CLICK !!</div>
+    <div id="golden-indicator" class="golden-indicator" style="display:none">!! GOLDEN MEW !!</div>
     <div id="combo-display" class="combo-display" style="display:none"></div>
     <canvas id="face" width="200" height="280"></canvas>
     <div class="click-hint">tap to mew</div>
     <div id="prestige-info" class="prestige-info" style="display:none"></div>
   </div>
-
-  <div class="p">
-    <div class="pt">Upgrades</div>
-    <div id="prestige-btn" class="prestige-btn" style="display:none" onclick="doPrestige()"></div>
-    <div class="ul" id="ul"></div>
-  </div>
-
-  <div class="p full">
-    <div class="pt">Achievements</div>
-    <div class="ag" id="ag"></div>
-  </div>
-
+  <div class="p full"><div class="pt">CURRENCIES (200)</div><div class="curr-grid" id="curr-grid"></div></div>
+  <div class="p"><div class="pt">Upgrades</div><div id="prestige-btn" class="prestige-btn" style="display:none" onclick="doPrestige()"></div><div class="ul" id="ul"></div></div>
+  <div class="p full"><div class="pt">Achievements</div><div class="ag" id="ag"></div></div>
   <div class="p log full" id="log"></div>
 </div>
 </div>
-
-<div class="news-ticker"><div class="news-inner" id="news-ticker">
-  <span>BREAKING:</span> local man achieves PSL 7.2 through mewing alone <span>|</span>
-  <span>ALERT:</span> zorgo sightings reported in 14 countries <span>|</span>
-  <span>SCIENCE:</span> study confirms bonesmashing "probably does something" <span>|</span>
-  <span>WEATHER:</span> cold showers expected nationwide <span>|</span>
-  <span>BREAKING:</span> man discovers 35th tooth, scientists baffled <span>|</span>
-  <span>SPORTS:</span> competitive mewing league announces season 2 <span>|</span>
-  <span>AGARTHA:</span> signal detected at depth 847km, "sounds like chewing" <span>|</span>
-  <span>TECH:</span> new app tracks your mewing form while you sleep <span>|</span>
-  <span>URGENT:</span> do NOT click the black zorgos <span>|</span>
-</div></div>
-
+<div class="news-ticker"><div class="news-inner"><span>BREAKING:</span> man achieves PSL 7.2 <span>|</span> <span>ALERT:</span> zorgo sightings <span>|</span> <span>URGENT:</span> 200 currencies detected <span>|</span> <span>WEATHER:</span> cold showers <span>|</span> <span>BREAKING:</span> 35th tooth <span>|</span> <span>AGARTHA:</span> signal at 847km <span>|</span></div></div>
 <div class="toast" id="toast"></div>
-<footer>owen looksmax simulator v0.7.3 | do NOT redistribute | <span class="blink" style="color:#f00">UNDER CONSTRUCTION</span></footer>
-
-<script src="js/config.js"></script>
-<script src="js/faces_data.js"></script>
-<script src="js/engine.js"></script>
-<script src="js/effects.js"></script>
-<script src="js/face.js"></script>
-<script src="js/mic.js"></script>
-<script src="js/game.js"></script>
-</body>
-</html>
+<footer>owen looksmax simulator v0.8 | 200 currencies | <span class="blink" style="color:red">UNDER CONSTRUCTION</span></footer>
+<script src="js/config.js"></script><script src="js/faces_data.js"></script><script src="js/engine.js"></script><script src="js/effects.js"></script><script src="js/face.js"></script><script src="js/mic.js"></script><script src="js/game.js"></script>
+</body></html>
