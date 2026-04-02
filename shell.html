@@ -23,7 +23,6 @@
     <div class="st"><div class="v" id="s-total">0</div><div class="l">Lifetime</div></div>
     <div class="st" style="color:purple"><div class="v" id="s-zorgos">0</div><div class="l">Zorgos</div></div>
     <div class="st" style="color:green"><div class="v" id="s-cmult">1.0x</div><div class="l">Curr. Mult</div></div>
-    <div class="st" style="color:green"><div class="v" id="s-cmult">1.0x</div><div class="l">Curr. Mult</div></div>
     <div class="st" id="teeth-display" style="display:none"><div class="v" id="s-teeth" style="color:red">32</div><div class="l">🦷 Teeth</div></div>
     <div class="st" id="sus-display" style="display:none"><div class="v" id="s-sus" style="color:orange">0%</div><div class="l">👁️ Suspicion</div></div>
     <div class="st" id="crit-display" style="display:none;color:red"><div class="v" id="s-crit">--</div><div class="l">⚠️ CRITICAL</div></div>
@@ -41,23 +40,25 @@
     <div class="click-hint">tap to mew</div>
     <div id="prestige-info" class="prestige-info" style="display:none"></div>
   </div>
-  <div class="p full"><div class="pt">CURRENCIES (<span id="curr-count">0/210</span>)</div><div class="curr-grid" id="curr-grid"></div></div>
-  <div class="p full" id="craft-panel"><div class="pt">⚗️ CURRENCY FORGE</div><div id="craft-list"></div></div>
+  <div class="p"><div class="pt">Upgrades</div><div id="prestige-btn" class="prestige-btn" style="display:none" onclick="doPrestige()"></div><div class="ul" id="ul"></div></div>
+  <div class="p full" id="daily-panel"><div class="pt">⏱️ DAILY CHALLENGE</div><div id="daily-area"></div></div>
   <div class="p full" id="casino-panel"><div class="pt">🎰 ZORGO CASINO</div><div id="casino-area"></div></div>
   <div class="p full" id="boss-panel" style="display:none"><div class="pt">⚔️ PSL CHALLENGER</div><div id="boss-area"></div></div>
+  <div class="p full"><div class="pt">CURRENCIES (<span id="curr-count">0/210</span>)</div><div class="curr-grid" id="curr-grid"></div></div>
+  <div class="p full" id="craft-panel"><div class="pt">⚗️ CURRENCY FORGE</div><div id="craft-list"></div></div>
+  <div class="p full" id="trade-panel"><div class="pt">📈 TRADING POST</div><div id="trade-area"></div></div>
+  <div class="p full" id="exp-panel"><div class="pt">🚀 EXPEDITIONS</div><div id="exp-area"></div></div>
   <div class="p full" id="agartha-panel" style="display:none"><div class="pt">🕳️ AGARTHA DESCENT</div><div id="agartha-area"></div></div>
   <div class="p full" id="skill-panel"><div class="pt">🌳 SKILL TREE (prestige)</div><div id="skill-tree"></div></div>
-  <div class="p full" id="trade-panel"><div class="pt">📈 TRADING POST</div><div id="trade-area"></div></div>
+  <div class="p full" id="asc-panel"><div class="pt">🌟 ASCENSION</div><div id="asc-area"></div></div>
+  <div class="p full"><div class="pt">Achievements</div><div class="ag" id="ag"></div></div>
   <div class="p full" id="lore-panel"><div class="pt">📖 LORE</div><div id="lore-area"></div></div>
   <div class="p full" id="snake-panel"><div class="pt">🐍 SECRET: SNAKE GAME</div><div id="snake-area"></div></div>
-  <div class="p"><div class="pt">Upgrades</div><div id="prestige-btn" class="prestige-btn" style="display:none" onclick="doPrestige()"></div><div class="ul" id="ul"></div></div>
-  <div class="p full"><div class="pt">Achievements</div><div class="ag" id="ag"></div></div>
-  <div class="p full" id="asc-panel"><div class="pt">🌟 ASCENSION</div><div id="asc-area"></div></div>
-  <div class="p full" id="daily-panel"><div class="pt">⏱️ DAILY CHALLENGE</div><div id="daily-area"></div></div>
-  <div class="p full" id="exp-panel"><div class="pt">🚀 EXPEDITIONS</div><div id="exp-area"></div></div>
   <div class="p full" id="chat-section"><div class="pt">💬 GLOBAL CHAT (real) (not real)</div><div class="chat-box" id="chat-box"></div><div class="chat-input"><input id="chat-in" placeholder="type here..." maxlength="60"><button onclick="sendChat()">SEND</button></div></div>
   <div class="p full"><div class="pt">📊 STATISTICS</div><div style="text-align:center;margin-bottom:4px"><button class="casino-btn" onclick="exportSave()" style="font-size:.4rem">📤 Export Save</button> <button class="casino-btn" onclick="importSave()" style="font-size:.4rem">📥 Import Save</button></div><div class="stats-grid" id="stats-grid"></div></div>
   <div class="p log full" id="log"></div>
+
+</div>
 </div>
 </div>
 <div class="news-ticker"><div class="news-inner"><span>BREAKING:</span> man achieves PSL 7.2 <span>|</span> <span>ALERT:</span> zorgo sightings <span>|</span> <span>URGENT:</span> 200 currencies detected <span>|</span> <span>WEATHER:</span> cold showers <span>|</span> <span>BREAKING:</span> 35th tooth <span>|</span> <span>AGARTHA:</span> signal at 847km <span>|</span></div></div>
